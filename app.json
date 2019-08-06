@@ -2,7 +2,7 @@
   "expo": {
     "name": "Arte Red",
     "slug": "arte-red",
-    "privacy": "public",
+    "privacy": "unlisted",
     "sdkVersion": "34.0.0",
     "platforms": [
       "ios",

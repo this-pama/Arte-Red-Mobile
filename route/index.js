@@ -11,6 +11,7 @@ import HomeScreen from '../screen/home';
 import NetworkScreen from '../screen/network';
 import FollowerScreen from '../screen/follower';
 import FolloweringScreen from '../screen/following';
+import CommentScreen from '../screen/comment';
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -26,6 +27,7 @@ const DrawerNavigator = createDrawerNavigator(
       Network: NetworkScreen,
       Follower: FollowerScreen,
       Following: FolloweringScreen,
+      Comment: CommentScreen,
     },
     {
       initialRouteName: 'Home',

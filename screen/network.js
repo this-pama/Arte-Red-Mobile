@@ -31,7 +31,7 @@ export default class NetworkScreen extends Component {
           </Button>
         </Segment>
         <Content padder>
-          <Text>User previous posts will be here</Text>
+          <Text>You currently have no posts.</Text>
         </Content>
       </Container>
     );

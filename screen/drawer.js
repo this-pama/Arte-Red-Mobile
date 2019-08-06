@@ -56,7 +56,7 @@ export default class DrawerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={this.navigateToScreen('')}>Home</Text>
+              <Text onPress={this.navigateToScreen('Home')}>Home</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />
@@ -82,9 +82,7 @@ export default class DrawerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={()=>{
-                }
-              }>My Network</Text>
+              <Text onPress={ this.navigateToScreen('Network')}>My Network</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />
@@ -126,6 +124,20 @@ export default class DrawerScreen extends Component {
             </Left>
             <Body>
               <Text onPress={this.navigateToScreen('')}>Setting</Text>
+            </Body>
+            <Right>
+              <Icon active name="arrow-forward" />
+            </Right>
+          </ListItem>
+
+          <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "#990000" }}>
+                <Icon active name="md-cut" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={this.navigateToScreen('Login')}>Logout</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />

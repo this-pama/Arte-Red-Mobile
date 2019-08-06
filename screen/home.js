@@ -14,6 +14,7 @@ export default class HomeScreen extends Component {
             image: ''
         }
     }
+    
 componentDidMount() {
     this.getPermissionAsync();
     }
@@ -41,10 +42,12 @@ _pickImage = async () => {
       this.setState({ image: result.uri });
     }
   }
+
+  
   render() {
     return (
       <Container>
-        <Content>
+        <Content >
           <Card>
             <CardItem>
               <Left>
@@ -66,75 +69,23 @@ _pickImage = async () => {
                 </Button>
               </Left>
               <Body>
-                <Button transparent onPress={()=> console.warn("comment")}>
+                <Button transparent onPress={()=> this.props.navigation.navigate("Comment", {
+                    comments: []
+                })}>
                   <Icon active name="chatbubbles" />
                   <Text>{this.props.comment != null || this.props.comment != undefined  ? this.props.comment : 0 } Comments</Text>
                 </Button>
+                
               </Body>
               <Right>
-                <Text>{this.props.time != null || this.props.time != undefined  ? this.props.time : 0 }h ago</Text>
-              </Right>
-            </CardItem>
-          </Card>
-          <Card>
-            <CardItem>
-              <Left>
-                <Thumbnail source={{uri: 'Image URL'}} />
-                <Body>
-                  <Text>User Full Name</Text>
-                  <Text note>User Nick Name</Text>
-                </Body>
-              </Left>
-            </CardItem>
-            <CardItem cardBody>
-              <Image source={{uri: 'Image URL'}} style={{height: 200, width: null, flex: 1}}/>
-            </CardItem>
-            <CardItem>
-              <Left>
-                <Button transparent onPress={this.props.like}>
-                  <Icon active name="thumbs-up" />
-                  <Text>{this.props.like != null || this.props.like != undefined  ? this.props.like : 0 } Likes</Text>
+                <Button transparent onPress={()=> this.props.navigation.navigate("", {
+                        comments: []
+                    })}>
+                    <Icon active name="cash" />
+                    <Text>{this.props.comment != null || this.props.comment != undefined  ? this.props.comment : 0 } Price</Text>
                 </Button>
-              </Left>
-              <Body>
-                <Button transparent onPress={()=> console.warn("comment")}>
-                  <Icon active name="chatbubbles" />
-                  <Text>{this.props.comment != null || this.props.comment != undefined  ? this.props.comment : 0 } Comments</Text>
-                </Button>
-              </Body>
-              <Right>
-                <Text>{this.props.time != null || this.props.time != undefined  ? this.props.time : 0 }h ago</Text>
-              </Right>
-            </CardItem>
-          </Card>
-          <Card>
-            <CardItem>
-              <Left>
-                <Thumbnail source={{uri: 'Image URL'}} />
-                <Body>
-                  <Text>User Full Name</Text>
-                  <Text note>User Nick Name</Text>
-                </Body>
-              </Left>
-            </CardItem>
-            <CardItem cardBody>
-              <Image source={{uri: 'Image URL'}} style={{height: 200, width: null, flex: 1}}/>
-            </CardItem>
-            <CardItem>
-              <Left>
-                <Button transparent onPress={this.props.like}>
-                  <Icon active name="thumbs-up" />
-                  <Text>{this.props.like != null || this.props.like != undefined  ? this.props.like : 0 } Likes</Text>
-                </Button>
-              </Left>
-              <Body>
-                <Button transparent onPress={()=> console.warn("comment")}>
-                  <Icon active name="chatbubbles" />
-                  <Text>{this.props.comment != null || this.props.comment != undefined  ? this.props.comment : 0 } Comments</Text>
-                </Button>
-              </Body>
-              <Right>
-                <Text>{this.props.time != null || this.props.time != undefined  ? this.props.time : 0 }h ago</Text>
+
+                {/* <Text>{this.props.time != null || this.props.time != undefined  ? this.props.time : 0 }h ago</Text> */}
               </Right>
             </CardItem>
           </Card>

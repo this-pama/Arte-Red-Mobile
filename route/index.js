@@ -6,7 +6,8 @@ import { Icon } from 'native-base'
 
 import DrawerScreen from '../screen/drawer';
 import LoginScreen from  "../controller/signin"
-import SignUpScreen from "../screen/signup"
+import SignUpScreen from "../controller/signup"
+import HomeScreen from '../screen/home';
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -14,10 +15,14 @@ const DrawerNavigator = createDrawerNavigator(
         screen: DrawerScreen
       },
       Login:  LoginScreen,
-      SignUp: SignUpScreen,
+      SignUp: {
+        screen: SignUpScreen,
+      },
+
+      Home: HomeScreen,
     },
     {
-      initialRouteName: 'Login',
+      initialRouteName: 'Home',
       contentComponent: DrawerScreen,
       drawerWidth: 300
      }
@@ -28,7 +33,7 @@ const StackNavigator = createStackNavigator({
     DrawerNavigator:{
         screen: DrawerNavigator,
         navigationOptions: ({ navigation }) => ({
-        headerTitle: <Text style={{paddingLeft: 35, textAlign: "center", fontSize: 20, fontWeight: "bold" }}> Arte Red</Text>,  
+        headerTitle: <Text style={{paddingLeft: 35, textAlign: "center", fontSize: 20, fontWeight: "bold", color: "#fff" }}> Arte Red</Text>,  
         headerRight: 
         <TouchableOpacity  onPress={ () => { navigation.dispatch(DrawerActions.toggleDrawer())} }>
             <Icon name='menu' style={{ paddingRight : 10 }} />
@@ -44,7 +49,8 @@ const StackNavigator = createStackNavigator({
     })
     }, 
 
-    Login:  LoginScreen,
+    // Login:  LoginScreen,
+    
 
 });
 

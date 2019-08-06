@@ -40,20 +40,19 @@ export default class SignInController extends Component{
     };
     
     handleEmail = email => {
-          console.warn(email)
-        // if (email.length > 0) {
-        //   this.setState(
-        //     {
-        //       email
-        //     },
-        //     this.validateForm
-        //   );
-        // } else {
-        //   this.setState({
-        //     email: '',
-        //     errMessage: 'Email cannot be empty'
-        //   });
-        // }
+        if (email.length > 0) {
+          this.setState(
+            {
+              email
+            },
+            this.validateForm
+          );
+        } else {
+          this.setState({
+            email: '',
+            errMessage: 'Email cannot be empty'
+          });
+        }
       };
 
       handlePassword = pass => {
@@ -100,6 +99,7 @@ export default class SignInController extends Component{
                 handlePassword= { this.handlePassword }
                 login= { this.login }
                 disable= { this.state.disable }
+                navigation= {this.props.navigation}
             />
         )
     }

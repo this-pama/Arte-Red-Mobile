@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import LoginScreen from './screen/login'
 import AppNavigation from './route'
+import HomeScreen from './screen/home';
 
 export default class App extends React.Component {
   constructor(props) {

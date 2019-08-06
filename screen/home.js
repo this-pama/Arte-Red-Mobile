@@ -2,8 +2,45 @@ import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Footer, FooterTab, } from 'native-base';
 import FooterScreen from './service/footer'
+import { Permissions } from 'expo';
+import Constants from 'expo-constants'
+import * as ImagePicker from 'expo-image-picker';
 
 export default class HomeScreen extends Component {
+
+    constructor(props){
+        super(props);
+        this.state={
+            image: ''
+        }
+    }
+componentDidMount() {
+    this.getPermissionAsync();
+    }
+
+getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to post!');
+        }
+    }
+}
+
+
+_pickImage = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
+
+    console.warn(result);
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+  }
   render() {
     return (
       <Container>
@@ -102,7 +139,10 @@ export default class HomeScreen extends Component {
             </CardItem>
           </Card>
         </Content>
-        <FooterScreen />
+        <FooterScreen 
+            navigation={this.props.navigation} 
+            post= {this._pickImage}
+        />
       </Container>
     );
   }

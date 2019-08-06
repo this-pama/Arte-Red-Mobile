@@ -8,6 +8,9 @@ import DrawerScreen from '../screen/drawer';
 import LoginScreen from  "../controller/signin"
 import SignUpScreen from "../controller/signup"
 import HomeScreen from '../screen/home';
+import NetworkScreen from '../screen/network';
+import FollowerScreen from '../screen/follower';
+import FolloweringScreen from '../screen/following';
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -20,6 +23,9 @@ const DrawerNavigator = createDrawerNavigator(
       },
 
       Home: HomeScreen,
+      Network: NetworkScreen,
+      Follower: FollowerScreen,
+      Following: FolloweringScreen,
     },
     {
       initialRouteName: 'Home',
@@ -50,6 +56,7 @@ const StackNavigator = createStackNavigator({
     }, 
 
     // Login:  LoginScreen,
+    
     
 
 });

@@ -6,19 +6,19 @@ export default class FooterTabs extends Component {
       
         <Footer >
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
-            <Button vertical>
+            <Button vertical active>
               <Icon name="apps" />
               <Text>Me</Text>
             </Button>
-            <Button vertical>
+            <Button vertical onPress= {this.props.post}>
               <Icon name="camera" />
               <Text>Post</Text>
             </Button>
-            <Button vertical active>
+            <Button vertical >
               <Icon active name="wallet" />
               <Text>Wallet</Text>
             </Button>
-            <Button vertical>
+            <Button vertical onPress={()=> this.props.navigation.navigate("Network")}>
               <Icon name="people" />
               <Text>Network</Text>
             </Button>

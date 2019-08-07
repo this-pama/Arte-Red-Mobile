@@ -3,6 +3,7 @@ import { AppLoading } from 'expo';
 import { Container, Text } from 'native-base';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
+import { Root } from "native-base";
 
 import LoginScreen from './screen/login'
 import AppNavigation from './route'
@@ -32,9 +33,11 @@ export default class App extends React.Component {
     }
 
     return (
-      <Container>
-        <AppNavigation />
-      </Container>
+      <Root>
+        <Container>
+          <AppNavigation />
+        </Container>
+      </Root>
     );
   }
 }

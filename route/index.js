@@ -12,6 +12,7 @@ import NetworkScreen from '../screen/network';
 import FollowerScreen from '../screen/follower';
 import FolloweringScreen from '../screen/following';
 import CommentScreen from '../screen/comment';
+import PostScreen from '../controller/post';
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -28,6 +29,7 @@ const DrawerNavigator = createDrawerNavigator(
       Follower: FollowerScreen,
       Following: FolloweringScreen,
       Comment: CommentScreen,
+      Post: PostScreen,
     },
     {
       initialRouteName: 'Home',

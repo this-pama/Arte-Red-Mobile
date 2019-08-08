@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add expo-image-picker@~6.0.0
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add react-native-easy-grid
 
 PATH: 
   C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\hp\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files\nodejs;C:\Program Files\Git\cmd;C:\Program Files\Microsoft VS Code\bin;C:\Program Files (x86)\Yarn\bin;C:\Users\hp\AppData\Local\Android\Sdk\platform-tools;C:\Users\hp\AppData\Local\Android\Sdk\tools;C:\Program Files\Java\jdk1.8.0_60;C:\Program Files\Java\jdk1.8.0_60\bin;C:\Program Files\Java\jre1.8.0_60;C:\Users\hp;C:\ProgramData\chocolatey\bin;C:\Users\hp\AppData\Roaming\npm;C:\Users\hp\AppData\Local\Yarn\bin;C:\Program Files\Docker Toolbox
@@ -14,7 +14,8 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: EPERM: operation not permitted, unlink 'C:\Users\hp\Documents\projects\Arte Red\Mobile\arte-red\node_modules\@babel\generator\node_modules\.bin'
+  Error: connect ETIMEDOUT 104.16.27.35:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1097:14)
 
 npm manifest: 
   {
@@ -28,7 +29,9 @@ npm manifest:
     },
     "dependencies": {
       "expo": "^34.0.1",
+      "expo-constants": "~6.0.0",
       "expo-font": "~6.0.1",
+      "expo-image-picker": "~6.0.0",
       "native-base": "^2.13.4",
       "prop-types": "^15.7.2",
       "react": "16.8.3",
@@ -2092,6 +2095,11 @@ Lockfile:
     integrity sha512-zQwGFTKSrsTWmFzS0l87i6TyqM0YFDK4ui4sSzpbdQsUHXpeG7wfa67i09roLS0xtp85nrR9Vm2bUJp9njV8JQ==
     dependencies:
       fontfaceobserver "^2.1.0"
+  
+  expo-image-picker@~6.0.0:
+    version "6.0.0"
+    resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-6.0.0.tgz#776f4487d986ba9cc82169a47445e8c13ca3108b"
+    integrity sha512-7IW4WxDe0xQclGhTnX3DOgTkMvt2kF/MNOPbk2y9fS5k/8am9I8jErjURPxRUGH7+TvYLEWPy63DRAJP7TYyEg==
   
   expo-keep-awake@~6.0.0:
     version "6.0.0"

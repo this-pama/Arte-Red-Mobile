@@ -80,17 +80,11 @@ setModalVisible = (visible) => {
             <View>
                 <Textarea rowSpan={5} bordered placeholder="Write your comment about the post " />
                 <View style={{ paddingTop: 30}}>
-                    <View style={{justifyContent: "center", alignItems: "center"}}>
-                    
                         <Button bordered warning
-                            onPress={() => {
-                                
-                            }}
+                            onPress={() => this.setModalVisible(!this.state.modalVisible)}
                         >
                             <Text >Post</Text>
-                        </Button>
-                    </View>
-                    
+                        </Button>            
                 </View>
             </View>
           </View>

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Segment, Content, Text } from 'native-base';
+import FooterTabs from "./service/footer"
+
 export default class NetworkScreen extends Component {
   render() {
     return (
@@ -33,6 +35,11 @@ export default class NetworkScreen extends Component {
         <Content padder>
           <Text>You currently have no posts.</Text>
         </Content>
+
+        <FooterTabs 
+          activeNetwork= { true }
+          navigation={this.props.navigation}
+        />
       </Container>
     );
   }

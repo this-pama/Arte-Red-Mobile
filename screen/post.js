@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image, KeyboardAvoidingView, View } from 'react-native';
 import { Container, Header, Content, Card, CardItem,Title, Thumbnail, Text, Button, Icon, Left, Body, Right,
-Form, Label, Input, Picker, Item } from 'native-base';
+Form, Label, Input, Picker, Item, Textarea } from 'native-base';
 import PropTypes from "prop-types"
 
 export default class PostScreen extends Component {
@@ -14,6 +14,7 @@ export default class PostScreen extends Component {
  
   render() {
       const image = this.props.navigation.getParam("image")
+      console.warn(image)
     return (
       <Container>
         <Header style={{ backgroundColor: "#990000"}}>
@@ -51,10 +52,7 @@ export default class PostScreen extends Component {
                         <Label>Size (inches)</Label>
                         <Input onChangeText= { this.props.handleSize } value={this.props.size}  keyboardType='numeric' />
                     </Item>
-                    <Item stackedLabel>
-                        <Label>Story</Label>
-                        <Input onChangeText= { this.props.handleStory } value={this.props.story}  autoCapitalize='sentences'/>
-                    </Item>
+                      <Textarea rowSpan={5} bordered placeholder="Write a story about the artwork." />
                     <Item stackedLabel>
                         <Label>Location</Label>
                         <Input onChangeText= {this.props.handleLocation } value={this.props.location }  autoCapitalize='words'/>

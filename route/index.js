@@ -13,6 +13,10 @@ import FollowerScreen from '../screen/follower';
 import FolloweringScreen from '../screen/following';
 import CommentScreen from '../screen/comment';
 import PostScreen from '../controller/post';
+import WalletScreen from '../screen/wallet';
+import BankScreen from '../screen/bank';
+import WithdrawScreen from '../screen/withdraw';
+import ArtworkDetailScreen from '../screen/service/details';
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -30,6 +34,10 @@ const DrawerNavigator = createDrawerNavigator(
       Following: FolloweringScreen,
       Comment: CommentScreen,
       Post: PostScreen,
+      Wallet: WalletScreen,
+      Bank: BankScreen,
+      Withdraw: WithdrawScreen,
+      Detail: ArtworkDetailScreen,
     },
     {
       initialRouteName: 'Home',

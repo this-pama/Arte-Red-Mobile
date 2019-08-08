@@ -69,7 +69,7 @@ export default class DrawerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={this.navigateToScreen('')}>Wallet</Text>
+              <Text onPress={this.navigateToScreen('Wallet')}>Wallet</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />
@@ -82,7 +82,7 @@ export default class DrawerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={ this.navigateToScreen('Network')}>My Network</Text>
+              <Text onPress={ this.navigateToScreen('Follower')}>My Network</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />
@@ -95,9 +95,7 @@ export default class DrawerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={()=>{
-                }
-              }>Artworks</Text>
+              <Text onPress={()=>this.props.navigation.navigate("Network")}>Artworks</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />

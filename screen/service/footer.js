@@ -3,6 +3,7 @@ import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, Acti
 import { Permissions } from 'expo';
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
+import PropTypes from 'prop-types'
 
 var BUTTONS = ["Camera", "Gallery", "Close"];
 var DESTRUCTIVE_INDEX = 2;
@@ -66,11 +67,15 @@ export default class FooterTabs extends Component {
       
         <Footer >
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
-            <Button vertical active>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            active= { !this.props.activeMe ? false : true }>
               <Icon name="apps" />
               <Text>Me</Text>
             </Button>
-            <Button vertical onPress= {()=>{
+            <Button vertical
+            active= { !this.props.activePost ? false : true }
+             onPress= {()=>{
               ActionSheet.show(
                 {
                   options: BUTTONS,
@@ -92,11 +97,15 @@ export default class FooterTabs extends Component {
               <Icon name="camera" />
               <Text>Post</Text>
             </Button>
-            <Button vertical >
+            <Button vertical
+              active= { !this.props.activeWallet ? false : true }
+             onPress={()=> this.props.navigation.navigate("Wallet")} >
               <Icon active name="wallet" />
               <Text>Wallet</Text>
             </Button>
-            <Button vertical onPress={()=> this.props.navigation.navigate("Network")}>
+            <Button vertical 
+            active= { !this.props.activeNetwork ? false : true }
+            onPress={()=> this.props.navigation.navigate("Network")}>
               <Icon name="people" />
               <Text>Network</Text>
             </Button>
@@ -105,4 +114,12 @@ export default class FooterTabs extends Component {
       
     );
   }
+}
+
+FooterTabs.propTypes={
+  navigation: PropTypes.object.isRequired,
+  activeMe: PropTypes.bool,
+  activeNetwork: PropTypes.bool,
+  activePost: PropTypes.bool,
+  activeWallet: PropTypes.bool
 }

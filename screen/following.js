@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, Button, Icon, Title, Segment } from 'native-base';
+import FooterTabs from './service/footer';
 export default class FolloweringScreen extends Component {
   render() {
     return (
@@ -46,6 +47,11 @@ export default class FolloweringScreen extends Component {
               </ListItem>
             </List>
         </Content>
+
+        <FooterTabs 
+          activeNetwork= { true }
+          navigation={this.props.navigation}
+        />
       </Container>
     );
   }

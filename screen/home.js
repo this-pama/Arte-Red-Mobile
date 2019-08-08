@@ -50,9 +50,7 @@ export default class HomeScreen extends Component {
                 
               </Body>
               <Right>
-                <Button transparent onPress={()=> this.props.navigation.navigate("", {
-                        comments: []
-                    })}>
+                <Button transparent onPress= {()=> this.props.navigation.navigate("Buy")}>
                     <Icon active name="pricetag" />
                     <Text>NGN {this.props.comment != null || this.props.comment != undefined  ? this.props.comment : 0 }</Text>
                 </Button>

@@ -36,7 +36,7 @@ export default class FollowerScreen extends Component {
           <List>
               <ListItem avatar>
                 <Left>
-                  <Thumbnail source={{ uri: 'Image URL' }} />
+                  <Thumbnail source={ require('../assets/splash.png') } />
                 </Left>
                 <Body>
                   <Text>Kumar Pratik</Text>

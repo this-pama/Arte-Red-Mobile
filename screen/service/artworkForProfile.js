@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Image } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Title, Right, Text, Button, Icon, Left, Body } from 'native-base';
+import { Container, Header, Content, Card, CardItem, Title, Right, Text, Button, Icon, Left, Body,
+Segment } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default class ArtworkDetailScreen extends Component {
+export default class ProfileArtworkScreen extends Component {
   render() {
       const story = this.props.navigation.getParam("story")
       const title= this.props.navigation.getParam("title")
@@ -16,21 +17,32 @@ export default class ArtworkDetailScreen extends Component {
       const price = this.props.navigation.getParam("price")
     return (
       <Container>
-        <Header style={{ backgroundColor: "#990000"}}>
+        <Header hasSegment style={{ backgroundColor: "#990000"}}>
           <Left>
             <Button transparent onPress={()=> this.props.navigation.goBack()}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
           <Body>
-            <Title>Artwork</Title>
+            <Title>Profile</Title>
           </Body>
           <Right>
             <Button transparent>
-              <Icon name="open" />
+              <Icon name="people" />
             </Button>
           </Right>
         </Header>
+        <Segment style={{  backgroundColor: "#cc0000"}}>
+          <Button first onPress={()=> this.props.navigation.navigate("Profile")} >
+            <Text>About</Text>
+          </Button>
+          <Button active >
+            <Text>Artworks</Text>
+          </Button>
+          <Button last onPress={()=> this.props.navigation.navigate("")} >
+            <Text>Collections</Text>
+          </Button>
+        </Segment>
         <Content>
           <Card style={{flex: 0}}>
           <CardItem>
@@ -41,6 +53,10 @@ export default class ArtworkDetailScreen extends Component {
                   <Text note>{!size ? "12 inches" : size}</Text>
                 </Body>
               </Left>
+              <Body>
+                  <Text icon>Sold 0</Text>
+              </Body>
+
               <Right>
                 <Body>
                   <TouchableOpacity 
@@ -55,9 +71,11 @@ export default class ArtworkDetailScreen extends Component {
             <CardItem>
               <Body>
                 <Image source={ require('../../assets/splash.png') } style={{height: 200, width: 400, flex: 1}} />
-                <Text icon style={{ paddingTop: 20}}>
-                  {!story ? "Artwork details goes here." : story }
-                </Text>
+                <TouchableOpacity onPress={()=> this.props.navigation.navigate("Detail")}>
+                    <Text icon style={{ color: "blue", paddingTop: 20}}>
+                    Learn More...
+                    </Text>
+                </TouchableOpacity>
               </Body>
             </CardItem>
             <CardItem>

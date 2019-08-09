@@ -5,6 +5,7 @@ import FooterScreen from './service/footer'
 import { Permissions } from 'expo';
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class HomeScreen extends Component {
   
@@ -15,10 +16,16 @@ export default class HomeScreen extends Component {
           <Card>
             <CardItem>
               <Left>
-                <Thumbnail source={ require('../assets/splash.png') } />
+                <TouchableOpacity
+                  onPress={()=> this.props.navigation.navigate("Profile")}
+                >
+                 <Thumbnail source={ require('../assets/splash.png') } />
+                </TouchableOpacity>
                 <Body>
                   <Text>Artwork Title</Text>
-                  <Text note>User Full Name</Text>
+                  <TouchableOpacity  onPress={()=> this.props.navigation.navigate("Profile")} >
+                    <Text note style={{ color : "blue"}}>User Full Name</Text>
+                  </TouchableOpacity>
                 </Body>
               </Left>
               <Right>
@@ -62,14 +69,20 @@ export default class HomeScreen extends Component {
           <Card>
             <CardItem>
               <Left>
-                <Thumbnail source={ require('../assets/splash.png') } />
+                <TouchableOpacity
+                  onPress={()=> this.props.navigation.navigate("Profile")}
+                >
+                 <Thumbnail source={ require('../assets/splash.png') } />
+                </TouchableOpacity>
                 <Body>
                   <Text>Artwork Title</Text>
-                  <Text note>User Full Name</Text>
+                  <TouchableOpacity  onPress={()=> this.props.navigation.navigate("Profile")} >
+                    <Text note style={{ color : "blue"}}>User Full Name</Text>
+                  </TouchableOpacity>
                 </Body>
               </Left>
               <Right>
-                <Button transparent onPress={() => this.props.navigation.navigate("Detail") } >
+                <Button transparent onPress={() => this.props.navigation.navigate("Detail") }>
                     <Icon active name="open" style={{ paddingRight: 25, fontSize: 20}} />
                     {/* <Text>info</Text> */}
                 </Button>
@@ -97,9 +110,7 @@ export default class HomeScreen extends Component {
                 
               </Body>
               <Right>
-                <Button transparent onPress={()=> this.props.navigation.navigate("", {
-                        comments: []
-                    })}>
+                <Button transparent onPress= {()=> this.props.navigation.navigate("Buy")}>
                     <Icon active name="pricetag" />
                     <Text>NGN {this.props.comment != null || this.props.comment != undefined  ? this.props.comment : 0 }</Text>
                 </Button>

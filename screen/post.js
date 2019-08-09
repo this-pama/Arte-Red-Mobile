@@ -14,7 +14,6 @@ export default class PostScreen extends Component {
  
   render() {
       const image = this.props.navigation.getParam("image")
-      console.warn(image)
     return (
       <Container>
         <Header style={{ backgroundColor: "#990000"}}>
@@ -52,7 +51,11 @@ export default class PostScreen extends Component {
                         <Label>Size (inches)</Label>
                         <Input onChangeText= { this.props.handleSize } value={this.props.size}  keyboardType='numeric' />
                     </Item>
-                      <Textarea rowSpan={5} bordered placeholder="Write a story about the artwork." />
+                      <Textarea rowSpan={5} bordered 
+                        placeholder="Write a story about the artwork."
+                        value={this.props.story}
+                        onChangeText={this.props.handleStory}
+                      />
                     <Item stackedLabel>
                         <Label>Location</Label>
                         <Input onChangeText= {this.props.handleLocation } value={this.props.location }  autoCapitalize='words'/>

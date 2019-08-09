@@ -41,7 +41,7 @@ export default class DrawerScreen extends Component {
                 < Icon name='md-person' />
                 <Body>
                   <Text>Welcome</Text>
-                  <Text note>{}</Text>
+                  <Text note>Artist Name</Text>
                 </Body>
               </Left>
             </CardItem>
@@ -51,8 +51,8 @@ export default class DrawerScreen extends Component {
 
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#007AFF" }}>
-                <Icon active name="home" />
+              <Button style={{ backgroundColor: "#990000" }}>
+                <Icon active name="apps" />
               </Button>
             </Left>
             <Body>
@@ -77,20 +77,20 @@ export default class DrawerScreen extends Component {
           </ListItem>
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#DDA0DD" }}>
+              <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="md-people" />
               </Button>
             </Left>
             <Body>
-              <Text onPress={ this.navigateToScreen('Follower')}>My Network</Text>
+              <Text onPress={ this.navigateToScreen('Network')}>My Network</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />
             </Right>
           </ListItem>
-          <ListItem icon>
+          {/* <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#008080" }}>
+              <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="md-briefcase" />
               </Button>
             </Left>
@@ -100,10 +100,10 @@ export default class DrawerScreen extends Component {
             <Right>
               <Icon active name="arrow-forward" />
             </Right>
-          </ListItem>
+          </ListItem> */}
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#4682B4" }}>
+              <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="md-contract" />
               </Button>
             </Left>
@@ -116,7 +116,7 @@ export default class DrawerScreen extends Component {
           </ListItem>
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#DA70D6" }}>
+              <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="md-cog" />
               </Button>
             </Left>
@@ -130,7 +130,7 @@ export default class DrawerScreen extends Component {
 
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#990000" }}>
+              <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="md-cut" />
               </Button>
             </Left>
@@ -141,7 +141,6 @@ export default class DrawerScreen extends Component {
               <Icon active name="arrow-forward" />
             </Right>
           </ListItem>
-
     </Container>
       
     );

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Title, Right, Form,
     Label, Item, Input, Text, Button, Icon, Left, Body } from 'native-base';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class BuyScreen extends Component {
 
@@ -39,13 +40,16 @@ export default class BuyScreen extends Component {
               <Left>
                 <Body>
                   <Text>{!title ? "Title" : title}</Text>
-                  {/* <Text note>{!year ? "2019" : year}</Text>
-                  <Text note>{!size ? "12 inches" : size}</Text> */}
+                  <Text note>{!year ? "2019" : year}</Text>
                 </Body>
               </Left>
               <Right>
                 <Body>
-                  <Text>{!artistName ? "Artist Name" : artistName}</Text>
+                  <TouchableOpacity
+                    onPress={()=> this.props.navigation.navigate("Profile")}
+                  >
+                    <Text style={{ color: "blue" }}>{!artistName ? "Artist Name" : artistName}</Text>
+                  </TouchableOpacity>
                   {/* <Text note>{!location ? "Lagos" : location}</Text>
                   <Text note>{!category ? "Painting" : category}</Text> */}
                 </Body>

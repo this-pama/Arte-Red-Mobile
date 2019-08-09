@@ -18,6 +18,8 @@ import BankScreen from '../screen/bank';
 import WithdrawScreen from '../screen/withdraw';
 import ArtworkDetailScreen from '../screen/service/details';
 import BuyScreen from '../screen/buy';
+import ProfileScreen from '../screen/service/profile';
+import ProfileArtworkScreen from '../screen/service/artworkForProfile';
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -40,6 +42,8 @@ const DrawerNavigator = createDrawerNavigator(
       Withdraw: WithdrawScreen,
       Detail: ArtworkDetailScreen,
       Buy: BuyScreen,
+      Profile: ProfileScreen,
+      ProfileArtwork: ProfileArtworkScreen,
     },
     {
       initialRouteName: 'Home',

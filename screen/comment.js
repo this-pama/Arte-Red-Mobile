@@ -36,7 +36,7 @@ setModalVisible = (visible) => {
           <List>
             <ListItem avatar>
               <Left>
-                <Thumbnail source={{ uri: 'Image URL' }} />
+                <Thumbnail source={require('../assets/splash.png')} />
               </Left>
               <Body>
                 <Text>Kumar Pratik</Text>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, ActionSheet } from 'native-base';
+import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, ActionSheet, Toast } from 'native-base';
 import { Permissions } from 'expo';
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
@@ -63,6 +63,23 @@ export default class FooterTabs extends Component {
 
 
   render() {
+    const login = (
+      <Button vertical 
+        active= { !this.props.activeNetwork ? false : true }
+        onPress={()=> this.props.navigation.navigate("Login")}>
+          <Icon name="pin" />
+          <Text>Login</Text>
+      </Button>
+    )
+
+    const network = (
+      <Button vertical 
+        active= { !this.props.activeNetwork ? false : true }
+        onPress={()=> this.props.navigation.navigate("Network")}>
+          <Icon name="people" />
+          <Text>Network</Text>
+      </Button>
+    )
     return (
       
         <Footer >
@@ -74,8 +91,9 @@ export default class FooterTabs extends Component {
               <Text>Me</Text>
             </Button>
             <Button vertical
-            active= { !this.props.activePost ? false : true }
+              active= { !this.props.activePost ? false : true }
              onPress= {()=>{
+              if(this.props.userId){
               ActionSheet.show(
                 {
                   options: BUTTONS,
@@ -92,23 +110,28 @@ export default class FooterTabs extends Component {
                     this.pickImage()
                   }
                 }
-              )}
-            }>
+              )
+              }
+              else{
+                Toast.show({
+                  text: "You need to sign in to make a post",
+                  buttonText: "Okay",
+                  duration: 3000,
+                  type: 'danger'
+                })
+              }
+            }}>
               <Icon name="camera" />
               <Text>Post</Text>
             </Button>
             <Button vertical
-              active= { !this.props.activeWallet ? false : true }
-             onPress={()=> this.props.navigation.navigate("Wallet")} >
-              <Icon active name="wallet" />
-              <Text>Wallet</Text>
+              active= { !this.props.activeExhibirion ? false : true }
+             onPress={()=> this.props.navigation.navigate("Exhibition")} >
+              <Icon active name="eye" />
+              <Text>Exhibition</Text>
             </Button>
-            <Button vertical 
-            active= { !this.props.activeNetwork ? false : true }
-            onPress={()=> this.props.navigation.navigate("Network")}>
-              <Icon name="people" />
-              <Text>Network</Text>
-            </Button>
+            { !this.props.userId ? login : network }
+            
           </FooterTab>
         </Footer>
       

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, Button, Icon, Title, Segment } from 'native-base';
+import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, 
+    Toast, Button, Icon, Title, Segment } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class ProfileScreen extends Component {
@@ -32,10 +33,7 @@ export default class ProfileScreen extends Component {
             <Text>About</Text>
           </Button>
           <Button  onPress={()=> this.props.navigation.navigate("ProfileArtwork")}>
-            <Text>Artworks</Text>
-          </Button>
-          <Button last onPress={()=> this.props.navigation.navigate("")} >
-            <Text>Collections</Text>
+            <Text>Collection</Text>
           </Button>
         </Segment>
         <Content padder>
@@ -53,7 +51,15 @@ export default class ProfileScreen extends Component {
                 <Right>
                   <TouchableOpacity
                     onPress={()=> {
-                        if(this.state.follow === "Follow"){
+                        if(!this.props.userId){
+                            Toast.show({
+                                text: "You need to sign in to follow",
+                                buttonText: "Okay",
+                                duration: 3000,
+                                type: 'danger'
+                              })
+                        }
+                        else if(this.state.follow === "Follow"){
                             this.setState({ follow : "Following"})
                         }
                         else{
@@ -89,7 +95,18 @@ export default class ProfileScreen extends Component {
                     </TouchableOpacity>
                   </Left>
                   <Right>
-                    <TouchableOpacity>
+                    <TouchableOpacity 
+                        onPress={()=>{
+                            if(!this.props.userId){
+                                Toast.show({
+                                    text: "You need to sign in to send messages",
+                                    buttonText: "Okay",
+                                    duration: 3000,
+                                    type: 'danger'
+                                  })
+                            }
+                        }}
+                    >
                         <Text note style={{ color: "blue"}}>
                             Send Message
                          </Text>

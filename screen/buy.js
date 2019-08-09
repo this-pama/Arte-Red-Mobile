@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Title, Right, Form,
-    Label, Item, Input, Text, Button, Icon, Left, Body } from 'native-base';
+    Label, Item, Input, Text, Button, Icon, Left, Body, Toast } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class BuyScreen extends Component {
@@ -78,7 +78,17 @@ export default class BuyScreen extends Component {
             </Item>
           </Form>
           <Button block danger
-            onPress={()=> this.props.navigation.navigate("Detail")}
+            onPress={()=> {
+              if(!this.props.userId){
+                Toast.show({
+                  text: "You need to sign in to buy the artwork",
+                  buttonText: "Okay",
+                  duration: 3000,
+                  type: 'danger'
+                })
+              }
+              else{ this.props.navigation.navigate("Detail") }
+            }}
           >
               <Text>Proceed To Payment</Text>
           </Button>

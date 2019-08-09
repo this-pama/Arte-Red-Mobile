@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import {createStackNavigator, createSwitchNavigator, createDrawerNavigator, createMaterialTopTabNavigator, createAppContainer} from 'react-navigation';
 import { DrawerActions } from 'react-navigation';
-import { TouchableOpacity, Text } from 'react-native'
-import { Icon } from 'native-base'
+import { Text, Image } from 'react-native'
+import { Icon, Content, Body, Left, View, Right, ListItem, List, Input, Form } from 'native-base'
+import { TouchableOpacity } from "react-native-gesture-handler"
 
 import DrawerScreen from '../screen/drawer';
 import LoginScreen from  "../controller/signin"
@@ -20,6 +21,7 @@ import ArtworkDetailScreen from '../screen/service/details';
 import BuyScreen from '../screen/buy';
 import ProfileScreen from '../screen/service/profile';
 import ProfileArtworkScreen from '../screen/service/artworkForProfile';
+import ExhibitionScreen from "../screen/exhibition"
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -44,6 +46,7 @@ const DrawerNavigator = createDrawerNavigator(
       Buy: BuyScreen,
       Profile: ProfileScreen,
       ProfileArtwork: ProfileArtworkScreen,
+      Exhibition: ExhibitionScreen,
     },
     {
       initialRouteName: 'Home',
@@ -52,16 +55,67 @@ const DrawerNavigator = createDrawerNavigator(
      }
 );
 
+const headerText = (
+  <View >
+      <Text style={{paddingLeft: 35, textAlign: "center", fontSize: 20, fontWeight: "bold", color: "#fff" }}> Arte Red</Text>
+  </View>
+  
+)
+
+const searchBar = (
+  <Form>
+    <Left>
+      <Input placeholder="Search" />
+    </Left>
+    <Right>
+      <Icon name='menu' style={{ paddingRight : 10 }} />
+    </Right>
+  </Form>
+)
+
+const searchIcon =(
+  <TouchableOpacity>
+      <Icon name="search" style={{ color: "white", paddingRight: 5}} />
+  </TouchableOpacity>
+)
+const LeftBar= (
+        <List>
+          <ListItem>
+            <Left>
+            <TouchableOpacity>
+              {searchIcon}
+            </TouchableOpacity>
+            </Left>
+            <Right>
+              <TouchableOpacity  onPress={ () => { navigation.dispatch(DrawerActions.toggleDrawer())} }>
+                  {<Icon name='menu' style={{ paddingRight : 10 }} />}
+              </TouchableOpacity>
+            </Right>
+          </ListItem>
+        </List>
+)
 
 const StackNavigator = createStackNavigator({
     DrawerNavigator:{
         screen: DrawerNavigator,
         navigationOptions: ({ navigation }) => ({
-        headerTitle: <Text style={{paddingLeft: 35, textAlign: "center", fontSize: 20, fontWeight: "bold", color: "#fff" }}> Arte Red</Text>,  
+        headerTitle: headerText,  
         headerRight: 
-        <TouchableOpacity  onPress={ () => { navigation.dispatch(DrawerActions.toggleDrawer())} }>
-            <Icon name='menu' style={{ paddingRight : 10 }} />
-        </TouchableOpacity>,
+        <List>
+          <ListItem>
+            <Left>
+            <TouchableOpacity>
+              {searchIcon}
+            </TouchableOpacity>
+            </Left>
+            <Right>
+              <TouchableOpacity  onPress={ () => { navigation.dispatch(DrawerActions.toggleDrawer())} }>
+                  {<Icon name='menu' style={{ paddingRight : 10 }} />}
+              </TouchableOpacity>
+            </Right>
+          </ListItem>
+        </List>
+        ,
         headerStyle: {
             backgroundColor: '#660000',
         },
@@ -78,6 +132,7 @@ const StackNavigator = createStackNavigator({
     
 
 });
+
 
 
 export default  AppContainer = createAppContainer(StackNavigator);

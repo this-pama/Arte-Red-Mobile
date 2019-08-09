@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, Button, Icon, Title, Segment } from 'native-base';
 import FooterTabs from './service/footer';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 export default class FolloweringScreen extends Component {
   render() {
     return (
@@ -33,18 +34,22 @@ export default class FolloweringScreen extends Component {
         </Segment>
         <Content padder>
           <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={require('../assets/splash.png')} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
+              <TouchableOpacity 
+                onPress={()=> this.props.navigation.navigate("Profile")}
+              >
+                <ListItem avatar>
+                  <Left>
+                    <Thumbnail source={require('../assets/splash.png')} />
+                  </Left>
+                  <Body>
+                    <Text>Kumar Pratik</Text>
+                    <Text note>Doing what you like will always keep you happy . .</Text>
+                  </Body>
+                  <Right>
+                    <Text note>3:43 pm</Text>
+                  </Right>
+                </ListItem>
+              </TouchableOpacity>
             </List>
         </Content>
 

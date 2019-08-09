@@ -7,6 +7,25 @@ import FooterTabs from './service/footer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class WalletScreen extends Component {
+
+  // componentWillUnmount(){
+  //   this.props.navigation.goBack()
+  // }
+
+  componentDidMount(){
+    if(!this.props.navigation.getParam("userId")){
+      this.props.navigation.navigate("Home")
+      alert("No user id")
+    }
+    else{
+       fetch("")
+      .then(resp => console.warn(resp.json()))
+      .catch(err=> 
+        this.props.navigation.goBack())
+        alert("Error occured while checking for wallet")
+    }
+  }
+
   render() {
     return (
       <Container>
@@ -75,7 +94,6 @@ export default class WalletScreen extends Component {
             </List>
         </Content>
         <FooterTabs 
-            activeWallet= { true }
             navigation={this.props.navigation}
         />
       </Container>

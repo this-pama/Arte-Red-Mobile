@@ -32,6 +32,38 @@ export default class DrawerScreen extends Component {
 
 
   render () {
+    const logout = (
+      <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "red" }}>
+                <Icon active name="close" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={this.navigateToScreen('Login')}>Logout</Text>
+            </Body>
+            <Right>
+              <Icon active name="arrow-forward" />
+            </Right>
+       </ListItem>
+    )
+
+
+    const login = (
+      <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "red" }}>
+                <Icon active name="close" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={this.navigateToScreen('Login')}>Login</Text>
+            </Body>
+            <Right>
+              <Icon active name="arrow-forward" />
+            </Right>
+      </ListItem>
+    )
     return (
           <Container>
 
@@ -69,7 +101,21 @@ export default class DrawerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={this.navigateToScreen('Wallet')}>Wallet</Text>
+              <Text onPress={()=> {
+                if(!this.props.userId){
+                  Toast.show({
+                    text: "You need to sign in to access your Wallet",
+                    buttonText: "Okay",
+                    duration: 3000,
+                    type: 'danger'
+                  })
+                }
+                else{
+                  this.navigateToScreen('Wallet', {
+                    userId: "123456"
+                  })
+                }
+              }}>Wallet</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />
@@ -82,7 +128,19 @@ export default class DrawerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={ this.navigateToScreen('Network')}>My Network</Text>
+              <Text onPress={()=>{
+                if(!this.props.userId){
+                  Toast.show({
+                    text: "You need to sign in to see your Network",
+                    buttonText: "Okay",
+                    duration: 3000,
+                    type: 'danger'
+                  })
+                }
+                else{
+                  this.navigateToScreen('Network')
+                }
+              }}>My Network</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />
@@ -127,20 +185,8 @@ export default class DrawerScreen extends Component {
               <Icon active name="arrow-forward" />
             </Right>
           </ListItem>
-
-          <ListItem icon>
-            <Left>
-              <Button style={{ backgroundColor: "red" }}>
-                <Icon active name="md-cut" />
-              </Button>
-            </Left>
-            <Body>
-              <Text onPress={this.navigateToScreen('Login')}>Logout</Text>
-            </Body>
-            <Right>
-              <Icon active name="arrow-forward" />
-            </Right>
-          </ListItem>
+          { !this.props.userId ? login: logout }
+          
     </Container>
       
     );

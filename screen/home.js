@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Image, Modal, View } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Textarea } from 'native-base';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, 
+  Toast, Textarea } from 'native-base';
 import FooterScreen from './service/footer'
 import { Permissions } from 'expo';
 import Constants from 'expo-constants'
@@ -8,6 +9,13 @@ import * as ImagePicker from 'expo-image-picker';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class HomeScreen extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      like: 0,
+      comment: 0
+    }
+  }
   
   render() {
     return (
@@ -42,17 +50,44 @@ export default class HomeScreen extends Component {
             </CardItem>
             <CardItem>
               <Left>
-                <Button transparent onPress={this.props.like}>
+                <Button transparent onPress={()=>{
+                  if(!this.props.userId){
+                      Toast.show({
+                        text: "You need to sign in to like this artwork",
+                        buttonText: "Okay",
+                        duration: 3000,
+                        type: 'danger'
+                      })
+                  }
+                  else{
+                      this.setState({
+                        like: this.state.like++
+                      })
+                  }
+                }}>
                   <Icon active name="thumbs-up" />
-                  <Text>{this.props.like != null || this.props.like != undefined  ? this.props.like : 0 } Likes</Text>
+                  <Text>{this.state.like  } Likes</Text>
                 </Button>
               </Left>
               <Body>
-                <Button transparent onPress={()=> this.props.navigation.navigate("Comment", {
-                    comments: []
-                })}>
+                <Button transparent onPress={()=> {
+                  if(!this.props.userId){
+                      Toast.show({
+                        text: "You need to sign in to comment",
+                        buttonText: "Okay",
+                        duration: 3000,
+                        type: 'danger'
+                      })
+                  }
+                  else{
+                      this.setState({
+                        like: this.state.comment++
+                      })
+                  }
+                }
+              }>
                   <Icon active name="chatbubbles" />
-                  <Text>{this.props.comment != null || this.props.comment != undefined  ? this.props.comment : 0 } Comments</Text>
+                  <Text>{ this.state.comment } Comments</Text>
                 </Button>
                 
               </Body>
@@ -95,17 +130,44 @@ export default class HomeScreen extends Component {
             </CardItem>
             <CardItem>
               <Left>
-                <Button transparent onPress={this.props.like}>
+                <Button transparent onPress={()=>{
+                  if(!this.props.userId){
+                      Toast.show({
+                        text: "You need to sign in to like this artwork",
+                        buttonText: "Okay",
+                        duration: 3000,
+                        type: 'danger'
+                      })
+                  }
+                  else{
+                      this.setState({
+                        like: this.state.like++
+                      })
+                  }
+                }}>
                   <Icon active name="thumbs-up" />
-                  <Text>{this.props.like != null || this.props.like != undefined  ? this.props.like : 0 } Likes</Text>
+                  <Text>{this.state.like  } Likes</Text>
                 </Button>
               </Left>
               <Body>
-                <Button transparent onPress={()=> this.props.navigation.navigate("Comment", {
-                    comments: []
-                })}>
+                <Button transparent onPress={()=> {
+                  if(!this.props.userId){
+                      Toast.show({
+                        text: "You need to sign in to comment",
+                        buttonText: "Okay",
+                        duration: 3000,
+                        type: 'danger'
+                      })
+                  }
+                  else{
+                      this.setState({
+                        like: this.state.comment++
+                      })
+                  }
+                }
+              }>
                   <Icon active name="chatbubbles" />
-                  <Text>{this.props.comment != null || this.props.comment != undefined  ? this.props.comment : 0 } Comments</Text>
+                  <Text>{ this.state.comment } Comments</Text>
                 </Button>
                 
               </Body>

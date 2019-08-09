@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Title, Right, Text, Button, Icon, Left, Body,
-Segment } from 'native-base';
+Segment, Toast } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class ProfileArtworkScreen extends Component {
+
+    constructor(props){
+        super(props);
+        this.state={
+          like: 0,
+          comment: 0
+        }
+      }
+
   render() {
       const story = this.props.navigation.getParam("story")
       const title= this.props.navigation.getParam("title")
@@ -37,10 +46,7 @@ export default class ProfileArtworkScreen extends Component {
             <Text>About</Text>
           </Button>
           <Button active >
-            <Text>Artworks</Text>
-          </Button>
-          <Button last onPress={()=> this.props.navigation.navigate("")} >
-            <Text>Collections</Text>
+            <Text>Collection</Text>
           </Button>
         </Segment>
         <Content>
@@ -54,7 +60,9 @@ export default class ProfileArtworkScreen extends Component {
                 </Body>
               </Left>
               <Body>
-                  <Text icon>Sold 0</Text>
+                  <Text note >Sold 0</Text>
+                  <Text note>Quantity: {!available ? "0" : available }</Text>
+                  <Text note>NGN {!price ? "0" : price}</Text>
               </Body>
 
               <Right>
@@ -80,26 +88,50 @@ export default class ProfileArtworkScreen extends Component {
             </CardItem>
             <CardItem>
               <Left>
-                <Button transparent textStyle={{color: '#87838B'}}
-                onPress= {()=> this.props.navigation.navigate("Buy")}
-                >
-                  <Icon name="pricetag" />
-                  <Text>NGN {!price ? "0" : price}</Text>
+              <Button transparent onPress={()=>{
+                  if(!this.props.userId){
+                      Toast.show({
+                        text: "You need to sign in to like this artwork",
+                        buttonText: "Okay",
+                        duration: 3000,
+                        type: 'danger'
+                      })
+                  }
+                  else{
+                      this.setState({
+                        like: this.state.like++
+                      })
+                  }
+                }}>
+                  <Icon active name="thumbs-up" />
+                  <Text>{ this.state.like } Likes</Text>
                 </Button>
               </Left>
               <Body>
-                <Button transparent textStyle={{color: '#87838B'}}
-                onPress= {()=> this.props.navigation.navigate("Buy")}
-                >
-                  <Icon name="barcode" />
-                  <Text>Quantity: {!available ? "0" : available }</Text>
+              <Button transparent onPress={()=> {
+                  if(!this.props.userId){
+                      Toast.show({
+                        text: "You need to sign in to comment",
+                        buttonText: "Okay",
+                        duration: 3000,
+                        type: 'danger'
+                      })
+                  }
+                  else{
+                      this.setState({
+                        like: this.state.comment++
+                      })
+                  }
+                }
+              }>
+                  <Icon active name="chatbubbles" />
+                  <Text>{ this.state.comment } Comments</Text>
                 </Button>
               </Body>
               <Right>
                 <Button transparent 
-                  onPress= {()=> this.props.navigation.navigate("Buy")}
-                  textStyle={{color: '#87838B'}}>
-                  <Icon name="cart" />
+                  onPress= {()=> this.props.navigation.navigate("Buy")} >
+                  <Icon name="cart" active />
                   <Text>Buy</Text>
                 </Button>
               </Right>

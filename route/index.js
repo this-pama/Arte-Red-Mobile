@@ -26,6 +26,9 @@ import RaveScreen from "../screen/service/rave"
 import LandingScreen from '../screen/landing';
 import SettingScreen from '../screen/setting';
 import EditProfileController from '../controller/updateProfile';
+import ExpandExhibitionScreen from '../screen/expandExhibition';
+import CreateExhibitionScreen from '../screen/createExhibition';
+
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -46,6 +49,7 @@ const DrawerNavigator = createDrawerNavigator(
       Profile: ProfileScreen,
       ProfileArtwork: ProfileArtworkScreen,
       Exhibition: ExhibitionScreen,
+      CreateExhibition: CreateExhibitionScreen,
       Rave: RaveScreen,
     },
     {
@@ -127,10 +131,6 @@ const StackNavigator = createStackNavigator({
     })
     }, 
 
-    // Login:  LoginScreen,
-    
-    
-
 });
 
 const switchNavigator = createSwitchNavigator({
@@ -139,6 +139,7 @@ const switchNavigator = createSwitchNavigator({
   SignUp: SignUpScreen,
   Setting: SettingScreen,
   EditProfile: EditProfileController,
+  ExpandExhibition: ExpandExhibitionScreen,
   App: StackNavigator
 },
 {

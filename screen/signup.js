@@ -77,13 +77,8 @@ export default class SignUpScreen extends Component {
                         <Picker.Item label="Gallery" value="Gallery" />
                         <Picker.Item label="Organization" value="Organization" />
                         <Picker.Item label="Art lover" value="Art lover" />
-
                     </Picker>
                 </Item>
-                {/* <Item stackedLabel last>
-                    <Label>User Type</Label>
-                    <Input onChangeText= { this.props.handleUserType } value={this.props.userType}  autoCapitalize='none'/>
-                </Item> */}
             </Form>
             
           <View style={{ paddingTop: 20}}>

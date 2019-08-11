@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, Form, Item, Input, Label, Button, Text, Picker, Icon } from 'native-base';
+import { Container, Content, Form, Item, Input, Label, Button,
+    Header, Left, Body, Title, Right, Text, Picker, Icon } from 'native-base';
 import {View, TouchableHighlight } from 'react-native'
 import {KeyboardAvoidingView} from 'react-native';
 import PropTypes from 'prop-types'
@@ -8,8 +9,23 @@ export default class SignUpScreen extends Component {
   render() {
     return (
       <Container style={{backgroundColor: "#e6e6e6",}}>
+      <Header style={{ backgroundColor: "#990000"}}>
+          <Left>
+            <Button transparent onPress={()=> this.props.navigation.navigate('Landing') }>
+              <Icon name="arrow-back" />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Register</Title>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name="log-in" />
+            </Button>
+          </Right>
+        </Header>
         <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <Content>
+        <Content style={{ paddingLeft: 15, paddingRight: 15 }}>
             <Form>
                 <Item stackedLabel>
                     <Label>First Name</Label>
@@ -94,10 +110,7 @@ export default class SignUpScreen extends Component {
 const styles = {
     container: {
         flex: 1,
-        paddingTop: 30,
         paddingBottom: 30,
-        paddingRight: 10,
-        paddingLeft: 10
     }
 }
 

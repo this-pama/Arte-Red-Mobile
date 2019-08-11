@@ -9,6 +9,7 @@ import LoginScreen from './screen/login'
 import AppNavigation from './route'
 import HomeScreen from './screen/home';
 import NetworkScreen from './screen/network';
+import LandingScreen from './screen/landing';
 
 export default class App extends React.Component {
   constructor(props) {

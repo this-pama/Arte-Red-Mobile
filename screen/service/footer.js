@@ -4,6 +4,7 @@ import { Permissions } from 'expo';
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
 import PropTypes from 'prop-types'
+import { cloudinaryUrl } from "./env"
 
 var BUTTONS = ["Camera", "Gallery", "Close"];
 var DESTRUCTIVE_INDEX = 2;
@@ -37,6 +38,7 @@ export default class FooterTabs extends Component {
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
+        base64: true
       });
 
       if (!result.cancelled) {
@@ -50,11 +52,11 @@ export default class FooterTabs extends Component {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
-        aspect: [4, 3],
+        aspect: [6, 5],
+        base64: true
       });
 
       if (!result.cancelled) {
-        // this.setState({ image: result.uri });
         this.props.navigation.navigate("Post", {
           image : result
         })
@@ -67,7 +69,7 @@ export default class FooterTabs extends Component {
       <Button vertical 
         active= { !this.props.activeNetwork ? false : true }
         onPress={()=> this.props.navigation.navigate("Login")}>
-          <Icon name="pin" />
+          <Icon name="log-in" />
           <Text>Login</Text>
       </Button>
     )
@@ -93,7 +95,26 @@ export default class FooterTabs extends Component {
             <Button vertical
               active= { !this.props.activePost ? false : true }
              onPress= {()=>{
-              if(this.props.userId){
+               if(process.env.NODE_ENV === 'development'){
+                ActionSheet.show(
+                  {
+                    options: BUTTONS,
+                    cancelButtonIndex: CANCEL_INDEX,
+                    destructiveButtonIndex: DESTRUCTIVE_INDEX,
+                    title: "Post An Artwork"
+                  },
+                  buttonIndex => {
+                    this.setState({ clicked: BUTTONS[buttonIndex] });
+                    if(BUTTONS[buttonIndex] === "Camera" ){
+                      this.useCamera()
+                    }
+                    else if(BUTTONS[buttonIndex] === "Gallery" ){
+                      this.pickImage()
+                    }
+                  }
+                )
+               }
+              else if(this.props.userId){
               ActionSheet.show(
                 {
                   options: BUTTONS,
@@ -125,7 +146,7 @@ export default class FooterTabs extends Component {
               <Text>Post</Text>
             </Button>
             <Button vertical
-              active= { !this.props.activeExhibirion ? false : true }
+              active= { !this.props.activeExhibition ? false : true }
              onPress={()=> this.props.navigation.navigate("Exhibition")} >
               <Icon active name="eye" />
               <Text>Exhibition</Text>

@@ -46,7 +46,7 @@ export default class HomeScreen extends Component {
               </Right>
             </CardItem>
             <CardItem cardBody>
-              <Image source={ require('../assets/splash.png') } style={{height: 200, width: null, flex: 1}}/>
+              <Image source={{ uri: "https://res.cloudinary.com/artered/image/upload/v1565393034/ykxz7pqmbr8qtxinfoea.jpg"} } style={{height: 200, width: null, flex: 1}}/>
             </CardItem>
             <CardItem>
               <Left>
@@ -107,7 +107,7 @@ export default class HomeScreen extends Component {
                 <TouchableOpacity
                   onPress={()=> this.props.navigation.navigate("Profile")}
                 >
-                 <Thumbnail source={ require('../assets/splash.png') } />
+                 <Thumbnail source={{uri: "https://res.cloudinary.com/artered/image/upload/v1565393034/ykxz7pqmbr8qtxinfoea.jpg"} } />
                 </TouchableOpacity>
                 <Body>
                   <Text>Artwork Title</Text>

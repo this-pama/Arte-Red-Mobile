@@ -22,17 +22,14 @@ import BuyScreen from '../screen/buy';
 import ProfileScreen from '../screen/service/profile';
 import ProfileArtworkScreen from '../screen/service/artworkForProfile';
 import ExhibitionScreen from "../screen/exhibition"
+import RaveScreen from "../screen/service/rave"
+import LandingScreen from '../screen/landing';
 
 const DrawerNavigator = createDrawerNavigator(
     {
       Drawer: {
         screen: DrawerScreen
       },
-      Login:  LoginScreen,
-      SignUp: {
-        screen: SignUpScreen,
-      },
-
       Home: HomeScreen,
       Network: NetworkScreen,
       Follower: FollowerScreen,
@@ -47,6 +44,7 @@ const DrawerNavigator = createDrawerNavigator(
       Profile: ProfileScreen,
       ProfileArtwork: ProfileArtworkScreen,
       Exhibition: ExhibitionScreen,
+      Rave: RaveScreen,
     },
     {
       initialRouteName: 'Home',
@@ -133,7 +131,17 @@ const StackNavigator = createStackNavigator({
 
 });
 
+const switchNavigator = createSwitchNavigator({
+  Landing: LandingScreen,
+  Login:  LoginScreen,
+  SignUp: SignUpScreen,
+  App: StackNavigator
+},
+{
+  initialRouteName: 'Landing',
+  contentComponent: LandingScreen,
+ }
+)
 
-
-export default  AppContainer = createAppContainer(StackNavigator);
+export default  AppContainer = createAppContainer(switchNavigator);
  

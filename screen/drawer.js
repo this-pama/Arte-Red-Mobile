@@ -36,11 +36,11 @@ export default class DrawerScreen extends Component {
       <ListItem icon>
             <Left>
               <Button style={{ backgroundColor: "red" }}>
-                <Icon active name="close" />
+                <Icon active name="log-out" />
               </Button>
             </Left>
             <Body>
-              <Text onPress={this.navigateToScreen('Login')}>Logout</Text>
+              <Text onPress={this.navigateToScreen('Landing')}>Logout</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />
@@ -53,11 +53,11 @@ export default class DrawerScreen extends Component {
       <ListItem icon>
             <Left>
               <Button style={{ backgroundColor: "red" }}>
-                <Icon active name="close" />
+                <Icon active name="log-in" />
               </Button>
             </Left>
             <Body>
-              <Text onPress={this.navigateToScreen('Login')}>Login</Text>
+              <Text onPress={()=> this.props.navigation.navigate('Login')}>Login</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />

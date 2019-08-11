@@ -3,6 +3,7 @@ import { Image } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Title, Right, Form,
     Label, Item, Input, Text, Button, Icon, Left, Body, Toast } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Rave from 'react-native-rave';
 
 export default class BuyScreen extends Component {
 
@@ -56,9 +57,9 @@ export default class BuyScreen extends Component {
               </Right>
             </CardItem>
             <CardItem>
-              <Body>
+              {/* <Body> */}
                 <Image source={ require('../assets/splash.png') } style={{height: 200, width: 400, flex: 1}} />
-              </Body>
+              {/* </Body> */}
             </CardItem>
             <CardItem>
               <Left>
@@ -76,10 +77,25 @@ export default class BuyScreen extends Component {
               <Label>Quantity</Label>
               <Input keyboardType="numeric" />
             </Item>
+            <Item inlineLabel style={{ paddingLeft: 30}}>
+              <Label>First Name</Label>
+              <Input  />
+            </Item>
+            <Item inlineLabel style={{ paddingLeft: 30}}>
+              <Label>Last Name</Label>
+              <Input  />
+            </Item>
+            <Item inlineLabel style={{ paddingLeft: 30}}>
+              <Label>Email</Label>
+              <Input  />
+            </Item>
           </Form>
           <Button block danger
             onPress={()=> {
-              if(!this.props.userId){
+              if(process.env.NODE_ENV === "development"){
+                this.props.navigation.navigate("Rave")
+              }
+              else if(!this.props.userId){
                 Toast.show({
                   text: "You need to sign in to buy the artwork",
                   buttonText: "Okay",
@@ -87,7 +103,7 @@ export default class BuyScreen extends Component {
                   type: 'danger'
                 })
               }
-              else{ this.props.navigation.navigate("Detail") }
+              else{ this.props.navigation.navigate("Rave") }
             }}
           >
               <Text>Proceed To Payment</Text>

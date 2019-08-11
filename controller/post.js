@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Post from "../screen/post"
+import { cloudinaryUrl, apiUrl } from "../screen/service/env"
 
 export default class PostController extends Component{
     constructor(props){
@@ -15,25 +16,79 @@ export default class PostController extends Component{
             number: "",
             category: "",
             masterpiece: "",
+            imageUrl: "",
             errMessage: "",
             disable: true
         }
     }
 
-    post= async () => {
+    saveToDb = async ()=>{
+      // this.props.navigation.navigate("Home")
+      // var url = '';
+      let masterpiece
+      if(this.state.masterpiece === "Yes"){
+        masterpiece = true
+      }
+      else{
+        masterpiece = false
+      }
 
-        this.props.navigation.navigate("Home")
-        // var url = '';
-        // var result = await fetch(url, {
-        //   method: 'POST',
-        //   headers: { 'content-type': 'application/json' },
-        //   body: JSON.stringify({
-        //     email: this.state.email,
-        //     password: this.state.password
-        //   })
-        // });
-        // var response = await result;
-        // var res = await response.json();
+      var result = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 
+          'content-type': 'application/json',
+          "Authorization": `Bearer ${this.props.jwt}`
+         },
+        body: JSON.stringify({
+          title: this.state.title,
+          size: this.state.size,
+          story: this.state.story,
+          location: this.state.location,
+          price: this.state.price,
+          artistName: this.state.artistName,
+          year: this.state.year,
+          category: this.state.category,
+          isMasterpiece: masterpiece,
+          numberAvailable : this.state.number,
+          imageURL : this.state.imageUrl
+        })
+      });
+      var response = await result;
+      var res = await response.json();
+      
+      //check if saved sucessfully
+      if(res.message === "Artwork saved successfully"){
+        return this.props.navigation.navigate("Home")
+      }
+
+      alert("Error while saving")
+    }
+
+    post= async () => {
+        const result = this.props.navigation.getParam("image")
+        console.warn(result)
+        if(!result.base64){
+         return alert("There seams to be an error with the image")
+        }
+        let base64Img = `data:image/jpg;base64,${result.base64}`
+        let data = {
+          "file": base64Img,
+          "upload_preset": "artered",
+        }
+
+        fetch(cloudinaryUrl, {
+          body: JSON.stringify(data),
+          headers: {
+            'content-type': 'application/json'
+          },
+          method: 'POST',
+        })
+        .then(async r => {
+            let data = await r.json()
+            this.setState({ imageUrl : data.secure_url })
+            this.saveToDb()
+        })
+        .catch(err=>console.log(err))
 
     };
     

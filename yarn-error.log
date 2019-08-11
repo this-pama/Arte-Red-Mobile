@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add react-native-easy-grid
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add react-native-rave
 
 PATH: 
   C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\hp\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files\nodejs;C:\Program Files\Git\cmd;C:\Program Files\Microsoft VS Code\bin;C:\Program Files (x86)\Yarn\bin;C:\Users\hp\AppData\Local\Android\Sdk\platform-tools;C:\Users\hp\AppData\Local\Android\Sdk\tools;C:\Program Files\Java\jdk1.8.0_60;C:\Program Files\Java\jdk1.8.0_60\bin;C:\Program Files\Java\jre1.8.0_60;C:\Users\hp;C:\ProgramData\chocolatey\bin;C:\Users\hp\AppData\Roaming\npm;C:\Users\hp\AppData\Local\Yarn\bin;C:\Program Files\Docker Toolbox
@@ -14,8 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: connect ETIMEDOUT 104.16.27.35:443
-      at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1097:14)
+  Error: EPERM: operation not permitted, unlink 'C:\Users\hp\Documents\projects\Arte Red\Mobile\arte-red\node_modules\@babel\plugin-transform-named-capturing-groups-regex\node_modules\.bin'
 
 npm manifest: 
   {

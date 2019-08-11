@@ -30,7 +30,7 @@ export default class ProfileScreen extends Component {
         </Header>
         <Segment style={{  backgroundColor: "#cc0000"}}>
           <Button first active >
-            <Text>About</Text>
+            <Text>Profile</Text>
           </Button>
           <Button  onPress={()=> this.props.navigation.navigate("ProfileArtwork")}>
             <Text>Collection</Text>

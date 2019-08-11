@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Edit from "../screen/updateProfile"
+import Edit from "../screen/editProfile"
 
 export default class EditProfileController extends Component{
     constructor(props){

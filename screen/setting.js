@@ -34,7 +34,7 @@ export default class SettingScreen extends Component {
                 <TouchableOpacity 
                     onPress={()=>{
                         if(process.env.NODE_ENV == "development"){
-                            this.props.navigation.navigate("EditProfile")
+                            this.props.navigation.navigate("MyProfile")
                         }
                         else if(!this.props.userId){
                             Toast.show({
@@ -45,7 +45,7 @@ export default class SettingScreen extends Component {
                               })
                         }
                         else{
-                            this.props.navigation.navigate("EditProfile")
+                            this.props.navigation.navigate("MyProfile")
                         }
                     }}
                 >

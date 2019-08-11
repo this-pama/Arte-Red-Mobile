@@ -9,7 +9,7 @@ export default class EditProfileScreen extends Component {
   render() {
     return (
       <Container style={{backgroundColor: "#e6e6e6",}}>
-      <Header style={{ backgroundColor: "#990000", paddingTop: 20 }} >
+      <Header style={{ backgroundColor: "#990000", paddingTop: 20, paddingBottom: 10 }} >
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate('Setting') }>
               <Icon name="arrow-back" />
@@ -25,7 +25,7 @@ export default class EditProfileScreen extends Component {
           </Right>
         </Header>
         <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <Content style={{ paddingLeft: 15, paddingRight: 15 }}>
+        <Content style={{ padding: 20, paddingBottom: 20 }}>
             <Form>
                 <Item stackedLabel>
                     <Label>First Name</Label>
@@ -55,7 +55,7 @@ export default class EditProfileScreen extends Component {
                     <Label>Telephone</Label>
                     <Input onChangeText= { this.props.handleTelephone } value={this.props.telephone}  autoCapitalize='none'/>
                 </Item>
-                <Item picker>
+                <Item  last picker>
                     <Picker
                         mode="dropdown"
                         iosIcon={<Icon name="arrow-down" />}
@@ -80,7 +80,7 @@ export default class EditProfileScreen extends Component {
             </Form>         
         </Content>
         </KeyboardAvoidingView>
-        <View style={{ paddingTop: 20}}>
+        <View style={{ paddingTop: 40}}>
             <Button  block danger 
                 disabled={this.props.disable}
                 onPress={()=> this.props.update }

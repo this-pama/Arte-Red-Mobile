@@ -18,7 +18,7 @@ export default class LoginScreen extends Component {
   render() {
     return (
       <Container style={{backgroundColor: "#e6e6e6",}}>
-        <Header style={{ backgroundColor: "#990000"}}>
+        <Header style={{ backgroundColor: "#990000", paddingTop: 20 }} >
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate('Landing') }>
               <Icon name="arrow-back" />

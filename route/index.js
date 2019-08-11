@@ -24,6 +24,8 @@ import ProfileArtworkScreen from '../screen/service/artworkForProfile';
 import ExhibitionScreen from "../screen/exhibition"
 import RaveScreen from "../screen/service/rave"
 import LandingScreen from '../screen/landing';
+import SettingScreen from '../screen/setting';
+import EditProfileController from '../controller/updateProfile';
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -135,6 +137,8 @@ const switchNavigator = createSwitchNavigator({
   Landing: LandingScreen,
   Login:  LoginScreen,
   SignUp: SignUpScreen,
+  Setting: SettingScreen,
+  EditProfile: EditProfileController,
   App: StackNavigator
 },
 {

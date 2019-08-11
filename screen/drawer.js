@@ -179,7 +179,7 @@ export default class DrawerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={this.navigateToScreen('')}>Setting</Text>
+              <Text onPress={()=> this.props.navigation.navigate('Setting')}>Setting</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />

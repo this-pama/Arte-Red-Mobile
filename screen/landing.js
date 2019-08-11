@@ -8,7 +8,7 @@ export default class LandingScreen extends React.Component{
         return (
             <Container >
                 
-                <ImageBackground imageStyle={{resizeMode:"cover"}} source={ require("../assets/splash.png")} style={{ opacity: 0.7, flex: 1 }}>
+                <ImageBackground imageStyle={{resizeMode:"cover"}} source={ require("../assets/splash.png")} style={{ flex: 1 }}>
                 <Content>
                     <Body>
                     <ListItem style={{ justifyContent: "center", alignItems: "center", paddingTop: 100 }}>

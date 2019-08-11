@@ -5,22 +5,22 @@ import {View, TouchableHighlight } from 'react-native'
 import {KeyboardAvoidingView} from 'react-native';
 import PropTypes from 'prop-types'
 
-export default class SignUpScreen extends Component {
+export default class EditProfileScreen extends Component {
   render() {
     return (
       <Container style={{backgroundColor: "#e6e6e6",}}>
       <Header style={{ backgroundColor: "#990000", paddingTop: 20 }} >
           <Left>
-            <Button transparent onPress={()=> this.props.navigation.navigate('Landing') }>
+            <Button transparent onPress={()=> this.props.navigation.navigate('Setting') }>
               <Icon name="arrow-back" />
             </Button>
           </Left>
           <Body>
-            <Title>Register</Title>
+            <Title>Edit Profile</Title>
           </Body>
           <Right>
             <Button transparent>
-              <Icon name="log-in" />
+              <Icon name="expand" />
             </Button>
           </Right>
         </Header>
@@ -42,10 +42,6 @@ export default class SignUpScreen extends Component {
                 <Item stackedLabel>
                     <Label>Bio</Label>
                     <Input onChangeText= { this.props.handleBio } value={this.props.bio}  autoCapitalize='none'/>
-                </Item>
-                <Item stackedLabel>
-                    <Label>Email</Label>
-                    <Input onChangeText= { this.props.handleEmail } value={this.props.email}  autoCapitalize='none'/>
                 </Item>
                 <Item stackedLabel>
                     <Label>Address</Label>
@@ -80,27 +76,18 @@ export default class SignUpScreen extends Component {
 
                     </Picker>
                 </Item>
-                {/* <Item stackedLabel last>
-                    <Label>User Type</Label>
-                    <Input onChangeText= { this.props.handleUserType } value={this.props.userType}  autoCapitalize='none'/>
-                </Item> */}
-            </Form>
-            
-          <View style={{ paddingTop: 20}}>
-            <Button  block danger 
-                disabled={this.props.disable}
-                onPress={()=> this.props.signUp }
-            >
-                <Text> Sign Up </Text>
-            </Button>
-            <TouchableHighlight 
-                onPress={()=> this.props.navigation.navigate("Login")}
-                style={{ paddingTop: 20, paddingBottom: 20, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>Already have an account. Sign In!</Text>
-            </TouchableHighlight>
-          </View>         
+
+            </Form>         
         </Content>
         </KeyboardAvoidingView>
+        <View style={{ paddingTop: 20}}>
+            <Button  block danger 
+                disabled={this.props.disable}
+                onPress={()=> this.props.update }
+            >
+                <Text> Upadate </Text>
+            </Button>
+          </View>
       </Container>
       
     );
@@ -114,25 +101,23 @@ const styles = {
     }
 }
 
-SignUpScreen.propTypes= {
+EditProfileScreen.propTypes= {
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,
     nickName: PropTypes.string.isRequired,
     bio: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
-    country: PropTypes.string.isRequired,
+    country: PropTypes.string.isRequired,  
     telephone: PropTypes.string.isRequired,
     userType: PropTypes.string.isRequired,
     handleFirstName: PropTypes.func.isRequired,
     handleLastName: PropTypes.func.isRequired,
     handleNickName: PropTypes.func.isRequired,
     handleBio: PropTypes.func.isRequired,
-    handleEmail: PropTypes.func.isRequired,
     handleAddress: PropTypes.func.isRequired,
     handleCountry: PropTypes.func.isRequired,
     handleTelephone: PropTypes.func.isRequired,
     handleUserType: PropTypes.func.isRequired,
     disable: PropTypes.bool.isRequired,
-    signUp: PropTypes.func.isRequired
+    update: PropTypes.func.isRequired
 }

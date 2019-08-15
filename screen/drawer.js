@@ -1,26 +1,20 @@
 import React, {Component} from 'react';
 import {NavigationActions} from 'react-navigation';
-// import PropTypes from 'prop-types';
-import {ScrollView,  View} from 'react-native';
-
-import { Image, Container, Header, Text,Content, List, ListItem, Icon, Left, Body, Right, 
-  Switch, Button, Card, CardItem, Toast, } from 'native-base';
-
+import {Container,Text,ListItem, Icon, Left, Body, Right, Button, Card, CardItem, Toast, } from 'native-base';
 import { DrawerActions } from 'react-navigation';
+import {connect} from 'react-redux'
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import { getUserProfileAction } from "../redux/userProfileAction"
 
-
-export default class DrawerScreen extends Component {
-
+class DrawerScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       disable: false,
       message: '',
     };
-
   }
-
-
 
   navigateToScreen = (route) => () => {
     const navigateAction = NavigationActions.navigate({
@@ -30,17 +24,23 @@ export default class DrawerScreen extends Component {
     this.props.navigation.dispatch(DrawerActions.closeDrawer())
   }
 
-
   render () {
     const logout = (
       <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "red" }}>
+              <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="log-out" />
               </Button>
             </Left>
             <Body>
-              <Text onPress={this.navigateToScreen('Landing')}>Logout</Text>
+              <Text onPress={()=>{
+                this.props.loginAction({
+                  jwt: "",
+                  accountId: ""
+                })
+                this.props.getUserIdAction("")
+                this.props.navigation.navigate("Landing")
+              }}>Logout</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />
@@ -52,7 +52,7 @@ export default class DrawerScreen extends Component {
     const login = (
       <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "red" }}>
+              <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="log-in" />
               </Button>
             </Left>
@@ -73,7 +73,8 @@ export default class DrawerScreen extends Component {
                 < Icon name='md-person' />
                 <Body>
                   <Text>Welcome</Text>
-                  <Text note>Artist Name</Text>
+                  <Text note>{ this.props.firstName && this.props.firstName.length > 0
+                  ? this.props.firstName : null }</Text>
                 </Body>
               </Left>
             </CardItem>
@@ -102,17 +103,15 @@ export default class DrawerScreen extends Component {
             </Left>
             <Body>
               <Text onPress={()=> {
-                if(!this.props.userId){
+                if(this.props.userId  && this.props.userId.length > 0 ){
+                  this.props.navigation.navigate('Wallet')
+                }
+                else{
                   Toast.show({
                     text: "You need to sign in to access your Wallet",
                     buttonText: "Okay",
                     duration: 3000,
                     type: 'danger'
-                  })
-                }
-                else{
-                  this.navigateToScreen('Wallet', {
-                    userId: "123456"
                   })
                 }
               }}>Wallet</Text>
@@ -129,16 +128,16 @@ export default class DrawerScreen extends Component {
             </Left>
             <Body>
               <Text onPress={()=>{
-                if(!this.props.userId){
+                if(this.props.userId  && this.props.userId.length > 0 ){
+                  this.props.navigation.navigate('Network')
+                }
+                else{
                   Toast.show({
-                    text: "You need to sign in to see your Network",
+                    text: "You need to sign in to access your Network",
                     buttonText: "Okay",
                     duration: 3000,
                     type: 'danger'
                   })
-                }
-                else{
-                  this.navigateToScreen('Network')
                 }
               }}>My Network</Text>
             </Body>
@@ -146,35 +145,9 @@ export default class DrawerScreen extends Component {
               <Icon active name="arrow-forward" />
             </Right>
           </ListItem>
-          {/* <ListItem icon>
-            <Left>
-              <Button style={{ backgroundColor: "red" }}>
-                <Icon active name="md-briefcase" />
-              </Button>
-            </Left>
-            <Body>
-              <Text onPress={()=>this.props.navigation.navigate("Network")}>Artworks</Text>
-            </Body>
-            <Right>
-              <Icon active name="arrow-forward" />
-            </Right>
-          </ListItem> */}
           <ListItem icon>
             <Left>
               <Button style={{ backgroundColor: "red" }}>
-                <Icon active name="md-contract" />
-              </Button>
-            </Left>
-            <Body>
-              <Text onPress={this.navigateToScreen('')}>About</Text>
-            </Body>
-            <Right>
-              <Icon active name="arrow-forward" />
-            </Right>
-          </ListItem>
-          <ListItem icon>
-            <Left>
-              <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="md-cog" />
               </Button>
             </Left>
@@ -185,11 +158,18 @@ export default class DrawerScreen extends Component {
               <Icon active name="arrow-forward" />
             </Right>
           </ListItem>
-          { !this.props.userId ? login: logout }
+          { this.props.userId  && this.props.userId.length > 0 ? logout: login }
           
-    </Container>
-      
+    </Container>    
     );
   }
 }
 
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId,
+  profile: state.userProfile
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction, getUserProfileAction })(DrawerScreen)

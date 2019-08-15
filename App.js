@@ -5,6 +5,10 @@ import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { Root } from "native-base";
 
+import {store, persistor} from './redux/index'
+import {Provider} from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+
 import LoginScreen from './screen/login'
 import AppNavigation from './route'
 import HomeScreen from './screen/home';
@@ -34,11 +38,15 @@ export default class App extends React.Component {
     }
 
     return (
-      <Root>
-        <Container>
-          <AppNavigation />
-        </Container>
-      </Root>
+      <Provider loading={<AppLoading />} store={store}>
+          <PersistGate  persistor={persistor}>
+            <Root>
+              <Container>
+                <AppNavigation />
+              </Container>
+            </Root>
+          </PersistGate>
+      </Provider>
     );
   }
 }

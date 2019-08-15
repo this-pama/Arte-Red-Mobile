@@ -48,7 +48,7 @@ export default class ProfileScreen extends Component {
       const imageUri = ( <Thumbnail source={{ uri: this.state.image }} />)
     return (
       <Container>
-        <Header hasSegment style={{ backgroundColor: "#990000", paddingTop: 20, paddingBottom: 10 }}>
+        <Header hasSegment style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }}>
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate("Setting")}>
               <Icon name="arrow-back" />

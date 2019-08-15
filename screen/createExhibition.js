@@ -75,11 +75,16 @@ export default class CreateExhibitionScreen extends Component {
           </Button>
         </Segment>
         <Content padder style={{ paddingBottom: 20 }}>
-                <Button bordered danger 
-                    onPress={this.pickImage }
-                    style={{ justifyContent: "center", alignItems: "center" }} >
-                    <Text> Upload Image </Text>
-                </Button>
+                <Item>
+                  <Right>
+                    <Button transparent
+                        onPress={this.pickImage }
+                    >  
+                      <Icon name="camera" active />
+                        <Text> Upload Image </Text>
+                    </Button>
+                  </Right>
+                </Item>
                 {this.state.image  ? imagePlaceholder : null }
                 <Form>
                     <Item stackedLabel>

@@ -1,20 +1,76 @@
 import React, { Component } from 'react'
 import SignIn from "../screen/login"
+import { apiUrl } from '../screen/service/env'
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import {connect} from 'react-redux'
 
-export default class SignInController extends Component{
+ class SignInController extends Component{
     constructor(props){
         super(props);
         this.state={
             email: "",
             password: "",
             errMessage: "",
+            spin: false,
+            accountId: "",
+            userId: "",
+            jwt: "",
             disable: true
         }
     }
 
-    login = async () => {
+    // fetch user id before navigating to the home screen
+    async fetchUserId(){
+      // alert(this.state.accountId)
+      var url = apiUrl + "account/" + this.state.accountId;
+          var result = await fetch(url, {
+            method: 'GET',
+            headers: { 
+              'content-type': 'application/json',
+              "Authorization": `Bearer ${this.state.jwt}`
+             }
+          });
+          var response = await result;
+          
+          if(response.status !== 200 ){
+            this.setState({ 
+              email: '',
+              password: "",
+              spin: false
+             })
+            alert("Login failed")
+          }
+          else{
+            var res = await response.json();
+            if (res.user) {
+              // set state in redux store
+              this.props.getUserIdAction(res.user)
 
-        var url = '';
+              // update component state
+              this.setState({
+                email: '',
+                password: "",
+                userId: res.user,
+                spin: false
+              });
+              //navigate to home screen 
+              this.props.navigation.navigate("Home")
+            } 
+            else  {
+              this.setState({
+                email: '',
+                password: "",
+                spin: false
+              });
+            }
+          }
+    }
+
+    //authenticate user and set state for jwt and accoundId
+    login = async () => {
+      this.setState({ spin : true })
+        var url = apiUrl + "account/login";
         var result = await fetch(url, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
@@ -24,19 +80,39 @@ export default class SignInController extends Component{
           })
         });
         var response = await result;
-        var res = await response.json();
-        console.log(res);
-        if (res.serial) {
-          console.log('successfully registered');
+        
+        if(response.status !== 200 ){
           this.setState({
             email: '',
-            password: ""
-          });
-        } else {
-          this.setState({
-            errMessage: 'Error Occurred.',
+            password: "",
+            spin: false
           });
         }
+        else{
+          var res = await response.json();
+          if (res.token) {
+            this.setState({
+              email: '',
+              password: "",
+              accountId: res.id,
+              jwt: res.token
+            });
+            
+            this.props.loginAction({
+              jwt: res.token,
+              accountId: res.id
+            })
+            this.fetchUserId()
+          } 
+          else  {
+            this.setState({
+              email: '',
+              password: "",
+              spin: false
+            });
+          }
+        }
+        
     };
     
     handleEmail = email => {
@@ -99,8 +175,17 @@ export default class SignInController extends Component{
                 handlePassword= { this.handlePassword }
                 login= { this.login }
                 disable= { this.state.disable }
+                spin = { this.state.spin }
                 navigation= {this.props.navigation}
             />
         )
     }
 }
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  accountId: state.login.accountId,
+  userId: state.getUserId
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction })(SignInController)

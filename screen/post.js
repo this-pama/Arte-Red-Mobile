@@ -34,7 +34,7 @@ export default class PostScreen extends Component {
         <Content>
           <Card>
             <CardItem cardBody>
-              <Image source={{uri: `${image.uri}`}} style={{height: 200, width: null, flex: 1}}/>
+              <Image source={{uri: `${image.uri}`}} style={{height: 300, width: null, flex: 1}}/>
             </CardItem>
           </Card>
           <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>

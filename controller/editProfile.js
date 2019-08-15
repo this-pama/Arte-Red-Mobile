@@ -1,5 +1,10 @@
 import React, { Component } from 'react'
 import Edit from "../screen/editProfile"
+import { Permissions } from 'expo';
+import Constants from 'expo-constants'
+import * as ImagePicker from 'expo-image-picker';
+import { apiUrl, cloudinaryUrl } from '../screen/service/env'
+
 
 export default class EditProfileController extends Component{
     constructor(props){
@@ -14,34 +19,133 @@ export default class EditProfileController extends Component{
             telephone: "",
             userType: "",
             errMessage: "",
-            disable: true
+            disable: true,
+            spin: false,
+            image: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png",
+            imageBase64: "",
+            imageUrl : ""
         }
     }
 
-    update= async () => {
+    componentDidMount() {
+      this.getPermissionAsync();
+    }
+  
+      getPermissionAsync = async () => {
+      if (Constants.platform.ios) {
+          const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+          if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to post!');
+          }
+      }
+      }
+  
+      pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [6, 5],
+          base64: true
+        });
+  
+        if (!result.cancelled) {
+          this.setState({ 
+              image: result.uri,
+              imageBase64: result.base64
+           })
+        }
+      }
 
-        var url = '';
+    uploadImage = () =>{
+      this.setState({ spin : true })
+      let base64Img = `data:image/jpg;base64,${this.state.imageBase64}`
+        let data = {
+          "file": base64Img,
+          "upload_preset": "artered",
+        }
+
+        fetch(cloudinaryUrl, {
+          body: JSON.stringify(data),
+          headers: {
+            'content-type': 'application/json'
+          },
+          method: 'POST',
+        })
+        .then(async r => {
+            let data = await r.json()
+            this.setState({ imageUrl : data.secure_url })
+            this.updateDb()
+        })
+        .catch(err=>console.log(err))
+    }
+
+    updateDb= async () => {
+        var url = apiUrl + "user/add/" + this.props.userId;
         var result = await fetch(url, {
           method: 'POST',
-          headers: { 'content-type': 'application/json' },
+          headers: { 
+            'content-type': 'application/json',
+            "Authorization": `Bearer ${this.props.jwt}`,
+          },
           body: JSON.stringify({
-            email: this.state.email,
-            password: this.state.password
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            nickName: this.state.nickName,
+            description: this.state.bio,
+            address: this.state.address,
+            country: this.state.country,
+            telephone: this.state.telephone,
+            userType: this.state.userType,
+            profileImage: this.state.imageUrl 
           })
         });
         var response = await result;
-        var res = await response.json();
-        console.log(res);
-        if (res.serial) {
-          console.log('successfully registered');
+        
+        if(response.status !== 200 ){
           this.setState({
-            email: '',
-            password: ""
+            firstName: "",
+            lastName: "",
+            nickName: "",
+            description: "",
+            address: "",
+            country: "",
+            telephone: "",
+            userType: "",
+            profileImage: this.state.imageUrl, 
+            spin: false
           });
-        } else {
-          this.setState({
-            errMessage: 'Error Occurred.',
-          });
+        }
+        else{
+          var res = await response.json();
+          if (res._id) {
+            this.setState({
+              firstName: "",
+              lastName: "",
+              nickName: "",
+              description: "",
+              address: "",
+              country: "",
+              telephone: "",
+              userType: "",
+              profileImage: this.state.imageUrl, 
+              spin: false
+            });
+            this.props.navigation.navigate("Home")
+          } 
+          else  {
+            this.setState({
+              firstName: "",
+              lastName: "",
+              nickName: "",
+              description: "",
+              address: "",
+              country: "",
+              telephone: "",
+              userType: "",
+              profileImage: this.state.imageUrl, 
+              spin: false
+            });
+          }
         }
     };
     
@@ -76,7 +180,6 @@ export default class EditProfileController extends Component{
           });
         }
       };
-
 
       handleNickName = nickName => {
         if (nickName.length > 0) {
@@ -172,33 +275,15 @@ export default class EditProfileController extends Component{
       
         }
 
-    //   handleUserType = userType => {
-    //     if (userType.length > 0) {
-    //       this.setState(
-    //         {
-    //           userType
-    //         },
-    //         this.validateForm
-    //       );
-    //     } else {
-    //       this.setState({
-    //         userType: '',
-    //         errMessage: 'User Type cannot be empty'
-    //       });
-    //     }
-    //   };
 
       validateForm = () => {
         if (
           this.state.firstName.length > 0 && 
           this.state.lastName.length > 0 &&
-          this.state.nickName.length > 0 &&
-          this.state.bio.length > 0 &&
-          this.state.email.length > 0 &&
-          this.state.address.length > 0 &&
+          this.state.address.length > 0 && 
           this.state.country.length > 0 &&
-          this.state.telephone.length > 0 &&
-          this.state.userType.length > 0 
+          this.state.telephone.length > 0
+          
         ) {
           this.setState({
             disable: false,
@@ -231,9 +316,12 @@ export default class EditProfileController extends Component{
                 handleCountry= {this.handleCountry}
                 handleTelephone= {this.handleTelephone}
                 handleUserType= { this.handleUserType }
-                update ={ this.update }
+                update ={ this.uploadImage }
                 disable= { this.state.disable }
+                spin= { this.state.spin }
                 navigation= {this.props.navigation}
+                pickImage= { this.pickImage}
+                image = { this.state.image }
             />
         )
     }

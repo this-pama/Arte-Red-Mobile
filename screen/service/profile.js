@@ -7,9 +7,17 @@ export default class ProfileScreen extends Component {
     constructor(props){
         super(props)
         this.state={
-            follow : "Follow"
+            follow : "Follow",
+            image: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png",
         }
     }
+
+    componentDidMount(){
+      if(this.props.image){
+        this.setState({ image : this.props.image })
+      }
+    }
+
   render() {
     return (
       <Container>
@@ -40,7 +48,7 @@ export default class ProfileScreen extends Component {
           <List>
               <ListItem avatar>
                 <Left>
-                  <Thumbnail source={ require('../../assets/splash.png') } />
+                  <Thumbnail source={{ uri : this.state.image }} />
                 </Left>
                 <Body>
                   <Text>Artist Full Name</Text>

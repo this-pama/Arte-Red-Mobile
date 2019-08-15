@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {createStackNavigator, createSwitchNavigator, createDrawerNavigator, createMaterialTopTabNavigator, createAppContainer} from 'react-navigation';
 import { DrawerActions } from 'react-navigation';
 import { Text, Image } from 'react-native'
-import { Icon, Content, Body, Left, View, Right, ListItem, List, Input, Form } from 'native-base'
+import { Icon, Content, Body, Left, View, Right, ListItem, List, Input, Form,
+Item, Button } from 'native-base'
 import { TouchableOpacity } from "react-native-gesture-handler"
 
 import DrawerScreen from '../screen/drawer';
@@ -29,6 +30,8 @@ import EditProfileController from '../controller/editProfile';
 import ExpandExhibitionScreen from '../screen/expandExhibition';
 import CreateExhibitionScreen from '../screen/createExhibition';
 import MyProfileScreen from '../screen/myProfile';
+import HelpScreen from '../screen/help'
+import AccountScreen from '../screen/account'
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -59,64 +62,67 @@ const DrawerNavigator = createDrawerNavigator(
      }
 );
 
-const headerText = (
-  <View >
-      <Text style={{paddingLeft: 35, textAlign: "center", fontSize: 20, fontWeight: "bold", color: "#fff" }}> Arte Red</Text>
-  </View>
-  
-)
 
-const searchBar = (
-  <Form>
-    <Left>
-      <Input placeholder="Search" />
-    </Left>
-    <Right>
-      <Icon name='menu' style={{ paddingRight : 10 }} />
-    </Right>
-  </Form>
-)
+class HeaderBar extends Component{
+  render(){
+    return(
+      <View >
+        <Text style={{paddingLeft: 35, fontSize: 20, fontWeight: "bold", color: "#fff" }}> 
+          Arte Red 
+        </Text>
+    </View>
+    )
+  }
+}
 
-const searchIcon =(
-  <TouchableOpacity>
-      <Icon name="search" style={{ color: "white", paddingRight: 5}} />
-  </TouchableOpacity>
-)
-const LeftBar= (
-        <List>
-          <ListItem>
-            <Left>
-            <TouchableOpacity>
-              {searchIcon}
-            </TouchableOpacity>
-            </Left>
-            <Right>
-              <TouchableOpacity  onPress={ () => { navigation.dispatch(DrawerActions.toggleDrawer())} }>
-                  {<Icon name='menu' style={{ paddingRight : 10 }} />}
-              </TouchableOpacity>
-            </Right>
-          </ListItem>
-        </List>
-)
+class SearchIcon extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      search: false
+    }
+  }
+  render(){
+      if(this.state.search){
+        return(
+          <Item>
+              <Input placeholder="Search" style={{ color: "white" }} />
+              <Icon name="ios-people"  style={{ color: "white" }}/>
+              <Button transparent
+                onPress={()=> this.setState({ search : false })}
+              >
+                <Text style={{ color: "white", paddingRight: 15 }}>Search       </Text>
+            </Button>
+          </Item>
+        )
+      }
+      else{
+        return(
+          <TouchableOpacity
+            onPress={()=> this.setState({ search : true })}
+          >
+              <Icon name="search" style={{color: "white", fontSize: 20, paddingRight: 20}} />
+          </TouchableOpacity>
+        )
+      }
+  }
+}
+
 
 const StackNavigator = createStackNavigator({
     DrawerNavigator:{
         screen: DrawerNavigator,
         navigationOptions: ({ navigation }) => ({
-        headerTitle: headerText,  
-        headerRight: 
+        headerTitle: <HeaderBar />,  
+        headerRight: <SearchIcon />,
+        headerLeft: 
         <List>
           <ListItem>
             <Left>
-            <TouchableOpacity>
-              {searchIcon}
-            </TouchableOpacity>
-            </Left>
-            <Right>
               <TouchableOpacity  onPress={ () => { navigation.dispatch(DrawerActions.toggleDrawer())} }>
-                  {<Icon name='menu' style={{ paddingRight : 10 }} />}
+                  <Icon name='menu' style={{ fontSize: 25 }} />
               </TouchableOpacity>
-            </Right>
+            </Left>
           </ListItem>
         </List>
         ,
@@ -141,6 +147,8 @@ const switchNavigator = createSwitchNavigator({
   EditProfile: EditProfileController,
   MyProfile: MyProfileScreen,
   ExpandExhibition: ExpandExhibitionScreen,
+  Help: HelpScreen,
+  Account: AccountScreen,
   App: StackNavigator
 },
 {

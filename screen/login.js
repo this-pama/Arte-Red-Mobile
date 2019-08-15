@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, Form, Item, Input, Label, Button, Text, Header,
-Left, Icon, Body, Right, Title  } from 'native-base';
+Left, Icon, Body, Right, Title, Spinner  } from 'native-base';
 import {View, TouchableHighlight } from 'react-native'
 import PropType from "prop-types"
 import {NavigationActions} from 'react-navigation';
@@ -16,9 +16,11 @@ export default class LoginScreen extends Component {
   }
 
   render() {
+    const spinner = <Spinner color='white' />
+    const signin = <Text> Sign In </Text>
     return (
       <Container style={{backgroundColor: "#e6e6e6",}}>
-        <Header style={{ backgroundColor: "#990000", paddingTop: 20 }} >
+        <Header style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }} >
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate('Landing') }>
               <Icon name="arrow-back" />
@@ -49,7 +51,9 @@ export default class LoginScreen extends Component {
             <Button  block danger 
               disabled= { this.props.disable }
               onPress={ this.props.login }
-            ><Text> Sign In </Text></Button>
+            >
+              { this.props.spin ? spinner : signin }
+            </Button>
             <TouchableHighlight 
                 onPress={()=> this.props.navigation.navigate('SignUp') }
                 style={{ paddingTop: 20, justifyContent: 'center', alignItems: 'center' }}>
@@ -69,4 +73,5 @@ LoginScreen.propTypes ={
   handleEmail: PropType.func.isRequired,
   handlePassword: PropType.func.isRequired,
   disable: PropType.bool.isRequired,
+  spin: PropType.bool.isRequired
 }

@@ -5,31 +5,34 @@ import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
 import PropTypes from 'prop-types'
 import { cloudinaryUrl } from "./env"
+import {connect} from 'react-redux'
+import { loginAction } from "../../redux/loginAction"
+import { getUserIdAction } from "../../redux/getUserId"
 
 var BUTTONS = ["Camera", "Gallery", "Close"];
 var DESTRUCTIVE_INDEX = 2;
 var CANCEL_INDEX = 2;
 
-export default class FooterTabs extends Component {
+class FooterTabs extends Component {
 
   constructor(props){
-        super(props);
-        this.state={
-            image: ''
-        }
+    super(props);
+    this.state={
+      image: ''
     }
+  }
 
     componentDidMount() {
-    this.getPermissionAsync();
+      this.getPermissionAsync();
     }
 
     getPermissionAsync = async () => {
-    if (Constants.platform.ios) {
-        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to post!');
-        }
-    }
+      if (Constants.platform.ios) {
+          const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+          if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to post!');
+          }
+      }
     }
 
 
@@ -65,7 +68,7 @@ export default class FooterTabs extends Component {
 
 
   render() {
-    const login = (
+    const loginMenu = (
       <Button vertical 
         active= { !this.props.activeNetwork ? false : true }
         onPress={()=> this.props.navigation.navigate("Login")}>
@@ -114,7 +117,7 @@ export default class FooterTabs extends Component {
                   }
                 )
                }
-              else if(this.props.userId){
+              else if(this.props.userId && this.props.userId.length > 0){
               ActionSheet.show(
                 {
                   options: BUTTONS,
@@ -151,7 +154,7 @@ export default class FooterTabs extends Component {
               <Icon active name="eye" />
               <Text>Exhibition</Text>
             </Button>
-            { !this.props.userId ? login : network }
+            { this.props.userId && this.props.userId.length > 0 ? network : loginMenu  }
             
           </FooterTab>
         </Footer>
@@ -167,3 +170,10 @@ FooterTabs.propTypes={
   activePost: PropTypes.bool,
   activeWallet: PropTypes.bool
 }
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction})(FooterTabs)

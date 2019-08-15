@@ -244,7 +244,7 @@ export default class PostController extends Component{
         }
 
         handleMasterpiece = masterpiece => {
-            if (userType){
+            if (masterpiece){
                 this.setState({
                     masterpiece,
                     errMessage: ""

@@ -53,8 +53,10 @@ export default class ArtworkDetailScreen extends Component {
               </Right>
             </CardItem>
             <CardItem>
+              <Image source={ require('../../assets/splash.png') } style={{height: 300, width: null, flex: 1}} />
+            </CardItem>
+            <CardItem>
               <Body>
-                <Image source={ require('../../assets/splash.png') } style={{height: 200, width: 400, flex: 1}} />
                 <Text icon style={{ paddingTop: 20}}>
                   {!story ? "Artwork details goes here." : story }
                 </Text>

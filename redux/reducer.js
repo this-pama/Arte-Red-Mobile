@@ -1,28 +1,8 @@
 import {combineReducers} from 'redux'
+import { LOGIN } from './variables'
+import { GET_USER_ID, GET_USER_PROFILE } from "./variables"
 
 const merge = (prev, next) => Object.assign({}, prev, next)
-
-// LIcence REducer
-const licenceReducer = (state = {}, action) => {
-  switch (action.type) {
-  	case 'GET_PHONE_IMEI':
-  		return merge(state, { phoneImei : action.payload})
-	case 'GET_PHONE_SERIAL':
-		return merge(state, { phoneSerial : action.payload})
-	case 'GET_PHONE_NUMBER':
-		return merge(state, { phoneNumber : action.payload})
-    case 'LICENCE_FULFILLED':
-      return merge(state, {token: action.payload})
-    case 'SET_ACTIVATION_MESSAGE':
-      return merge(state, {activationMessage: action.payload})
-    case 'LICENCE_REJECTED':
-      return merge(state, {licenceError: action.payload})
-    default:
-      return state
-  }
-}
-
-
 
 // Wallet Reducer
 const walletReducer = ( state={}, action) => {
@@ -33,17 +13,27 @@ const walletReducer = ( state={}, action) => {
   return state
 }
 
+const loginReducer = (state = [], action) => {
+  if (action.type === LOGIN) return [...state, action.payload]
+  return state
+}
+
+const getUserIdReducer = (state = [], action) => {
+  if (action.type === GET_USER_ID) return [...state, action.payload]
+  return state
+}
+
+const getUserProfileReducer = (state = [], action) => {
+  if (action.type === GET_USER_PROFILE) return [...state, action.payload]
+  return state
+}
 
 
-// const historyReducer = (state = [], action) => {
-//   if (action.type === 'HISTORY') return [...state, action.payload]
-//   return state
-// }
-
-
-
+// define  combine reducer
 const reducer = combineReducers({
-//   licence: licenceReducer,  //general licenece management reducer
+  login: loginReducer, 
+  getUserId: getUserIdReducer, 
+  userProfile: getUserProfileReducer
 })
 
 export default reducer

@@ -1,20 +1,63 @@
 import React, { Component } from 'react';
 import { Image, Modal, View } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, 
-  Toast, Textarea } from 'native-base';
+  Toast, Textarea, Spinner } from 'native-base';
 import FooterScreen from './service/footer'
 import { Permissions } from 'expo';
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { apiUrl } from './service/env';
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import { getUserProfileAction } from "../redux/userProfileAction"
+import {connect} from 'react-redux'
 
-export default class HomeScreen extends Component {
+class HomeScreen extends Component {
   constructor(props){
     super(props);
     this.state={
       like: 0,
-      comment: 0
+      comment: 0,
+      image: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png",
     }
+  }
+  
+  componentDidMount(){
+    if(this.props.image){
+      this.setState({ image : this.props.image })
+    }
+    
+    this.fetchUserProfile()
+  }
+
+  fetchUserProfile= () =>{
+    if(!this.props.userId && this.props.userId.length <= 0 ){
+      return
+    }
+
+    var url = apiUrl + "user/" + this.props.userId;
+      fetch(url,{
+        headers: { 
+          'content-type': 'application/json',
+          "Authorization": `Bearer ${this.props.jwt}`
+        }
+      })
+      .then(response =>{
+        console.warn(response)
+        if(response.status !== 200 ){
+          console.warn("failed to fetch user profile")
+        }
+        response.json()
+      })
+      .then(res =>{
+        if (res._id) {
+          this.props.getUserProfileAction(res)
+        } 
+        else  {
+          console.warn("fetching user profile failed")
+        }
+      })
   }
   
   render() {
@@ -27,7 +70,7 @@ export default class HomeScreen extends Component {
                 <TouchableOpacity
                   onPress={()=> this.props.navigation.navigate("Profile")}
                 >
-                 <Thumbnail source={ require('../assets/splash.png') } />
+                 <Thumbnail source={{ uri : this.state.image }} />
                 </TouchableOpacity>
                 <Body>
                   <Text>Artwork Title</Text>
@@ -39,7 +82,7 @@ export default class HomeScreen extends Component {
               <Right>
                 <Button transparent onPress={() => this.props.navigation.navigate("Detail") }>
                     <Icon active name="open" style={{ paddingRight: 25, fontSize: 20}} />
-                    {/* <Text>info</Text> */}
+                     <Text>More</Text>
                 </Button>
 
                 {/* <Text>{this.props.time != null || this.props.time != undefined  ? this.props.time : 0 }h ago</Text> */}
@@ -107,7 +150,7 @@ export default class HomeScreen extends Component {
                 <TouchableOpacity
                   onPress={()=> this.props.navigation.navigate("Profile")}
                 >
-                 <Thumbnail source={{uri: "https://res.cloudinary.com/artered/image/upload/v1565393034/ykxz7pqmbr8qtxinfoea.jpg"} } />
+                 <Thumbnail source={{ uri : this.state.image }}  />
                 </TouchableOpacity>
                 <Body>
                   <Text>Artwork Title</Text>
@@ -119,7 +162,7 @@ export default class HomeScreen extends Component {
               <Right>
                 <Button transparent onPress={() => this.props.navigation.navigate("Detail") }>
                     <Icon active name="open" style={{ paddingRight: 25, fontSize: 20}} />
-                    {/* <Text>info</Text> */}
+                    <Text>More</Text>
                 </Button>
 
                 {/* <Text>{this.props.time != null || this.props.time != undefined  ? this.props.time : 0 }h ago</Text> */}
@@ -192,3 +235,12 @@ export default class HomeScreen extends Component {
     );
   }
 }
+
+
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction, getUserProfileAction })(HomeScreen)

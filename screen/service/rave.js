@@ -51,32 +51,18 @@ export default class RaveScreen extends React.Component {
   render() {
     return ( 
       <Rave amount = {this.props.navigation.getParam("amount", "1")}
-        country = "NG"
-        currency = "NGN"
-        email = {this.props.navigation.getParam("email", "")}
-        firstname = {this.props.navigation.getParam("firstName", "")}
-        lastname = { this.props.navigation.getParam("lastName", "") }
-        publickey = "FLWPUBK-*********************************-X"
-        encryptionkey = "**********************"
-        paymenttype = "card"
-        meta = {
-          [{
-            metaname: "color",
-            metavalue: "red"
-          }, {
-            metaname: "artered",
-            metavalue: "artwork"
-          }]
-        }
-        production = {
-          false 
-        }
-        onSuccess = {
-          res => this.onSuccess(res)
-        }
-        onFailure = {
-          e => this.onFailure(e)
-        }
+        amount="500" 
+        country="NG" 
+        currency="NGN" 
+        email="adedadapopaul@yahoo.com" 
+        firstname="Adedapo" 
+        lastname="Aderemi" 
+        publickey = "FLWPUBK_TEST-eef2977c76dfbc31ea5015d213983f2e-X"
+        encryptionkey = "FLWSECK_TEST444266019d07"
+        meta={[{ metaname: "color", metavalue: "red" }, { metaname: "storelocation", metavalue: "ikeja" }]}
+        production={false} 
+        onSuccess={res => this.onSuccess(res)} 
+        onFailure={e => this.onFailure(e)}
         onClose={e => this.onClose(e)}
       />
     );

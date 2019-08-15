@@ -27,7 +27,7 @@ export default class ExpandExhibitionScreen extends Component {
       const price = this.props.navigation.getParam("price")
     return (
       <Container>
-        <Header style={{ backgroundColor: "#990000", paddingTop: 20 }}>
+        <Header style={{ backgroundColor: "#990000",paddingTop: 40, paddingBottom: 30 }}>
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate("Exhibition") }>
               <Icon name="arrow-back" />
@@ -59,7 +59,7 @@ export default class ExpandExhibitionScreen extends Component {
               </Right>
             </CardItem>
             <CardItem cardBody>
-              <Image source={{ uri: "https://res.cloudinary.com/artered/image/upload/v1565393034/ykxz7pqmbr8qtxinfoea.jpg"} } style={{height: 200, width: null, flex: 1}}/>
+              <Image source={{ uri: "https://res.cloudinary.com/artered/image/upload/v1565393034/ykxz7pqmbr8qtxinfoea.jpg"} } style={{height: 300, width: null, flex: 1}}/>
             </CardItem>
             <CardItem >
                 <Text>

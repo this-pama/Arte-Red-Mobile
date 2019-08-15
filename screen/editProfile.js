@@ -1,22 +1,35 @@
 import React, { Component } from 'react';
 import { Container, Content, Form, Item, Input, Label, Button,
-    Header, Left, Body, Title, Right, Text, Picker, Icon } from 'native-base';
+    Header, Left, Body, Title, Right, Text, Picker, Icon,
+Thumbnail, Spinner } from 'native-base';
 import {View, TouchableHighlight } from 'react-native'
 import {KeyboardAvoidingView} from 'react-native';
 import PropTypes from 'prop-types'
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
 
 export default class EditProfileScreen extends Component {
+    constructor(props){
+        super(props);
+        this.state={
+          register: "Register",
+        }
+      }
+    
+
   render() {
+    const spinner = <Spinner color='white' />
+    const update = <Text> Upadate </Text>
     return (
       <Container style={{backgroundColor: "#e6e6e6",}}>
-      <Header style={{ backgroundColor: "#990000", paddingTop: 20, paddingBottom: 10 }} >
+      <Header style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }} >
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate('Setting') }>
               <Icon name="arrow-back" />
             </Button>
           </Left>
           <Body>
-            <Title>Edit Profile</Title>
+            <Title>Update Profile</Title>
           </Body>
           <Right>
             <Button transparent>
@@ -26,6 +39,15 @@ export default class EditProfileScreen extends Component {
         </Header>
         <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
         <Content style={{ padding: 20, paddingBottom: 20 }}>
+                <Item>
+                  <Body>
+                      <TouchableOpacity
+                        onPress={ this.props.pickImage }
+                      >
+                        <Thumbnail large source={{ uri : this.props.image }} />
+                      </TouchableOpacity>
+                  </Body>
+                </Item>
             <Form>
                 <Item stackedLabel>
                     <Label>First Name</Label>
@@ -53,7 +75,7 @@ export default class EditProfileScreen extends Component {
                 </Item>
                 <Item stackedLabel>
                     <Label>Telephone</Label>
-                    <Input onChangeText= { this.props.handleTelephone } value={this.props.telephone}  autoCapitalize='none'/>
+                    <Input onChangeText= { this.props.handleTelephone } value={this.props.telephone}  keyboardType="numeric" />
                 </Item>
                 <Item  last picker>
                     <Picker
@@ -83,9 +105,9 @@ export default class EditProfileScreen extends Component {
         <View style={{ paddingTop: 40}}>
             <Button  block danger 
                 disabled={this.props.disable}
-                onPress={()=> this.props.update }
+                onPress={this.props.update }
             >
-                <Text> Upadate </Text>
+                { this.props.spin ? spinner : update }
             </Button>
           </View>
       </Container>
@@ -119,5 +141,7 @@ EditProfileScreen.propTypes= {
     handleTelephone: PropTypes.func.isRequired,
     handleUserType: PropTypes.func.isRequired,
     disable: PropTypes.bool.isRequired,
-    update: PropTypes.func.isRequired
+    update: PropTypes.func.isRequired,
+    spin: PropTypes.bool.isRequired,
+    pickImage: PropTypes.func.isRequired
 }

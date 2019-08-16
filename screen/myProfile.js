@@ -5,9 +5,13 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Permissions } from 'expo';
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
+import { apiUrl, cloudinaryUrl } from './service/env'
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import {getUserProfileAction } from "../redux/userProfileAction"
+import {connect} from 'react-redux'
 
-
-export default class ProfileScreen extends Component {
+class ProfileScreen extends Component {
 
     constructor(props){
         super(props);
@@ -19,15 +23,21 @@ export default class ProfileScreen extends Component {
     
       componentDidMount() {
         this.getPermissionAsync();
-        }
+
+        //check if image url link exist and set state if true
+        // if(this.props.profile[0]){
+        //   this.setState({ image : this.props.profile[0].profileImage })
+        // }
+
+      }
     
         getPermissionAsync = async () => {
-        if (Constants.platform.ios) {
-            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-            if (status !== 'granted') {
-            alert('Sorry, we need camera roll permissions to post!');
-            }
-        }
+          if (Constants.platform.ios) {
+              const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+              if (status !== 'granted') {
+              alert('Sorry, we need camera roll permissions to post!');
+              }
+          }
         }
     
         pickImage = async () => {
@@ -39,12 +49,73 @@ export default class ProfileScreen extends Component {
           });
     
           if (!result.cancelled) {
-            this.setState({ image: result.uri })
+            this.setState({ 
+              image: result.uri,
+             })
+
+             // upload image to cloudinary
+             this.uploadImage(result.base64)
           }
         }
 
+        uploadImage= async (base64) => {
+          let base64Img = `data:image/jpg;base64,${base64}`
+          let data = {
+            "file": base64Img,
+            "upload_preset": "artered",
+          }
+  
+          fetch(cloudinaryUrl, {
+            body: JSON.stringify(data),
+            headers: {
+              'content-type': 'application/json'
+            },
+            method: 'POST',
+          })
+          .then(async r => {
+              let data = await r.json()
+              // this.setState({ imageUrl : data.secure_url })
+              this.saveToDb(data.secure_url)
+          })
+          .catch(err=>console.warn(err))
+  
+      };
+
+      saveToDb = async (uri) => {
+          var url = apiUrl + "user/add/" + this.props.userId;
+          var result = await fetch(url, {
+            method: 'POST',
+            headers: { 
+              'content-type': 'application/json',
+              "Authorization": `Bearer ${this.props.jwt.jwt}`
+           },
+            body: JSON.stringify({
+              profileImage: uri
+            })
+          });
+          var response = await result;
+          
+          if(response.status !== 200 ){
+            console.warn("failed response")
+            return
+          }
+          else{
+            var res = await response.json();
+            if (res._id) {
+              console.warn("success")
+              return
+            } 
+            else  {
+              console.warn("failed")
+              return
+            }
+          }
+          
+      };
+
+
   render() {
-      const image = ( <Thumbnail source={ require('../assets/splash.png') } /> )
+      const image = ( <Thumbnail source={{ uri: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png"}} /> )
       const imageUri = ( <Thumbnail source={{ uri: this.state.image }} />)
     return (
       <Container>
@@ -70,39 +141,42 @@ export default class ProfileScreen extends Component {
                     <TouchableOpacity 
                         onPress={ this.pickImage }
                     >
-                        { this.state.image ? imageUri : image }
+                    { this.props.profile.profileImage && 
+                        this.props.profile.profileImage.length > 0 
+                          ? imageUri  : image
+                      }
                     </TouchableOpacity>
                 </Left>
                 <Body>
-                  <Text>Full Name</Text>
-                  <Text note> Nick Name</Text>
-                  <Text note>Telephone</Text>
+                  <Text>{this.props.profile.firstName ? this.props.profile.firstName : "First Name"}</Text>
+                  <Text note> {this.props.profile.lastName ? this.props.profile.lastName : "Last Name"}</Text>
+                  <Text note>{this.props.profile.telephone ? this.props.profile.telephone : "Telephone"}</Text>
                 </Body>
                 <Right>
-                    <Text note>User Type</Text>
-                    <Text note>Address</Text>
-                    <Text note>Country</Text>
+                    <Text note>{this.props.profile.userType ? this.props.profile.userType : "Type of User"}</Text>
+                    <Text note>{this.props.profile.address ? this.props.profile.address : "Address"}</Text>
+                    <Text note>{this.props.profile.country ? this.props.profile.country : "Country"}</Text>
                 </Right>
               </ListItem>
               <ListItem>
-                 <Text note>This is about the Artist. This is about the Artist. This is about the Artist.</Text>
+                 <Text note>{this.props.profile.description ? this.props.profile.description : "About me"}</Text>
               </ListItem>
               <ListItem>
                   <Left>
                       <Text note>
-                        Following {!this.props.following ? 0 : this.props.following}
+                        Following {!this.props.profile.following ? 0 : this.props.profile.following}
                       </Text>
                   </Left>
                   <Right>
                     <Text note>
-                        {!this.props.follower ? 0 : this.props.follower} Followers
+                        {!this.props.profile.follower ? 0 : this.props.profile.follower} Followers
                       </Text>
                   </Right>
               </ListItem>
               <ListItem>
                   <Left>
                     <Text note>
-                        Email
+                        {this.props.profile.email ? this.props.profile.email : "Email"}
                     </Text>
                   </Left>
                   <Right>
@@ -136,3 +210,11 @@ export default class ProfileScreen extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  jwt: state.login,
+  userId: state.getUserId.userId,
+  profile: state.userProfile
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction, getUserProfileAction })(ProfileScreen)

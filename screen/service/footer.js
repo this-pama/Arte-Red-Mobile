@@ -23,6 +23,7 @@ class FooterTabs extends Component {
   }
 
     componentDidMount() {
+      console.warn(this.props.userId)
       this.getPermissionAsync();
     }
 
@@ -173,7 +174,7 @@ FooterTabs.propTypes={
 
 const mapStateToProps = state => ({
   jwt: state.login.jwt,
-  userId: state.getUserId
+  userId: state.getUserId.userId
 })
 
 export default connect(mapStateToProps, {loginAction, getUserIdAction})(FooterTabs)

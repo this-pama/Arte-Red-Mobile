@@ -16,7 +16,7 @@ import FolloweringScreen from '../screen/following';
 import CommentScreen from '../screen/comment';
 import PostScreen from '../controller/post';
 import WalletScreen from '../screen/wallet';
-import BankScreen from '../screen/bank';
+import BankScreen from '../controller/bank';
 import WithdrawScreen from '../screen/withdraw';
 import ArtworkDetailScreen from '../screen/service/details';
 import BuyScreen from '../screen/buy';

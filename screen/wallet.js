@@ -43,7 +43,7 @@ class WalletScreen extends Component {
         }
         else {
           var resp = await result.json()
-          console.warn(resp)
+          // console.warn(resp)
           if(resp._id){
             this.setState({
               wallet: resp.wallet,

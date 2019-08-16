@@ -34,8 +34,8 @@ class HomeScreen extends Component {
 
 
   fetchUserProfile= async () =>{
-    if(!this.props.userId || this.props.userId.length <= 0  || !this.props.jwt[0].jwt 
-      || this.props.jwt[0].jwt.length <=0 ){
+    if(!this.props.userId || this.props.userId.length <= 0  || !this.props.jwt.jwt 
+      || this.props.jwt.jwt.length <=0 ){
       return
     }
 
@@ -44,7 +44,7 @@ class HomeScreen extends Component {
       method: 'GET',
       headers: { 
         'content-type': 'application/json',
-        "Authorization": `Bearer ${this.props.jwt[0].jwt}`
+        "Authorization": `Bearer ${this.props.jwt.jwt}`
        }
     });
     var response = await result;
@@ -247,7 +247,8 @@ class HomeScreen extends Component {
 
 const mapStateToProps = state => ({
   jwt: state.login,
-  userId: state.getUserId
+  userId: state.getUserId.userId,
+  profile: state.userProfile
 })
 
 export default connect(mapStateToProps, {loginAction, getUserIdAction, getUserProfileAction })(HomeScreen)

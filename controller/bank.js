@@ -1,74 +1,27 @@
 import React, { Component } from 'react'
-import SignIn from "../screen/login"
+import BankView from "../screen/bank"
 import { apiUrl } from '../screen/service/env'
 import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import {connect} from 'react-redux'
 
- class SignInController extends Component{
+ class BankController extends Component{
     constructor(props){
         super(props);
         this.state={
             email: "",
-            password: "",
+            firstName: "",
+            lastName: "",
+            accountNumber: "",
+            bankName: "",
             errMessage: "",
             spin: false,
-            accountId: "",
-            userId: "",
-            jwt: "",
             disable: true
         }
     }
 
-    // fetch user id before navigating to the home screen
-    async fetchUserId(){
-      // alert(this.state.accountId)
-      var url = apiUrl + "account/" + this.state.accountId;
-          var result = await fetch(url, {
-            method: 'GET',
-            headers: { 
-              'content-type': 'application/json',
-              "Authorization": `Bearer ${this.state.jwt}`
-             }
-          });
-          var response = await result;
-          
-          if(response.status !== 200 ){
-            this.setState({ 
-              email: '',
-              password: "",
-              spin: false
-             })
-            alert("Login failed")
-          }
-          else{
-            var res = await response.json();
-            if (res.user) {
-              // set state in redux store
-              this.props.getUserIdAction({ userId: res.user})
 
-              // update component state
-              this.setState({
-                email: '',
-                password: "",
-                userId: res.user,
-                spin: false
-              });
-              //navigate to home screen 
-              this.props.navigation.navigate("Home")
-            } 
-            else  {
-              this.setState({
-                email: '',
-                password: "",
-                spin: false
-              });
-            }
-          }
-    }
-
-    //authenticate user and set state for jwt and accoundId
-    login = async () => {
+    addBank = async () => {
       this.setState({ spin : true })
         var url = apiUrl + "account/login";
         var result = await fetch(url, {
@@ -131,18 +84,66 @@ import {connect} from 'react-redux'
         }
       };
 
-      handlePassword = pass => {
-        if (pass.length > 0) {
+      handleFirstName = firstName => {
+        if (firstName.length > 0) {
           this.setState(
             {
-              password: pass
+              firstName
             },
             this.validateForm
           );
         } else {
           this.setState({
-            password: '',
-            errMessage: 'password cannot be empty'
+            firstName: '',
+            errMessage: 'First Name cannot be empty'
+          });
+        }
+      };
+
+      handleLastName = lastName => {
+        if (lastName.length > 0) {
+          this.setState(
+            {
+              lastName
+            },
+            this.validateForm
+          );
+        } else {
+          this.setState({
+            lastName: '',
+            errMessage: 'Last Name cannot be empty'
+          });
+        }
+      };
+
+      handleAccountNumber = accountNumber => {
+        if (accountNumber.length > 0) {
+          this.setState(
+            {
+                accountNumber
+            },
+            this.validateForm
+          );
+        } else {
+          this.setState({
+            accountNumber: '',
+            errMessage: 'Account Number cannot be empty'
+          });
+        }
+      };
+
+      handleBankName = bankName => {
+        if (bankName) {
+          this.setState(
+            {
+                bankName
+            },
+            this.validateForm
+          );
+        } else {
+          this.setState({
+            bankName: '',
+            errMessage: 'Select Bank Name'
           });
         }
       };
@@ -151,7 +152,9 @@ import {connect} from 'react-redux'
         let testEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
         if (
           this.state.email.length > 0 &&
-          this.state.password.length > 0 &&
+          this.state.firstName.length > 0 &&
+          this.state.lastName.length > 0 &&
+          this.state.accountNumber.length > 0 &&
           testEmail.test(this.state.email) 
         ) {
           this.setState({
@@ -168,12 +171,18 @@ import {connect} from 'react-redux'
 
     render(){
         return(
-            <SignIn 
+            <BankView
                 email = {this.state.email}
-                password= {this.state.password}
+                firstName= {this.state.firstName}
+                lastName= {this.state.lastName}
+                accountNumber = { this.state.accountNumber}
+                bankName= {this.state.bankName}
                 handleEmail = { this.handleEmail}
-                handlePassword= { this.handlePassword }
-                login= { this.login }
+                handleFirstName= { this.handleFirstName }
+                handleLastName= { this.handleLastName }
+                handleBankName= { this.handleBankName}
+                handleAccountNumber={ this.handleAccountNumber}
+                addBank= { this.addBank }
                 disable= { this.state.disable }
                 spin = { this.state.spin }
                 navigation= {this.props.navigation}
@@ -188,4 +197,4 @@ const mapStateToProps = state => ({
   userId: state.getUserId
 })
 
-export default connect(mapStateToProps, {loginAction, getUserIdAction })(SignInController)
+export default connect(mapStateToProps, {loginAction, getUserIdAction })(BankController)

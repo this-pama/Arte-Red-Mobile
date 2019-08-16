@@ -13,18 +13,18 @@ const walletReducer = ( state={}, action) => {
   return state
 }
 
-const loginReducer = (state = [], action) => {
-  if (action.type === LOGIN) return [...state, action.payload]
+const loginReducer = (state = {}, action) => {
+  if (action.type === LOGIN) return  action.payload
   return state
 }
 
-const getUserIdReducer = (state = [], action) => {
-  if (action.type === GET_USER_ID) return [...state, action.payload]
+const getUserIdReducer = (state = {}, action) => {
+  if (action.type === GET_USER_ID) return  action.payload
   return state
 }
 
-const getUserProfileReducer = (state = [], action) => {
-  if (action.type === GET_USER_PROFILE) return [...state, action.payload]
+const getUserProfileReducer = (state = {}, action) => {
+  if (action.type === GET_USER_PROFILE) return action.payload
   return state
 }
 

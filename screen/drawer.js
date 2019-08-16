@@ -34,11 +34,9 @@ class DrawerScreen extends Component {
             </Left>
             <Body>
               <Text onPress={()=>{
-                this.props.loginAction({
-                  jwt: "",
-                  accountId: ""
-                })
-                this.props.getUserIdAction("")
+                this.props.loginAction({})
+                this.props.getUserIdAction({})
+                this.props.getUserProfileAction({})
                 this.props.navigation.navigate("Landing")
               }}>Logout</Text>
             </Body>
@@ -168,7 +166,7 @@ class DrawerScreen extends Component {
 
 const mapStateToProps = state => ({
   jwt: state.login.jwt,
-  userId: state.getUserId,
+  userId: state.getUserId.userId,
   profile: state.userProfile
 })
 

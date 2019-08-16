@@ -24,40 +24,47 @@ class HomeScreen extends Component {
   }
   
   componentDidMount(){
+    this.fetchUserProfile()
+
     if(this.props.image){
       this.setState({ image : this.props.image })
     }
     
-    this.fetchUserProfile()
   }
 
-  fetchUserProfile= () =>{
-    if(!this.props.userId && this.props.userId.length <= 0 ){
+
+  fetchUserProfile= async () =>{
+    if(!this.props.userId || this.props.userId.length <= 0  || !this.props.jwt[0].jwt 
+      || this.props.jwt[0].jwt.length <=0 ){
       return
     }
 
     var url = apiUrl + "user/" + this.props.userId;
-      fetch(url,{
-        headers: { 
-          'content-type': 'application/json',
-          "Authorization": `Bearer ${this.props.jwt}`
-        }
-      })
-      .then(response =>{
-        console.warn(response)
-        if(response.status !== 200 ){
-          console.warn("failed to fetch user profile")
-        }
-        response.json()
-      })
-      .then(res =>{
-        if (res._id) {
-          this.props.getUserProfileAction(res)
-        } 
-        else  {
-          console.warn("fetching user profile failed")
-        }
-      })
+    var result = await fetch(url, {
+      method: 'GET',
+      headers: { 
+        'content-type': 'application/json',
+        "Authorization": `Bearer ${this.props.jwt[0].jwt}`
+       }
+    });
+    var response = await result;
+    
+    if(response.status !== 200 ){
+      console.warn("fetching user failed response")
+      return
+    }
+    else{
+      var res = await response.json();
+      if (res._id) {
+        // set state in redux store
+        this.props.getUserProfileAction(res)
+
+      } 
+      else  {
+        console.warn("fetching user profile failed")
+        return
+      }
+    }
   }
   
   render() {
@@ -239,7 +246,7 @@ class HomeScreen extends Component {
 
 
 const mapStateToProps = state => ({
-  jwt: state.login.jwt,
+  jwt: state.login,
   userId: state.getUserId
 })
 

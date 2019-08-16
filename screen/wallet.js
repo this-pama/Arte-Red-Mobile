@@ -24,37 +24,47 @@ class WalletScreen extends Component {
     }
   }
 
-  componentDidMount(){
-    if(!this.props.profile.walletId){
+ async componentDidMount(){
+    if(!this.props.profile[0].walletId){
       this.setState({ isFetch: false })
     }
     else{
-      const url = apiUrl + "wallet/" + this.props.profile.walletId;
-       fetch(url,{
+      console.warn(this.props.profile[0].walletId)
+      const url = apiUrl + "wallet/" + this.props.profile[0].walletId;
+       var result = await fetch(url,{
         headers: { 
           'content-type': 'application/json',
-          "Authorization": `Bearer ${this.props.jwt}`
+          "Authorization": `Bearer ${this.props.jwt[0].jwt}`
          }
        })
-      .then(resp => resp.json())
-      .then(result => {
-        this.setState({
-          wallet: result.wallet,
-          withdrawable: result.withdrawable,
-          withdraws: result.withdraws,
-          totalEarning: result.totalEarning,
-          totalWithdraws: result.totalWithdraws,
-          isFetch: true
-        })
-      })
-      .catch(err=> this.props.navigation.goBack())
-        alert("Error occured while checking for wallet")
+       
+        if(result.status !== 200){
+          this.setState({ isFetch: true })
+        }
+        else {
+          var resp = await result.json()
+          console.warn(resp)
+          if(resp._id){
+            this.setState({
+              wallet: resp.wallet,
+              withdrawable: resp.withdrawable,
+              withdraws: resp.withdraws,
+              totalEarning: resp.totalEarning,
+              totalWithdraws: resp.totalWithdraws,
+              isFetch: true
+            })
+          }
+          else{
+            alert("No wallet found")
+          }
+        }
+        
     }
   }
 
   render() {
     if(!this.state.isFetch){
-      setTimeout(()=> this.setState({ isFetch: true }), 10000 )
+      // setTimeout(()=> this.setState({ isFetch: true }), 10000 )
       return(
         <Container>
         <Header  style={{ backgroundColor: "#990000"}}>
@@ -77,21 +87,21 @@ class WalletScreen extends Component {
             <Body style={{ color: "#ffffff", justifyContent: "center", alignItems: "center",  alignContent: "center" }}>
                     <Icon name="cash" style={{color: "#ffffff" }} />
                     <Text style={{color: "#ffffff", fontWeight: "bold" }}>Total Earning</Text>
-                    <Text style={{color: "#ffffff" }}>NGN 0</Text>
+                    <Text style={{color: "#ffffff" }}>NGN {this.state.totalEarning}</Text>
             </Body>
           </Col>
           <Col style={{ backgroundColor: "#cc0000", height: 150}}>
             <Body style={{ justifyContent: "center", alignItems: "center",  alignContent: "center", color: "#ffffff" }}>
                     <Icon name="cash" style={{color: "#ffffff" }} />
                     <Text style={{color: "#ffffff", fontWeight: "bold" }}>Balance</Text>
-                    <Text style={{color: "#ffffff" }}>NGN 0</Text>
+                    <Text style={{color: "#ffffff" }}>NGN {this.state.wallet}</Text>
             </Body>
           </Col>
           <Col style={{ backgroundColor: "#e60000", height: 150 }}>
             <Body style={{ justifyContent: "center", alignItems: "center",  alignContent: "center", color: "#ffffff" }} >
                     <Icon  name="cash" style={{color: "#ffffff" }}/>
                     <Text style={{color: "#ffffff", fontWeight: "bold" }} > Ledger Balance</Text>
-                    <Text style={{color: "#ffffff" }} >NGN 0</Text>
+                    <Text style={{color: "#ffffff" }} >NGN {this.state.withdrawable}</Text>
             </Body>
           </Col>
         </Grid>
@@ -180,7 +190,7 @@ class WalletScreen extends Component {
 }
 
 const mapStateToProps = state => ({
-  jwt: state.login.jwt,
+  jwt: state.login,
   userId: state.login.userId,
   profile: state.userProfile
 })

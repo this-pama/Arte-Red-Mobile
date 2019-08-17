@@ -4,9 +4,13 @@ import { Permissions } from 'expo';
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
 import { apiUrl, cloudinaryUrl } from '../screen/service/env'
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import { getUserProfileAction } from "../redux/userProfileAction"
+import {connect} from 'react-redux'
 
 
-export default class EditProfileController extends Component{
+class EditProfileController extends Component{
     constructor(props){
         super(props);
         this.state={
@@ -28,16 +32,19 @@ export default class EditProfileController extends Component{
     }
 
     componentDidMount() {
+      if("profileImage" in this.props.profile){
+        this.setState({ image: this.props.profile.profileImage})
+      }
       this.getPermissionAsync();
     }
   
       getPermissionAsync = async () => {
-      if (Constants.platform.ios) {
-          const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-          if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to post!');
-          }
-      }
+        if (Constants.platform.ios) {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (status !== 'granted') {
+            alert('Sorry, we need camera roll permissions to post!');
+            }
+        }
       }
   
       pickImage = async () => {
@@ -80,12 +87,13 @@ export default class EditProfileController extends Component{
     }
 
     updateDb= async () => {
+      console.warn(url)
         var url = apiUrl + "user/add/" + this.props.userId;
         var result = await fetch(url, {
-          method: 'POST',
+          method: 'PUT',
           headers: { 
             'content-type': 'application/json',
-            "Authorization": `Bearer ${this.props.jwt}`,
+            "Authorization": `Bearer ${this.props.jwt}`
           },
           body: JSON.stringify({
             firstName: this.state.firstName,
@@ -102,6 +110,7 @@ export default class EditProfileController extends Component{
         var response = await result;
         
         if(response.status !== 200 ){
+          console.warn(response)
           this.setState({
             firstName: "",
             lastName: "",
@@ -111,23 +120,22 @@ export default class EditProfileController extends Component{
             country: "",
             telephone: "",
             userType: "",
-            profileImage: this.state.imageUrl, 
             spin: false
           });
         }
         else{
           var res = await response.json();
           if (res._id) {
+            console.warn(res)
             this.setState({
               firstName: "",
               lastName: "",
               nickName: "",
-              description: "",
+              bio: "",
               address: "",
               country: "",
               telephone: "",
               userType: "",
-              profileImage: this.state.imageUrl, 
               spin: false
             });
             this.props.navigation.navigate("Home")
@@ -137,7 +145,7 @@ export default class EditProfileController extends Component{
               firstName: "",
               lastName: "",
               nickName: "",
-              description: "",
+              bio: "",
               address: "",
               country: "",
               telephone: "",
@@ -145,6 +153,7 @@ export default class EditProfileController extends Component{
               profileImage: this.state.imageUrl, 
               spin: false
             });
+            console.warn("Not updated")
           }
         }
     };
@@ -326,3 +335,13 @@ export default class EditProfileController extends Component{
         )
     }
 }
+
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  accountId: state.login.accountId,
+  userId: state.getUserId.userId,
+  profile: state.userProfile
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction, getUserProfileAction })(EditProfileController )

@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux'
 import { LOGIN } from './variables'
-import { GET_USER_ID, GET_USER_PROFILE } from "./variables"
+import { GET_USER_ID, GET_USER_PROFILE, ADD_BANK_DETAIL, GET_BANK_DETAILS } from "./variables"
 
 const merge = (prev, next) => Object.assign({}, prev, next)
 
@@ -28,12 +28,25 @@ const getUserProfileReducer = (state = {}, action) => {
   return state
 }
 
+const addBankReducer = (state = {}, action) => {
+  if (action.type === ADD_BANK_DETAIL ) return action.payload
+  return state
+}
+
+const getBankDetailsReducer = (state = {}, action) => {
+  if (action.type === GET_BANK_DETAILS ) return action.payload
+  return state
+}
+
+
 
 // define  combine reducer
 const reducer = combineReducers({
   login: loginReducer, 
   getUserId: getUserIdReducer, 
-  userProfile: getUserProfileReducer
+  userProfile: getUserProfileReducer,
+  bank: addBankReducer,
+  bankDetails: getBankDetailsReducer
 })
 
 export default reducer

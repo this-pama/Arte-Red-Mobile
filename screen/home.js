@@ -58,10 +58,18 @@ class HomeScreen extends Component {
       if (res._id) {
         // set state in redux store
         this.props.getUserProfileAction(res)
+        
+        if("firstName" in res){
+          return
+        }
+        else{ 
+        this.props.navigation.navigate("EditProfile") 
+      }
 
       } 
       else  {
         console.warn("fetching user profile failed")
+        this.props.navigation.push("EditProfile")
         return
       }
     }

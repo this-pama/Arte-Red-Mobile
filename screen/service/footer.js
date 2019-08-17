@@ -23,7 +23,6 @@ class FooterTabs extends Component {
   }
 
     componentDidMount() {
-      console.warn(this.props.userId)
       this.getPermissionAsync();
     }
 

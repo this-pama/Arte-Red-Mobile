@@ -43,7 +43,7 @@ class DrawerScreen extends Component {
             <Right>
               <Icon active name="arrow-forward" />
             </Right>
-       </ListItem>
+      </ListItem>
     )
 
 

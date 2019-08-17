@@ -3,6 +3,7 @@ import BankView from "../screen/bank"
 import { apiUrl } from '../screen/service/env'
 import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
+import { addBankAction } from "../redux/addBankAction"
 import {connect} from 'react-redux'
 
  class BankController extends Component{
@@ -23,13 +24,19 @@ import {connect} from 'react-redux'
 
     addBank = async () => {
       this.setState({ spin : true })
-        var url = apiUrl + "account/login";
+        var url = apiUrl + "wallet/bank/" + this.props.userId;
         var result = await fetch(url, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
+          method: 'PUT',
+          headers: { 
+            'content-type': 'application/json',
+            "Authorization": `Bearer ${this.props.jwt}`
+           },
           body: JSON.stringify({
             email: this.state.email,
-            password: this.state.password
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            accountNumber: this.state.accountNumber,
+            bankName: this.state.bankName
           })
         });
         var response = await result;
@@ -37,30 +44,34 @@ import {connect} from 'react-redux'
         if(response.status !== 200 ){
           this.setState({
             email: '',
-            password: "",
+            firstName: "",
+            lastName: "",
+            accountNumber: "",
+            bankName: "",
             spin: false
           });
         }
         else{
           var res = await response.json();
-          if (res.token) {
+          if (res._id) {
             this.setState({
               email: '',
-              password: "",
-              accountId: res.id,
-              jwt: res.token
+              firstName: "",
+              lastName: "",
+              accountNumber: "",
+              bankName: "",
+              spin: false
             });
             
-            this.props.loginAction({
-              jwt: res.token,
-              accountId: res.id
-            })
-            this.fetchUserId()
+            this.props.addBankAction(res)
           } 
           else  {
             this.setState({
               email: '',
-              password: "",
+              firstName: "",
+              lastName: "",
+              accountNumber: "",
+              bankName: "",
               spin: false
             });
           }
@@ -194,7 +205,7 @@ import {connect} from 'react-redux'
 const mapStateToProps = state => ({
   jwt: state.login.jwt,
   accountId: state.login.accountId,
-  userId: state.getUserId
+  userId: state.getUserId.userId
 })
 
 export default connect(mapStateToProps, {loginAction, getUserIdAction })(BankController)

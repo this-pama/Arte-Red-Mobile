@@ -25,9 +25,12 @@ class ProfileScreen extends Component {
         this.getPermissionAsync();
 
         //check if image url link exist and set state if true
-        // if(this.props.profile[0]){
-        //   this.setState({ image : this.props.profile[0].profileImage })
-        // }
+        if(this.props.profile !== {} ){
+          if(this.props.profile.profileImage){
+            this.setState({ image : this.props.profile.profileImage })
+          }
+          else{ return }
+        }
 
       }
     
@@ -164,12 +167,12 @@ class ProfileScreen extends Component {
               <ListItem>
                   <Left>
                       <Text note>
-                        Following {!this.props.profile.following ? 0 : this.props.profile.following}
+                        Following {!this.props.profile.following.length <= 0 ? 0 : this.props.profile.following.length }
                       </Text>
                   </Left>
                   <Right>
                     <Text note>
-                        {!this.props.profile.follower ? 0 : this.props.profile.follower} Followers
+                        {!this.props.profile.follower.length <= 0 ? 0 : this.props.profile.follower.length} Followers
                       </Text>
                   </Right>
               </ListItem>

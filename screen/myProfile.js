@@ -18,6 +18,9 @@ class ProfileScreen extends Component {
         this.state={
           register: "Register",
           follow : "Follow",
+          following: 0,
+          follower: 0,
+          image: ""
         }
       }
     
@@ -26,8 +29,18 @@ class ProfileScreen extends Component {
 
         //check if image url link exist and set state if true
         if(this.props.profile !== {} ){
-          if(this.props.profile.profileImage){
-            this.setState({ image : this.props.profile.profileImage })
+          
+          if("following" in this.props.profile){
+            this.setState({ 
+              following: this.props.profile.following.length,
+              follower: this.props.profile.follower.length
+             })
+          }
+
+          if("profileImage" in this.props.profile){
+            this.setState({ 
+              image : this.props.profile.profileImage,
+             })
           }
           else{ return }
         }
@@ -144,8 +157,8 @@ class ProfileScreen extends Component {
                     <TouchableOpacity 
                         onPress={ this.pickImage }
                     >
-                    { this.props.profile.profileImage && 
-                        this.props.profile.profileImage.length > 0 
+                    { 
+                        this.state.image.length > 0 
                           ? imageUri  : image
                       }
                     </TouchableOpacity>
@@ -167,12 +180,12 @@ class ProfileScreen extends Component {
               <ListItem>
                   <Left>
                       <Text note>
-                        Following {!this.props.profile.following.length <= 0 ? 0 : this.props.profile.following.length }
+                        Following {this.state.following }
                       </Text>
                   </Left>
                   <Right>
                     <Text note>
-                        {!this.props.profile.follower.length <= 0 ? 0 : this.props.profile.follower.length} Followers
+                        {this.state.follower} Followers
                       </Text>
                   </Right>
               </ListItem>

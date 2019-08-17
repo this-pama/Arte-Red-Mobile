@@ -73,8 +73,8 @@ class FooterTabs extends Component {
             <Button vertical
               active= { this.props.activeDetails }
                  onPress={this.props.myDetail} >
-              <Icon active name="eye" />
-              <Text>My Details</Text>
+              <Icon active name="home" />
+              <Text>My Bank</Text>
             </Button>
             
           </FooterTab>

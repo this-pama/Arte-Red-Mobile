@@ -3,21 +3,52 @@ import { Image } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Title, Right, Form,
     Label, Item, Input, Text, Button, Icon, Left, Body, Toast } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Rave from 'react-native-rave';
+import {connect} from 'react-redux'
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import { getUserProfileAction } from "../redux/userProfileAction"
+import {apiUrl} from "./service/env"
 
-export default class BuyScreen extends Component {
 
-    state={
-        quantity: null
+class BuyScreen extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      artwork: {},
+      quantity: 0
+    }
+  }
+
+    async componentDidMount(){
+      const artworkId = this.props.navigation.getParam("artworkId")
+      var url = apiUrl + "artwork/" + artworkId;
+      var result = await fetch(url, {
+        method: 'GET',
+        headers: { 
+          'content-type': 'application/json',
+          "Authorization": `Bearer ${this.props.jwt}`
+         }
+      });
+      var response = await result;
+      if(response.status !== 200 ){
+        console.warn("fetching artworks failed response")
+        return
+      }
+      else{
+        var res = await response.json();
+        if (res._id) {
+          this.setState({
+            artwork: res
+          })
+        }
+
+        else  {
+          console.warn("Can't get artwork")
+          
+        }
+      }
     }
   render() {
-      const title= this.props.navigation.getParam("title")
-      const year = this.props.navigation.getParam("year")
-      const artistName = this.props.navigation.getParam("artistName")
-      const location = this.props.navigation.getParam("location")
-      const size = this.props.navigation.getParam("size")
-      const category = this.props.navigation.getParam("category")
-      const price = this.props.navigation.getParam("price")
     return (
       <Container>
         <Header style={{ backgroundColor: "#990000"}}>
@@ -31,7 +62,7 @@ export default class BuyScreen extends Component {
           </Body>
           <Right>
             <Button transparent>
-              <Icon name="open" />
+              <Icon name="cash" />
             </Button>
           </Right>
         </Header>
@@ -40,39 +71,36 @@ export default class BuyScreen extends Component {
           <CardItem>
               <Left>
                 <Body>
-                  <Text>{!title ? "Title" : title}</Text>
-                  <Text note>{!year ? "2019" : year}</Text>
+                  <Text>{!this.state.artwork.title ? "Title" : this.state.artwork.title}</Text>
+                  <Text note>{!this.state.artwork.year ? "Year Unknown" : this.state.artwork.year}</Text>
                 </Body>
               </Left>
               <Right>
                 <Body>
-                  <TouchableOpacity
-                    onPress={()=> this.props.navigation.navigate("Profile")}
-                  >
-                    <Text style={{ color: "blue" }}>{!artistName ? "Artist Name" : artistName}</Text>
+                  <TouchableOpacity>
+                    <Text note>{!this.state.artwork.artistName ? "Artist Unknown" : this.state.artwork.artistName}</Text>
                   </TouchableOpacity>
-                  {/* <Text note>{!location ? "Lagos" : location}</Text>
-                  <Text note>{!category ? "Painting" : category}</Text> */}
+                  <Text note >{!this.state.artwork.location ? "Location Unknown" : this.state.artwork.location }</Text>
                 </Body>
               </Right>
             </CardItem>
             <CardItem>
               {/* <Body> */}
-                <Image source={ require('../assets/splash.png') } style={{height: 200, width: 400, flex: 1}} />
+                <Image source={{uri : this.state.artwork.imageURL }} style={{height: 200, width: 400, flex: 1}} />
               {/* </Body> */}
             </CardItem>
             <CardItem>
               <Left>
                 <Button transparent textStyle={{color: '#87838B'}}>
                   <Icon name="pricetag" />
-                  <Text>NGN {!price ? "0" : price}</Text>
+                  <Text>NGN {!this.state.artwork.price ? "0" : this.state.artwork.price}</Text>
                 </Button>
               </Left>
             </CardItem>
           </Card>
           <Form style={{ paddingTop: 20, paddingBottom: 20}}>
             <Text style={{fontWeight: "bold", paddingLeft: 40}}>Total Cost</Text>
-            <Text note style={{ paddingLeft: 40 }}>NGN {price ? (price*this.state.quantity) : price || 0}</Text>
+            <Text note style={{ paddingLeft: 40 }}>NGN {this.state.artwork.price ? (this.state.artwork.price*this.state.quantity) : this.state.artwork.price || 0}</Text>
             <Item inlineLabel style={{ paddingLeft: 30}}>
               <Label>Quantity</Label>
               <Input keyboardType="numeric" />
@@ -113,3 +141,13 @@ export default class BuyScreen extends Component {
     );
   }
 }
+
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId.userId,
+  profile: state.userProfile
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction, 
+    getUserProfileAction })(BuyScreen )

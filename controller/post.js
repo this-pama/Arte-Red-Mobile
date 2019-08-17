@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import Post from "../screen/post"
 import { cloudinaryUrl, apiUrl } from "../screen/service/env"
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import {connect} from 'react-redux'
 
-export default class PostController extends Component{
+class PostController extends Component{
     constructor(props){
         super(props);
         this.state={
@@ -11,15 +14,21 @@ export default class PostController extends Component{
             size: "",
             story: "",
             location: "",
-            price: "",
+            price: 0,
             year: "",
             number: "",
             category: "",
             masterpiece: "",
             imageUrl: "",
             errMessage: "",
-            disable: true
+            disable: true,
+            spin: false
         }
+    }
+
+    componentDidMount(){
+      console.warn(this.props.jwt)
+      console.warn(this.props.userId)
     }
 
     saveToDb = async ()=>{
@@ -33,7 +42,8 @@ export default class PostController extends Component{
         masterpiece = false
       }
 
-      var result = await fetch(apiUrl, {
+      var url = apiUrl + "artwork/add/" + this.props.userId;
+      var result = await fetch(url, {
         method: 'POST',
         headers: { 
           'content-type': 'application/json',
@@ -54,19 +64,43 @@ export default class PostController extends Component{
         })
       });
       var response = await result;
-      var res = await response.json();
-      
-      //check if saved sucessfully
-      if(res.message === "Artwork saved successfully"){
-        return this.props.navigation.navigate("Home")
-      }
 
-      alert("Error while saving")
+      if(response.status !== 200){
+        console.warn(response.error)
+        this.setState({ spin : false })
+        alert("Error occured while uploading")
+      }
+      else{
+        var res = await response.json();
+        console.warn(res)
+        //check if saved sucessfully
+        if(res.message == 'Artwork saved successfully' ){
+          this.setState({
+              title: "",
+              artistName: "",
+              size: "",
+              story: "",
+              location: "",
+              price: 0,
+              year: "",
+              number: "",
+              category: "",
+              masterpiece: "",
+              spin : false
+          })
+          return this.props.navigation.navigate("Home")
+        }
+        else{
+          this.setState({ spin : false })
+          alert("Error while uploading")
+        }
+      }
+      
     }
 
     post= async () => {
+      this.setState({ spin: true })
         const result = this.props.navigation.getParam("image")
-        console.warn(result)
         if(!result.base64){
          return alert("There seams to be an error with the image")
         }
@@ -179,10 +213,10 @@ export default class PostController extends Component{
       };
 
       handlePrice = price => {
-        if (price.length > 0) {
+        if (price.length > 0 && +price) {
           this.setState(
             {
-              price,
+              price: +price,
               errMessage: ""
             },
             this.validateForm
@@ -301,7 +335,17 @@ export default class PostController extends Component{
                 handleMasterpiece= { this.handleMasterpiece }
                 post= { this.post }
                 navigation= {this.props.navigation}
+                spin={this.state.spin}
             />
         )
     }
 }
+
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  accountId: state.login.accountId,
+  userId: state.getUserId.userId
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction })(PostController)

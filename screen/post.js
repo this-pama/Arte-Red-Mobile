@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Image, KeyboardAvoidingView, View } from 'react-native';
-import { Container, Header, Content, Card, CardItem,Title, Thumbnail, Text, Button, Icon, Left, Body, Right,
-Form, Label, Input, Picker, Item, Textarea } from 'native-base';
+import { Container, Header, Content, Card, CardItem,Title, Thumbnail, Text, 
+  Button, Icon, Left, Body, Right,
+Form, Label, Input, Picker, Item, Textarea, Spinner } from 'native-base';
 import PropTypes from "prop-types"
 
 export default class PostScreen extends Component {
@@ -14,6 +15,7 @@ export default class PostScreen extends Component {
  
   render() {
       const image = this.props.navigation.getParam("image")
+      const spinner = <Spinner color="white" />
     return (
       <Container>
         <Header style={{ backgroundColor: "#990000"}}>
@@ -113,7 +115,7 @@ export default class PostScreen extends Component {
                 disabled={this.props.disable}
                 onPress={ this.props.post }
             >
-                <Text> Post </Text>
+                {this.props.spin ? spinner : <Text> Post </Text>}
             </Button>
           </View>         
         </Content>
@@ -139,12 +141,13 @@ PostScreen.propTypes= {
     size: PropTypes.string,
     story: PropTypes.string,
     location: PropTypes.string,
-    price: PropTypes.string,
+    price: PropTypes.number,
     year: PropTypes.string,
     number: PropTypes.string,
     category: PropTypes.string,
     masterpiece: PropTypes.string,
     disable: PropTypes.bool,
+    spin: PropTypes.bool,
     handleTitle: PropTypes.func.isRequired,
     handleArtistName: PropTypes.func.isRequired,
     handleSize: PropTypes.func.isRequired,

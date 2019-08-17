@@ -126,7 +126,10 @@ class DrawerScreen extends Component {
             </Left>
             <Body>
               <Text onPress={()=>{
-                if(this.props.userId  && this.props.userId.length > 0 ){
+                if(process.env.NODE_ENV === 'development'){
+                  this.props.navigation.navigate('Network')
+                }
+                else if(this.props.userId  && this.props.userId.length > 0 ){
                   this.props.navigation.navigate('Network')
                 }
                 else{

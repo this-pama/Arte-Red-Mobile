@@ -1,9 +1,132 @@
 import React, { Component } from 'react';
-import { Container, Header, Left, Body, Right, Button, Icon, Title, Segment, Content, Text } from 'native-base';
+import { Container, Header, Left, Body, Right, Button, Icon, Title, 
+  Segment, Content, Text, Card, Thumbnail, CardItem  } from 'native-base';
+import {TouchableOpacity} from "react-native-gesture-handler"
+import { Image } from "react-native"
 import FooterTabs from "./service/footer"
+import {connect} from 'react-redux'
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import { getUserProfileAction } from "../redux/userProfileAction"
+import {apiUrl} from "./service/env"
 
-export default class NetworkScreen extends Component {
+class NetworkScreen extends Component {
+  constructor(props){
+    super(props)
+    this.state={
+      post: [],
+      artworkId: [],
+      count: 1
+    }
+  }
+
+  componentDidMount(){
+    if("artwork" in this.props.profile){
+      this.setState({ artworkId : this.props.profile.artwork })
+    }
+
+    this.getPost()
+  }
+
+  getPost= async ()=>{
+    if(!this.props.userId || this.props.userId.length <= 0  || !this.props.jwt 
+      || this.props.jwt.length <=0 ){
+      return
+    }
+
+    let hold = 10 * this.state.count
+    for(let i= 0; i < hold; i++){
+      var url = apiUrl + "artwork/" + this.props.profile.artwork[i];
+      var result = await fetch(url, {
+        method: 'GET',
+        headers: { 
+          'content-type': 'application/json',
+          "Authorization": `Bearer ${this.props.jwt}`
+         }
+      });
+      var response = await result;
+      if(response.status !== 200 ){
+        console.warn("fetching artworks failed response")
+        return
+      }
+      else{
+        var res = await response.json();
+        if (res._id) {
+          this.setState({
+            post: [ ... this.state.post, res]
+          })
+        }
+
+        else  {
+          console.warn("Can't get artwork")
+          
+        }
+      }
+
+      if(i == hold-1 && this.state.artworkId.length > hold){
+        this.mapAllPost()
+        this.setState({ count: this.state.count++ })
+      }
+      else{ this.mapAllPost() }
+      
+
+    }
+  
+    
+  }
+
+
+
+  mapAllPost = async ()=>{
+    var allArtwork = await this.state.post.map(artwork => 
+      (
+        <Card key={artwork._id}>
+              <CardItem>
+                <Left>
+                  <Body>
+                    <Text>{artwork.title} {`(${artwork.year})`}</Text>
+                      <Text note>{artwork.artistName}</Text>
+                  </Body>
+                </Left>
+                <Right>
+                  <Button transparent onPress={() => this.props.navigation.navigate("Detail", {artwork : artwork}) }>
+                      <Icon active name="open" style={{ paddingRight: 25, fontSize: 20}} />
+                       <Text>More</Text>
+                  </Button>
+                </Right>
+              </CardItem>
+              <CardItem cardBody>
+                <Image source={{ uri: artwork.imageURL } } style={{height: 200, width: null, flex: 1}}/>
+              </CardItem>
+              <CardItem>
+                <Left>
+                  <Button transparent >
+                    <Icon active name="thumbs-up" />
+                    <Text>{!artwork.like.length ? 0 :artwork.like.length } Likes</Text>
+                  </Button>
+                </Left>
+                <Body>
+                  <Button transparent >
+                    <Icon active name="chatbubbles" />
+                    <Text>{ !artwork.comment.length ? 0 : artwork.comment.length } Comments</Text>
+                  </Button>
+                  
+                </Body>
+                <Right>
+                  <Button transparent onPress= {()=> this.props.navigation.navigate("Buy", { artworkId : artwork._id })}>
+                      <Icon active name="pricetag" />
+                      <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
+                  </Button>
+                </Right>
+              </CardItem>
+            </Card>
+      )
+    )
+    this.setState({ allArtwork : allArtwork })
+  }
+
   render() {
+  
     return (
       <Container>
         <Header hasSegment style={{ backgroundColor: "#990000"}}>
@@ -33,7 +156,7 @@ export default class NetworkScreen extends Component {
           </Button>
         </Segment>
         <Content padder>
-          <Text>You currently have no posts.</Text>
+          {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : <Text>You currently have no posts.</Text> }
         </Content>
 
         <FooterTabs 
@@ -44,3 +167,14 @@ export default class NetworkScreen extends Component {
     );
   }
 }
+
+
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId.userId,
+  profile: state.userProfile
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction, 
+    getUserProfileAction })(NetworkScreen)

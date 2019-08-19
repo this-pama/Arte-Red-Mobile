@@ -151,10 +151,10 @@ class ProfileScreen extends Component {
           </Right>
         </Header>
         <Content padder>
-          <List>
+        <List>
               <ListItem avatar>
                 <Left>
-                    <TouchableOpacity 
+                <TouchableOpacity 
                         onPress={ this.pickImage }
                     >
                     { 
@@ -170,16 +170,20 @@ class ProfileScreen extends Component {
                 </Body>
                 <Right>
                     <Text note>{this.props.profile.userType ? this.props.profile.userType : "Type of User"}</Text>
-                    <Text note>{this.props.profile.address ? this.props.profile.address : "Address"}</Text>
                     <Text note>{this.props.profile.country ? this.props.profile.country : "Country"}</Text>
                 </Right>
               </ListItem>
               <ListItem>
-                 <Text note>{this.props.profile.description ? this.props.profile.description : "About me"}</Text>
+                <Body>
+                  <Text note>{this.props.profile.address ? this.props.profile.address : "Address"}</Text>
+                </Body>
+              </ListItem>
+              <ListItem>
+                <Text note>{this.props.profile.description ? this.props.profile.description : "About me"}</Text>
               </ListItem>
               <ListItem>
                   <Left>
-                      <Text note>
+                    <Text note>
                         Following {this.state.following }
                       </Text>
                   </Left>
@@ -191,36 +195,39 @@ class ProfileScreen extends Component {
               </ListItem>
               <ListItem>
                   <Left>
-                    <Text note>
+                    <TouchableOpacity>
+                        <Text note>
                         {this.props.profile.email ? this.props.profile.email : "Email"}
-                    </Text>
+                         </Text>
+                    </TouchableOpacity>
                   </Left>
                   <Right>
                     <TouchableOpacity 
-                        onPress={()=>{
-                            if(process.env.NODE_ENV === 'development'){
-                                this.props.navigation.navigate("EditProfile")
-                            }
-                            else if(!this.props.userId){
-                                Toast.show({
-                                    text: "You need to sign in to edit",
-                                    buttonText: "Okay",
-                                    duration: 3000,
-                                    type: 'danger'
-                                  })
-                            }
-                            else{
-                                this.props.navigation.navigate("EditProfile")
-                            }
-                        }}
-                    >
-                        <Text note style={{ color: "blue"}}>
-                            Edit
-                         </Text>
-                    </TouchableOpacity>
+                          onPress={()=>{
+                              if(process.env.NODE_ENV === 'development'){
+                                  this.props.navigation.navigate("EditProfile")
+                              }
+                              else if(!this.props.userId){
+                                  Toast.show({
+                                      text: "You need to sign in to edit",
+                                      buttonText: "Okay",
+                                      duration: 3000,
+                                      type: 'danger'
+                                    })
+                              }
+                              else{
+                                  this.props.navigation.navigate("EditProfile")
+                              }
+                          }}
+                      >
+                          <Text note style={{ color: "blue"}}>
+                              Edit
+                          </Text>
+                      </TouchableOpacity>
                   </Right>
               </ListItem>
             </List>
+
         </Content>
       </Container>
     );

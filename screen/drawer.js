@@ -62,6 +62,65 @@ class DrawerScreen extends Component {
             </Right>
       </ListItem>
     )
+
+    const wallet = (
+      <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "red" }}>
+                <Icon active name="md-wallet" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={()=> {
+                if(this.props.userId  && this.props.userId.length > 0 ){
+                  this.props.navigation.navigate('Wallet')
+                }
+                else{
+                  Toast.show({
+                    text: "You need to sign in to access your Wallet",
+                    buttonText: "Okay",
+                    duration: 3000,
+                    type: 'danger'
+                  })
+                }
+              }}>Wallet</Text>
+            </Body>
+            <Right>
+              <Icon active name="arrow-forward" />
+            </Right>
+          </ListItem>
+    )
+
+    const network = (
+      <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "#990000" }}>
+                <Icon active name="md-people" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={()=>{
+                if(process.env.NODE_ENV === 'development'){
+                  this.props.navigation.navigate('Network')
+                }
+                else if(this.props.userId  && this.props.userId.length > 0 ){
+                  this.props.navigation.navigate('Network')
+                }
+                else{
+                  Toast.show({
+                    text: "You need to sign in to access your Network",
+                    buttonText: "Okay",
+                    duration: 3000,
+                    type: 'danger'
+                  })
+                }
+              }}>My Network</Text>
+            </Body>
+            <Right>
+              <Icon active name="arrow-forward" />
+            </Right>
+          </ListItem>
+    )
     return (
           <Container>
 
@@ -93,59 +152,8 @@ class DrawerScreen extends Component {
               <Icon active name="arrow-forward" />
             </Right>
           </ListItem>
-          <ListItem icon>
-            <Left>
-              <Button style={{ backgroundColor: "red" }}>
-                <Icon active name="md-wallet" />
-              </Button>
-            </Left>
-            <Body>
-              <Text onPress={()=> {
-                if(this.props.userId  && this.props.userId.length > 0 ){
-                  this.props.navigation.navigate('Wallet')
-                }
-                else{
-                  Toast.show({
-                    text: "You need to sign in to access your Wallet",
-                    buttonText: "Okay",
-                    duration: 3000,
-                    type: 'danger'
-                  })
-                }
-              }}>Wallet</Text>
-            </Body>
-            <Right>
-              <Icon active name="arrow-forward" />
-            </Right>
-          </ListItem>
-          <ListItem icon>
-            <Left>
-              <Button style={{ backgroundColor: "#990000" }}>
-                <Icon active name="md-people" />
-              </Button>
-            </Left>
-            <Body>
-              <Text onPress={()=>{
-                if(process.env.NODE_ENV === 'development'){
-                  this.props.navigation.navigate('Network')
-                }
-                else if(this.props.userId  && this.props.userId.length > 0 ){
-                  this.props.navigation.navigate('Network')
-                }
-                else{
-                  Toast.show({
-                    text: "You need to sign in to access your Network",
-                    buttonText: "Okay",
-                    duration: 3000,
-                    type: 'danger'
-                  })
-                }
-              }}>My Network</Text>
-            </Body>
-            <Right>
-              <Icon active name="arrow-forward" />
-            </Right>
-          </ListItem>
+          { this.props.userId  && this.props.userId.length > 0 ? wallet : null }
+          { this.props.userId  && this.props.userId.length > 0 ? network : null }
           <ListItem icon>
             <Left>
               <Button style={{ backgroundColor: "red" }}>

@@ -2,29 +2,16 @@ import React, { Component } from 'react';
 import { Container, Header, Content, Button, ListItem, Text, Icon, 
     Title, Left, Body, Right, Toast } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {connect} from 'react-redux'
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import { getUserProfileAction } from "../redux/userProfileAction"
 
-
-export default class SettingScreen extends Component {
+class SettingScreen extends Component {
   render() {
-    return (
-      <Container>
-        <Header style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }}>
-          <Left>
-            <Button transparent onPress={()=> this.props.navigation.navigate("Home")}>
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Settings</Title>
-          </Body>
-          <Right>
-            <Button transparent>
-              <Icon name="cog" />
-            </Button>
-          </Right>
-        </Header>
-        <Content style={{padding: 10 }}>
-          <ListItem icon style={{ paddingTop: 50, paddingBottom: 50  }}>
+
+    const myProfile = (
+      <ListItem icon style={{ paddingTop: 50, paddingBottom: 50  }}>
             <Left>
               <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="person" />
@@ -54,7 +41,10 @@ export default class SettingScreen extends Component {
                 </TouchableOpacity>
             </Body>
           </ListItem>
-          <ListItem icon style={{ paddingTop: 20, paddingBottom: 50 }}>
+    )
+
+    const account = (
+      <ListItem icon style={{ paddingTop: 20, paddingBottom: 50 }}>
             <Left>
               <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="key" />
@@ -84,7 +74,10 @@ export default class SettingScreen extends Component {
                 </TouchableOpacity>
             </Body>
           </ListItem>
-          <ListItem icon style={{ paddingTop: 20, paddingBottom: 50 }}>
+    )
+
+    const wallet = (
+      <ListItem icon style={{ paddingTop: 20, paddingBottom: 50 }}>
             <Left>
               <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="wallet" />
@@ -114,6 +107,30 @@ export default class SettingScreen extends Component {
                 </TouchableOpacity>
             </Body>
           </ListItem>
+    )
+
+    return (
+      <Container>
+        <Header style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }}>
+          <Left>
+            <Button transparent onPress={()=> this.props.navigation.navigate("Home")}>
+              <Icon name="arrow-back" />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Settings</Title>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name="cog" />
+            </Button>
+          </Right>
+        </Header>
+        <Content style={{padding: 10 }}>
+         { this.props.userId  && this.props.userId.length > 0 ? myProfile : null }
+         { this.props.userId  && this.props.userId.length > 0 ? account : null }
+         { this.props.userId  && this.props.userId.length > 0 ? wallet : null }
+
           <ListItem icon style={{ paddingTop: 20, paddingBottom: 50 }}>
             <Left>
               <Button style={{ backgroundColor: "#990000" }}>
@@ -158,3 +175,12 @@ export default class SettingScreen extends Component {
     );
   }
 }
+
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId.userId,
+  profile: state.userProfile
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction, getUserProfileAction })(SettingScreen)

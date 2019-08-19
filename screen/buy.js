@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Title, Right, Form,
-    Label, Item, Input, Text, Button, Icon, Left, Body, Toast } from 'native-base';
+    Label, Item, Input, Text, Button, Icon, Left, Body, Toast, Spinner } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {connect} from 'react-redux'
 import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import { getUserProfileAction } from "../redux/userProfileAction"
+import { buyArtworkAction } from "../redux/buyAction"
 import {apiUrl} from "./service/env"
 
 
@@ -15,13 +16,21 @@ class BuyScreen extends Component {
     super(props);
     this.state={
       artwork: {},
-      quantity: 0
+      quantity: 0,
+      fetch: false
     }
   }
 
+    componentWillUnmount(){
+      this.props.buyArtworkAction({})
+    }
+
     async componentDidMount(){
-      const artworkId = this.props.navigation.getParam("artworkId")
-      var url = apiUrl + "artwork/" + artworkId;
+      this.setState({
+        artwork: {}
+      })
+
+      var url = apiUrl + "artwork/" + this.props.artworkId;
       var result = await fetch(url, {
         method: 'GET',
         headers: { 
@@ -32,28 +41,66 @@ class BuyScreen extends Component {
       var response = await result;
       if(response.status !== 200 ){
         console.warn("fetching artworks failed response")
+        this.setState({
+          artwork: {}
+        })
+        
         return
       }
       else{
         var res = await response.json();
         if (res._id) {
           this.setState({
-            artwork: res
+            artwork: res,
+            fetch: true
           })
         }
 
         else  {
           console.warn("Can't get artwork")
+          this.setState({
+            artwork: {}
+          })
           
         }
       }
     }
   render() {
+    const routeName= this.props.navigation.getParam("routeName", "Home")
+    if(!(this.state.fetch)){
+      return(
+        <Container>
+        <Header style={{ backgroundColor: "#990000", paddingBottom: 40, paddingTop: 50}}>
+          <Left>
+            <Button transparent onPress={()=> 
+              this.props.navigation.navigate(routeName)}>
+              <Icon name="arrow-back" />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Buy Artwork</Title>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name="cash" />
+            </Button>
+          </Right>
+        </Header>
+        <Content>
+          <Body >
+          <Spinner color="red" />
+          </Body>
+        </Content>
+      </Container>
+      )
+    }
+    else{
     return (
       <Container>
-        <Header style={{ backgroundColor: "#990000"}}>
+        <Header style={{ backgroundColor: "#990000", paddingBottom: 40, paddingTop: 50}}>
           <Left>
-            <Button transparent onPress={()=> this.props.navigation.goBack()}>
+            <Button transparent onPress={()=>
+            this.props.navigation.navigate(routeName)}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
@@ -138,7 +185,7 @@ class BuyScreen extends Component {
           </Button>
         </Content>
       </Container>
-    );
+    );}
   }
 }
 
@@ -146,8 +193,9 @@ class BuyScreen extends Component {
 const mapStateToProps = state => ({
   jwt: state.login.jwt,
   userId: state.getUserId.userId,
-  profile: state.userProfile
+  profile: state.userProfile,
+  artworkId: state.buyArtwork.id
 })
 
 export default connect(mapStateToProps, {loginAction, getUserIdAction, 
-    getUserProfileAction })(BuyScreen )
+    getUserProfileAction, buyArtworkAction })(BuyScreen )

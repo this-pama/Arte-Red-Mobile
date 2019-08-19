@@ -33,14 +33,14 @@ export default class LandingScreen extends React.Component{
                         </ListItem>
                         
                             <TouchableOpacity
-                                style={{ paddingBottom: 50, paddingTop: 200 }}
+                                style={{ paddingBottom: 50, marginTop: 20 }}
                                 onPress={()=> this.props.navigation.navigate("Login")}
                             >
                                 <Text style={{ color: "red"}}>Already registered. Sign In</Text>
                             </TouchableOpacity>
                         </Body>
                     </Content>
-                    </ImageBackground>
+                </ImageBackground>
                
             </Container>
         )

@@ -8,6 +8,8 @@ import {connect} from 'react-redux'
 import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import { getUserProfileAction } from "../redux/userProfileAction"
+import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
+import { buyArtworkAction } from "../redux/buyAction"
 import {apiUrl} from "./service/env"
 
 class NetworkScreen extends Component {
@@ -16,11 +18,14 @@ class NetworkScreen extends Component {
     this.state={
       post: [],
       artworkId: [],
+      allArtwork: [],
       count: 1
     }
   }
 
   componentDidMount(){
+    this.setState({ post: [], allArtwork: [] })
+
     if("artwork" in this.props.profile){
       this.setState({ artworkId : this.props.profile.artwork })
     }
@@ -46,7 +51,10 @@ class NetworkScreen extends Component {
       });
       var response = await result;
       if(response.status !== 200 ){
-        console.warn("fetching artworks failed response")
+        // console.warn("fetching artworks failed response")
+        this.setState({
+          post: []
+        })
         return
       }
       else{
@@ -58,7 +66,10 @@ class NetworkScreen extends Component {
         }
 
         else  {
-          console.warn("Can't get artwork")
+          // console.warn("Can't get artwork")
+          this.setState({
+            post: []
+          })
           
         }
       }
@@ -89,7 +100,10 @@ class NetworkScreen extends Component {
                   </Body>
                 </Left>
                 <Right>
-                  <Button transparent onPress={() => this.props.navigation.navigate("Detail", {artwork : artwork}) }>
+                  <Button transparent onPress={async () => {
+                    await this.props.moreArtworkDetailsAction({artworkId : artwork._id })
+                    this.props.navigation.navigate("Detail", { routeName: "Network"})} 
+                  }>
                       <Icon active name="open" style={{ paddingRight: 25, fontSize: 20}} />
                        <Text>More</Text>
                   </Button>
@@ -113,7 +127,10 @@ class NetworkScreen extends Component {
                   
                 </Body>
                 <Right>
-                  <Button transparent onPress= {()=> this.props.navigation.navigate("Buy", { artworkId : artwork._id })}>
+                  <Button transparent onPress= {async ()=>{ 
+                   await  this.props.buyArtworkAction({id: artwork._id})
+                    this.props.navigation.navigate("Buy", { routeName: "Network"})} 
+                    }>
                       <Icon active name="pricetag" />
                       <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
                   </Button>
@@ -177,4 +194,4 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps, {loginAction, getUserIdAction, 
-    getUserProfileAction })(NetworkScreen)
+    getUserProfileAction, moreArtworkDetailsAction, buyArtworkAction })(NetworkScreen)

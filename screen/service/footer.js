@@ -85,17 +85,9 @@ class FooterTabs extends Component {
           <Text>Network</Text>
       </Button>
     )
-    return (
-      
-        <Footer >
-          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
-            <Button vertical 
-            onPress={()=> this.props.navigation.navigate("Home")}
-            active= { !this.props.activeMe ? false : true }>
-              <Icon name="apps" />
-              <Text>Me</Text>
-            </Button>
-            <Button vertical
+
+    const post = (
+      <Button vertical
               active= { !this.props.activePost ? false : true }
              onPress= {()=>{
                if(process.env.NODE_ENV === 'development'){
@@ -148,10 +140,22 @@ class FooterTabs extends Component {
               <Icon name="camera" />
               <Text>Post</Text>
             </Button>
+    )
+    return (
+      
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            active= { !this.props.activeMe ? false : true }>
+              <Icon name="apps" />
+              <Text>Me</Text>
+            </Button>
+            { this.props.userId && this.props.userId.length > 0 ? post : null }
             <Button vertical
               active= { !this.props.activeExhibition ? false : true }
              onPress={()=> this.props.navigation.navigate("Exhibition")} >
-              <Icon active name="eye" />
+              <Icon active name="eye"  />
               <Text>Exhibition</Text>
             </Button>
             { this.props.userId && this.props.userId.length > 0 ? network : loginMenu  }

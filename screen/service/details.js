@@ -2,25 +2,79 @@ import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Title, Right, Text, Button, Icon, Left, Body, Spinner } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {connect} from 'react-redux'
+import { loginAction } from "../../redux/loginAction"
+import { getUserIdAction } from "../../redux/getUserId"
+import { getUserProfileAction } from "../../redux/userProfileAction"
+import { buyArtworkAction } from "../../redux/buyAction"
+import { moreArtworkDetailsAction } from "../../redux/artworkDetailsAction"
+import {apiUrl} from "./env"
 
-export default class ArtworkDetailScreen extends Component {
+
+
+class ArtworkDetailScreen extends Component {
   constructor(props){
     super(props);
     this.state={
-      artwork: {}
+      artwork: {},
+      artworkId: "",
+      fetch: false
     }
   }
-  componentDidMount(){
-    const artwork = this.props.navigation.getParam("artwork")
-    this.setState({ artwork })
+
+
+  async componentDidMount(){
+   await  this.setState({
+      artwork: {},
+      artworkId: this.props.artworkId
+    })
+
+
+    var url = apiUrl + "artwork/" + this.state.artworkId;
+    var result = await fetch(url, {
+      method: 'GET',
+      headers: { 
+        'content-type': 'application/json',
+        "Authorization": `Bearer ${this.props.jwt}`
+       }
+    });
+    var response = await result;
+    if(response.status !== 200 ){
+      console.warn("fetching artworks failed response")
+      this.setState({
+        artwork: {}
+      })
+      
+      return
+    }
+    else{
+      var res = await response.json();
+      if (res._id) {
+        this.setState({
+          artwork: res,
+          fetch: true
+        })
+      }
+
+      else  {
+        console.warn("Can't get artwork")
+        this.setState({
+          artwork: {}
+        })
+        
+      }
+    }
   }
+
   render() {
-    if(!("_id" in this.state.artwork)){
+    const routeName= this.props.navigation.getParam("routeName", "Home")
+    if(!(this.state.fetch)){
       return(
         <Container>
         <Header style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }}>
           <Left>
-            <Button transparent onPress={()=> this.props.navigation.goBack()}>
+            <Button transparent onPress={()=> {
+            this.props.navigation.navigate(routeName)}}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
@@ -46,7 +100,8 @@ export default class ArtworkDetailScreen extends Component {
       <Container>
         <Header style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }}>
           <Left>
-            <Button transparent onPress={()=> this.props.navigation.goBack()}>
+            <Button transparent onPress={()=> {
+            this.props.navigation.navigate(routeName)}}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
@@ -60,7 +115,7 @@ export default class ArtworkDetailScreen extends Component {
           </Right>
         </Header>
         <Content>
-          <Card style={{flex: 0}}>
+          <Card style={{flex: 0}} key={this.state.artworkId}>
           <CardItem>
               <Left>
                 <Body>
@@ -68,7 +123,7 @@ export default class ArtworkDetailScreen extends Component {
                   <Text note>{!this.state.artwork.size ? "Size in inches" : this.state.artwork.size + " Inches"}</Text>
                   <TouchableOpacity 
                       onPress={()=> this.props.navigation.navigate("Profile", {profileId: this.state.artwork.userId})}>
-                    <Text style={{color : "blue"}} note >Sponsorer</Text>
+                    <Text style={{color : "blue"}} note >Sponsor</Text>
                   </TouchableOpacity>
                 </Body>
               </Left>
@@ -93,7 +148,10 @@ export default class ArtworkDetailScreen extends Component {
             <CardItem>
               <Left>
                 <Button transparent textStyle={{color: '#87838B'}}
-                onPress= {()=> this.props.navigation.navigate("Buy", { artworkId : this.state.artwork._id} )}
+                onPress= {()=>{ 
+                  this.props.buyArtworkAction({id: this.state.artwork._id})
+                  this.props.navigation.navigate("Buy", {routeName : "Detail"})} 
+                }
                 >
                   <Icon name="pricetag" />
                   <Text>NGN {!this.state.artwork.price ? "0" : this.state.artwork.price}</Text>
@@ -101,7 +159,10 @@ export default class ArtworkDetailScreen extends Component {
               </Left>
               <Body>
                 <Button transparent textStyle={{color: '#87838B'}}
-                onPress= {()=> this.props.navigation.navigate("Buy", { artworkId : this.state.artwork._id})}
+                onPress= {()=> { 
+                  this.props.buyArtworkAction({id: this.state.artwork._id})
+                  this.props.navigation.navigate("Buy", {routeName : "Detail"})} 
+                }
                 >
                   <Icon name="barcode" />
                   <Text>Quantity: {!this.state.artwork.numberAvailable ? "0" : this.state.artwork.numberAvailable }</Text>
@@ -109,7 +170,10 @@ export default class ArtworkDetailScreen extends Component {
               </Body>
               <Right>
                 <Button transparent 
-                  onPress= {()=> this.props.navigation.navigate("Buy", { artworkId : this.state.artwork._id})}
+                  onPress= {()=> { 
+                    this.props.buyArtworkAction({id: this.state.artwork._id})
+                    this.props.navigation.navigate("Buy", {routeName : "Detail"})} 
+                  }
                   textStyle={{color: '#87838B'}}>
                   <Icon name="cart" />
                   <Text>Buy</Text>
@@ -122,3 +186,13 @@ export default class ArtworkDetailScreen extends Component {
     );}
   }
 }
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId.userId,
+  profile: state.userProfile,
+  artworkId: state.artworkDetails.artworkId
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction, 
+    getUserProfileAction, buyArtworkAction, moreArtworkDetailsAction })(ArtworkDetailScreen )

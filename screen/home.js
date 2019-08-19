@@ -57,7 +57,6 @@ class HomeScreen extends Component {
       var res = await response.json();
       if (res._id) {
         // set state in redux store
-        console.warn(res)
         this.props.getUserProfileAction(res)
         
         if("firstName" in res){

@@ -141,7 +141,7 @@ class WalletScreen extends Component {
             <Col style={{ backgroundColor: "#e60000", height: 150 }}>
               <Body style={{ justifyContent: "center", alignItems: "center",  alignContent: "center", color: "#ffffff" }} >
                       <Icon  name="cash" style={{color: "#ffffff" }}/>
-                      <Text style={{color: "#ffffff", fontWeight: "bold" }} > Ledger Balance</Text>
+                      <Text style={{color: "#ffffff", fontWeight: "bold" }} >Ledger Balance</Text>
                       <Text style={{color: "#ffffff" }} >NGN {this.state.withdrawable}</Text>
               </Body>
             </Col>
@@ -154,30 +154,7 @@ class WalletScreen extends Component {
               {this.state.myDetails ? <BankDetail /> : null}
 
               {this.state.history ? <History withdraws={this.state.withdraws} /> : null}
-              {/* <List >
-                  <ListItem >
-                      <Left style={{ paddingLeft: 20}}>
-                          <TouchableOpacity
-                              onPress={()=>{
-                                  this.props.navigation.navigate("Bank")
-                              }}
-                          >
-                              <Icon name="add" />
-                              <Text>Add Bank Detail</Text>
-                          </TouchableOpacity>
-                      </Left>
-                      <Right style={{ paddingRight: 20}}>
-                          <TouchableOpacity
-                              onPress={()=>{
-                                  this.props.navigation.navigate("Withdraw")
-                              }}
-                          >
-                              <Icon name="open" />
-                              <Text>Withdraw</Text>
-                          </TouchableOpacity>
-                      </Right>
-                  </ListItem>
-              </List> */}
+
           </Content>
           <FooterTabs 
               navigation={this.props.navigation}

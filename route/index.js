@@ -47,10 +47,7 @@ const DrawerNavigator = createDrawerNavigator(
       Wallet: WalletScreen,
       Bank: BankScreen,
       Withdraw: WithdrawScreen,
-      Buy: BuyScreen,
-      Profile: ProfileScreen,
-      ProfileArtwork: ProfileArtworkScreen,
-      Detail: ArtworkDetailScreen,
+      UserProfileCollection: ProfileArtworkScreen,
       Exhibition: ExhibitionScreen,
       CreateExhibition: CreateExhibitionScreen,
       Rave: RaveScreen,
@@ -149,7 +146,10 @@ const switchNavigator = createSwitchNavigator({
   ExpandExhibition: ExpandExhibitionScreen,
   Help: HelpScreen,
   Account: AccountScreen,
-  App: StackNavigator
+  Detail: ArtworkDetailScreen,
+  Buy: BuyScreen,
+  Profile: ProfileScreen,
+  App: StackNavigator,
 },
 {
   initialRouteName: 'Landing',

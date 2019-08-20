@@ -1,34 +1,174 @@
 import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Title, Right, Text, Button, Icon, Left, Body,
-Segment, Toast } from 'native-base';
+Segment, Toast, Spinner } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {connect} from 'react-redux'
+import { loginAction } from "../../redux/loginAction"
+import { getUserIdAction } from "../../redux/getUserId"
+import { getUserProfileAction } from "../../redux/userProfileAction"
+import { buyArtworkAction } from "../../redux/buyAction"
+import { moreArtworkDetailsAction } from "../../redux/artworkDetailsAction"
+import {apiUrl} from "./env"
+import { getUserProfile } from "../../controller/api"
 
-export default class ProfileArtworkScreen extends Component {
+class ProfileArtworkScreen extends Component {
 
     constructor(props){
         super(props);
         this.state={
           like: 0,
-          comment: 0
+          comment: 0,
+          count: 1,
+          fetch: false,
+          artwork: [],
+          post: [],
         }
       }
 
-  render() {
-      const story = this.props.navigation.getParam("story")
-      const title= this.props.navigation.getParam("title")
-      const year = this.props.navigation.getParam("year")
-      const artistName = this.props.navigation.getParam("artistName")
-      const location = this.props.navigation.getParam("location")
-      const size = this.props.navigation.getParam("size")
-      const category = this.props.navigation.getParam("category")
-      const available = this.props.navigation.getParam("available")
-      const price = this.props.navigation.getParam("price")
-    return (
-      <Container>
-        <Header hasSegment style={{ backgroundColor: "#990000"}}>
+      //props expectation
+      // 1. id as a param in navigation
+      // 2. routeName  as a param in navigation
+
+      async componentDidMount(){    
+        const profileId = this.props.navigation.getParam("id", null )
+        const profile = await getUserProfile({userId: profileId, jwt: this.props.jwt })
+        this.setState({ profileId })
+        // console.warn(profile)
+        if(profile.artwork.length > 0){
+          this.getArtworks(profile.artwork)
+        }
+        else{ this.setState({message: "User has no collection"})}
+      }
+    
+      getArtworks= async (artwork)=>{
+
+        let hold = 10 * this.state.count
+        for(let i= 0; i < hold; i++){
+          var url = apiUrl + "artwork/" + artwork[i];
+          var result = await fetch(url, {
+            method: 'GET',
+            headers: { 
+              'content-type': 'application/json',
+              "Authorization": `Bearer ${this.props.jwt}`
+             }
+          });
+          var response = await result;
+          if(response.status !== 200 ){
+            console.warn("fetching artworks failed response")
+            return
+          }
+          else{
+            var res = await response.json();
+            if (res._id) {
+              this.setState({
+                artwork: [ ... this.state.artwork, res]
+              })
+            }
+    
+            else  {
+              console.warn("Can't get artwork")
+              this.setState({
+                artwork: []
+              })
+              
+            }
+          }
+    
+          if(i == hold-1 && artwork.length > hold){
+            this.mapAllPost()
+            this.setState({ count: this.state.count++ })
+          }
+          else{ this.mapAllPost() }
+          
+    
+        }
+      
+        
+      }
+    
+    
+    
+      mapAllPost = async ()=>{
+        var allArtwork = await this.state.artwork.map(artwork => 
+          (
+            <Card key={artwork._id}>
+                  <CardItem>
+                    <Left>
+                      <Body>
+                        <Text>{artwork.title} {`(${artwork.year})`}</Text>
+                          <Text note>{artwork.artistName}</Text>
+                      </Body>
+                    </Left>
+                    <Right>
+                      <Button transparent onPress={async () => {
+                        await this.props.moreArtworkDetailsAction({artworkId : artwork._id })
+                        this.props.navigation.navigate("Detail", { routeName: "UserProfileCollection"})} 
+                      }>
+                          <Icon active name="open" style={{ paddingRight: 25, fontSize: 20}} />
+                           <Text>More</Text>
+                      </Button>
+                    </Right>
+                  </CardItem>
+                  <CardItem cardBody>
+                    <Image source={{ uri: artwork.imageURL } } style={{height: 200, width: null, flex: 1}}/>
+                  </CardItem>
+                  <CardItem>
+                    <Left>
+                      <Button transparent 
+                          onPress={()=>{ 
+                            like({
+                            jwt: this.props.jwt.jwt,
+                            userId: this.props.userId,
+                            artworkId: artwork._id
+                          })
+                          
+                        }}
+                      >
+                        <Icon active name="thumbs-up" />
+                        <Text>{!artwork.like.length ? 0 :artwork.like.length } Likes</Text>
+                      </Button>
+                    </Left>
+                    <Body>
+                      <Button transparent 
+                         onPress={()=>{
+                          this.props.navigation.navigate("Comment", {
+                            id: artwork._id,
+                            comment: artwork.comment,
+                            routeName: "UserProfileCollection"
+                          })
+                        }}
+                      >
+                        <Icon active name="chatbubbles" />
+                        <Text>{ !artwork.comment.length ? 0 : artwork.comment.length } Comments</Text>
+                      </Button>
+                      
+                    </Body>
+                    <Right>
+                      <Button transparent onPress= {async ()=>{ 
+                       await  this.props.buyArtworkAction({id: artwork._id})
+                        this.props.navigation.navigate("Buy", { routeName: "UserProfileCollection"})} 
+                        }>
+                          <Icon active name="pricetag" />
+                          <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
+                      </Button>
+                    </Right>
+                  </CardItem>
+                </Card>
+          )
+        )
+        this.setState({ allArtwork : allArtwork, fetch: true })
+      }
+
+
+  render() {   
+    const routeName = this.props.navigation.getParam("routeName", "Home")
+    if(!(this.state.fetch)){
+      return(
+        <Container>
+        <Header hasSegment style={{ backgroundColor: "#990000", paddingBottom: 40, paddingTop: 50}}>
           <Left>
-            <Button transparent onPress={()=> this.props.navigation.goBack()}>
+            <Button transparent onPress={()=> this.props.navigation.navigate(routeName, {id: this.state.profileId})}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
@@ -37,108 +177,67 @@ export default class ProfileArtworkScreen extends Component {
           </Body>
           <Right>
             <Button transparent>
-              <Icon name="people" />
+              <Icon name="person" />
             </Button>
           </Right>
         </Header>
         <Segment style={{  backgroundColor: "#cc0000"}}>
-          <Button first onPress={()=> this.props.navigation.navigate("Profile")} >
-            <Text>About</Text>
+          <Button first onPress={()=> this.props.navigation.navigate("Profile", {id: this.state.profileId})} >
+            <Text>Profile</Text>
           </Button>
           <Button active >
             <Text>Collection</Text>
           </Button>
         </Segment>
         <Content>
-          <Card style={{flex: 0}}>
-          <CardItem>
-              <Left>
-                <Body>
-                  <Text>{!title ? "Title" : title}</Text>
-                  <Text note>{!year ? "2019" : year}</Text>
-                  <Text note>{!size ? "12 inches" : size}</Text>
-                </Body>
-              </Left>
-              <Body>
-                  <Text note >Sold 0</Text>
-                  <Text note>Quantity: {!available ? "0" : available }</Text>
-                  <Text note>NGN {!price ? "0" : price}</Text>
-              </Body>
-
-              <Right>
-                <Body>
-                  <TouchableOpacity 
-                    onPress={()=> this.props.navigation.navigate("Profile") }>
-                    <Text style={{color : "blue"}} >{!artistName ? "Artist Name" : artistName}</Text>
-                  </TouchableOpacity>
-                  <Text note>{!location ? "Lagos" : location}</Text>
-                  <Text note>{!category ? "Painting" : category}</Text>
-                </Body>
-              </Right>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Image source={ require('../../assets/splash.png') } style={{height: 200, width: 400, flex: 1}} />
-                <TouchableOpacity onPress={()=> this.props.navigation.navigate("Detail")}>
-                    <Text icon style={{ color: "blue", paddingTop: 20}}>
-                    Learn More...
-                    </Text>
-                </TouchableOpacity>
-              </Body>
-            </CardItem>
-            <CardItem>
-              <Left>
-              <Button transparent onPress={()=>{
-                  if(!this.props.userId){
-                      Toast.show({
-                        text: "You need to sign in to like this artwork",
-                        buttonText: "Okay",
-                        duration: 3000,
-                        type: 'danger'
-                      })
-                  }
-                  else{
-                      this.setState({
-                        like: this.state.like++
-                      })
-                  }
-                }}>
-                  <Icon active name="thumbs-up" />
-                  <Text>{ this.state.like } Likes</Text>
-                </Button>
-              </Left>
-              <Body>
-              <Button transparent onPress={()=> {
-                  if(!this.props.userId){
-                      Toast.show({
-                        text: "You need to sign in to comment",
-                        buttonText: "Okay",
-                        duration: 3000,
-                        type: 'danger'
-                      })
-                  }
-                  else{
-                      this.setState({
-                        like: this.state.comment++
-                      })
-                  }
-                }
-              }>
-                  <Icon active name="chatbubbles" />
-                  <Text>{ this.state.comment } Comments</Text>
-                </Button>
-              </Body>
-              <Right>
-                <Button transparent 
-                  onPress= {()=> this.props.navigation.navigate("Buy")} >
-                  <Icon name="cart" active />
-                  <Text>Buy</Text>
-                </Button>
-              </Right>
-            </CardItem>
-          </Card>
+          <Body>
+            <Spinner color="red" />
+          </Body>
+        </Content>
+        </Container>
+      )
+    }  
+    else {
+    return (
+      
+      <Container>
+        <Header hasSegment style={{ backgroundColor: "#990000", paddingBottom: 40, paddingTop: 50}}>
+          <Left>
+            <Button transparent onPress={()=> this.props.navigation.navigate(routeName, {id: this.state.profileId})}>
+              <Icon name="arrow-back" />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Profile</Title>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name="person" />
+            </Button>
+          </Right>
+        </Header>
+        <Segment style={{  backgroundColor: "#cc0000"}}>
+          <Button first onPress={()=> this.props.navigation.navigate("Profile", {id: this.state.profileId})} >
+            <Text>Profile</Text>
+          </Button>
+          <Button active >
+            <Text>Collection</Text>
+          </Button>
+        </Segment>
+        <Content>
+          {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : <Text>{this.state.message}</Text> }
         </Content>
       </Container>
-    );
+    );}
   }
 }
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId.userId,
+  profile: state.userProfile,
+  artworkId: state.artworkDetails.artworkId
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction, 
+    getUserProfileAction, buyArtworkAction, moreArtworkDetailsAction })(ProfileArtworkScreen)

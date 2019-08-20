@@ -122,7 +122,7 @@ class ArtworkDetailScreen extends Component {
                   <Text>{!this.state.artwork.title ? "Title" : this.state.artwork.title} {!this.state.artwork.year ? "2019" : this.state.artwork.year}</Text>
                   <Text note>{!this.state.artwork.size ? "Size in inches" : this.state.artwork.size + " Inches"}</Text>
                   <TouchableOpacity 
-                      onPress={()=> this.props.navigation.navigate("Profile", {profileId: this.state.artwork.userId})}>
+                      onPress={()=> this.props.navigation.navigate("Profile", {id: this.state.artwork.userId})}>
                     <Text style={{color : "blue"}} note >Sponsor</Text>
                   </TouchableOpacity>
                 </Body>

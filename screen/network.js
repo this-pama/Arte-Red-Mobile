@@ -11,6 +11,7 @@ import { getUserProfileAction } from "../redux/userProfileAction"
 import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
 import { buyArtworkAction } from "../redux/buyAction"
 import {apiUrl} from "./service/env"
+import { like } from "../controller/api"
 
 class NetworkScreen extends Component {
   constructor(props){
@@ -114,15 +115,32 @@ class NetworkScreen extends Component {
               </CardItem>
               <CardItem>
                 <Left>
-                  <Button transparent >
+                  <Button transparent 
+                   onPress={()=>{ 
+                        like({
+                        jwt: this.props.jwt.jwt,
+                        userId: this.props.userId,
+                        artworkId: artwork._id
+                      })
+                      
+                    }}
+                   >
                     <Icon active name="thumbs-up" />
-                    <Text>{!artwork.like.length ? 0 :artwork.like.length } Likes</Text>
+                    <Text>{artwork.like.length <= 0 ? 0 :artwork.like.length } Likes</Text>
                   </Button>
                 </Left>
                 <Body>
-                  <Button transparent >
+                  <Button transparent 
+                    onPress={()=>{
+                      this.props.navigation.navigate("Comment", {
+                        id: artwork._id,
+                        comment: artwork.comment,
+                        routeName: "Network"
+                      })
+                    }}
+                  >
                     <Icon active name="chatbubbles" />
-                    <Text>{ !artwork.comment.length ? 0 : artwork.comment.length } Comments</Text>
+                    <Text>{ artwork.comment.length <= 0 ? 0 : artwork.comment.length } Comments</Text>
                   </Button>
                   
                 </Body>

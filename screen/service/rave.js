@@ -1,17 +1,26 @@
 import React from 'react';
 import Rave from 'react-native-rave';
 import { StyleSheet, Text, View } from 'react-native';
+import { ravePublicKey, raveEncryption, apiUrl } from "./env"
+import {connect} from 'react-redux'
+import { loginAction } from "../../redux/loginAction"
+import { getUserIdAction } from "../../redux/getUserId"
+import { getUserProfileAction } from "../../redux/userProfileAction"
+import { buyArtworkAction } from "../../redux/buyAction"
+import { raveAction } from "../../redux/raveAction"
 
-export default class RaveScreen extends React.Component {
-
+class RaveScreen extends React.Component {
   constructor(props) {
     super(props);
     
   }
 
+  componentDidMount(){
+    console.warn(this.props.rave)
+  }
   fetchResponse = (transRef) => {
 
-    var url = "http://192.168.88.48/api"; 
+    var url = apiUrl + "sold/verify"; 
     var request = { 
         method : "POST",
         body: JSON.stringify({
@@ -19,6 +28,7 @@ export default class RaveScreen extends React.Component {
         }),
         headers: {
             'Content-Type': 'application/json',
+            "Authorization": `Bearer ${this.props.jwt}`
         }
     }
     fetch(url, request) 
@@ -50,15 +60,15 @@ export default class RaveScreen extends React.Component {
 
   render() {
     return ( 
-      <Rave amount = {this.props.navigation.getParam("amount", "1")}
-        amount="500" 
+      <Rave 
+        amount={this.props.rave.amount}
         country="NG" 
         currency="NGN" 
-        email="adedadapopaul@yahoo.com" 
-        firstname="Adedapo" 
-        lastname="Aderemi" 
-        publickey = "FLWPUBK_TEST-eef2977c76dfbc31ea5015d213983f2e-X"
-        encryptionkey = "FLWSECK_TEST444266019d07"
+        email={this.props.rave.email}
+        firstname={this.props.rave.firstName} 
+        lastname={this.props.rave.lastName}
+        publickey = {ravePublicKey}
+        encryptionkey = {raveEncryption}
         meta={[{ metaname: "color", metavalue: "red" }, { metaname: "storelocation", metavalue: "ikeja" }]}
         production={false} 
         onSuccess={res => this.onSuccess(res)} 
@@ -77,3 +87,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId.userId,
+  rave: state.rave
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction, 
+ raveAction })(RaveScreen)

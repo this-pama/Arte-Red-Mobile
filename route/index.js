@@ -21,7 +21,7 @@ import WithdrawScreen from '../screen/withdraw';
 import ArtworkDetailScreen from '../screen/service/details';
 import BuyScreen from '../screen/buy';
 import ProfileScreen from '../screen/service/profile';
-import ProfileArtworkScreen from '../screen/service/artworkForProfile';
+import ProfileArtworkScreen from '../screen/service/userProfileCollection';
 import ExhibitionScreen from "../screen/exhibition"
 import RaveScreen from "../screen/service/rave"
 import LandingScreen from '../screen/landing';
@@ -42,12 +42,10 @@ const DrawerNavigator = createDrawerNavigator(
       Network: NetworkScreen,
       Follower: FollowerScreen,
       Following: FolloweringScreen,
-      Comment: CommentScreen,
       Post: PostScreen,
       Wallet: WalletScreen,
       Bank: BankScreen,
       Withdraw: WithdrawScreen,
-      UserProfileCollection: ProfileArtworkScreen,
       Exhibition: ExhibitionScreen,
       CreateExhibition: CreateExhibitionScreen,
       Rave: RaveScreen,
@@ -149,6 +147,8 @@ const switchNavigator = createSwitchNavigator({
   Detail: ArtworkDetailScreen,
   Buy: BuyScreen,
   Profile: ProfileScreen,
+  UserProfileCollection: ProfileArtworkScreen,
+  Comment: CommentScreen,
   App: StackNavigator,
 },
 {

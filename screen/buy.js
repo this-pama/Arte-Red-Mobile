@@ -8,7 +8,9 @@ import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import { getUserProfileAction } from "../redux/userProfileAction"
 import { buyArtworkAction } from "../redux/buyAction"
+import { raveAction } from "../redux/raveAction"
 import {apiUrl} from "./service/env"
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 class BuyScreen extends Component {
@@ -16,8 +18,14 @@ class BuyScreen extends Component {
     super(props);
     this.state={
       artwork: {},
-      quantity: 0,
-      fetch: false
+      quantity: 1,
+      firstName: "",
+      lastName: "",
+      email: "",
+      total: 0,
+      price: 0,
+      fetch: false, 
+      disable: true
     }
   }
 
@@ -52,6 +60,7 @@ class BuyScreen extends Component {
         if (res._id) {
           this.setState({
             artwork: res,
+            price: res.price,
             fetch: true
           })
         }
@@ -65,6 +74,96 @@ class BuyScreen extends Component {
         }
       }
     }
+
+    handleFirstName = firstName => {
+      if (firstName.length > 0) {
+        this.setState(
+          {
+            firstName
+          },
+          this.validateForm
+        );
+      } else {
+        this.setState({
+          firstName: '',
+          errMessage: 'First Name cannot be empty'
+        });
+      }
+    };
+
+    handleLastName = lastName => {
+      if (lastName.length > 0) {
+        this.setState(
+          {
+            lastName
+          },
+          this.validateForm
+        );
+      } else {
+        this.setState({
+          lastName : '',
+          errMessage: 'Last Name cannot be empty'
+        });
+      }
+    };
+
+    handleEmail = email => {
+      if (email.length > 0) {
+        this.setState(
+          {
+            email
+          },
+          this.validateForm
+        );
+      } else {
+        this.setState({
+          email: '',
+          errMessage: 'Email cannot be empty'
+        });
+      }
+    };
+
+    handleQuantity = quantity => {
+      if (+quantity) {
+        this.setState(
+          {
+            quantity,
+            total: quantity * this.state.price
+          },
+          this.validateForm
+        );
+      } else {
+        this.setState({
+          quantity: 1 ,
+          total: 1 * this.state.price
+        });
+      }
+    };
+
+
+    validateForm = () => {
+      let testEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+      if (
+        this.state.firstName.length > 0 && 
+        this.state.lastName.length > 0 &&
+        this.state.email.length > 0 && 
+        testEmail.test(this.state.email) &&
+        +this.state.quantity &&
+        +this.state.total > 0
+        
+      ) {
+        this.setState({
+          disable: false,
+          errMessage: ''
+        });
+      } else {
+        this.setState({
+          disable: true
+        });
+      }
+    };
+
+
   render() {
     const routeName= this.props.navigation.getParam("routeName", "Home")
     if(!(this.state.fetch)){
@@ -114,6 +213,7 @@ class BuyScreen extends Component {
           </Right>
         </Header>
         <Content>
+          
           <Card style={{flex: 0}}>
           <CardItem>
               <Left>
@@ -145,32 +245,34 @@ class BuyScreen extends Component {
               </Left>
             </CardItem>
           </Card>
+          <KeyboardAwareScrollView>
           <Form style={{ paddingTop: 20, paddingBottom: 20}}>
             <Text style={{fontWeight: "bold", paddingLeft: 40}}>Total Cost</Text>
-            <Text note style={{ paddingLeft: 40 }}>NGN {this.state.artwork.price ? (this.state.artwork.price*this.state.quantity) : this.state.artwork.price || 0}</Text>
+            <Text note style={{ paddingLeft: 40 }}>NGN {this.state.total}</Text>
             <Item inlineLabel style={{ paddingLeft: 30}}>
               <Label>Quantity</Label>
-              <Input keyboardType="numeric" />
+              <Input keyboardType="numeric"
+                onChangeText={this.handleQuantity}
+                value={+this.state.quantity}
+               />
             </Item>
             <Item inlineLabel style={{ paddingLeft: 30}}>
               <Label>First Name</Label>
-              <Input  />
+              <Input  onChangeText={this.handleFirstName } value={this.state.firstName} />
             </Item>
             <Item inlineLabel style={{ paddingLeft: 30}}>
               <Label>Last Name</Label>
-              <Input  />
+              <Input onChangeText={this.handleLastName} value={this.state.lastName} />
             </Item>
             <Item inlineLabel style={{ paddingLeft: 30}}>
               <Label>Email</Label>
-              <Input  />
+              <Input onChangeText={this.handleEmail} value={ this.state.email } />
             </Item>
           </Form>
           <Button block danger
-            onPress={()=> {
-              if(process.env.NODE_ENV === "development"){
-                this.props.navigation.navigate("Rave")
-              }
-              else if(!this.props.userId){
+          disabled={ this.state.disable }
+            onPress={async ()=> {
+               if(!this.props.userId){
                 Toast.show({
                   text: "You need to sign in to buy the artwork",
                   buttonText: "Okay",
@@ -178,11 +280,20 @@ class BuyScreen extends Component {
                   type: 'danger'
                 })
               }
-              else{ this.props.navigation.navigate("Rave") }
+              else{ 
+                await this.props.raveAction({
+                  amount: `${this.state.total}`,
+                  firstName: this.state.firstName,
+                  lastName: this.state.lastName,
+                  email: this.state.email
+                })
+                this.props.navigation.navigate("Rave") 
+              }
             }}
           >
               <Text>Proceed To Payment</Text>
           </Button>
+          </KeyboardAwareScrollView>
         </Content>
       </Container>
     );}
@@ -194,8 +305,9 @@ const mapStateToProps = state => ({
   jwt: state.login.jwt,
   userId: state.getUserId.userId,
   profile: state.userProfile,
-  artworkId: state.buyArtwork.id
+  artworkId: state.buyArtwork.id,
+  rave: state.rave
 })
 
 export default connect(mapStateToProps, {loginAction, getUserIdAction, 
-    getUserProfileAction, buyArtworkAction })(BuyScreen )
+    getUserProfileAction, buyArtworkAction, raveAction  })(BuyScreen )

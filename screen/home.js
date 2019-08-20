@@ -11,7 +11,10 @@ import { apiUrl } from './service/env';
 import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import { getUserProfileAction } from "../redux/userProfileAction"
+import { buyArtworkAction } from "../redux/buyAction"
+import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
 import {connect} from 'react-redux'
+import { like } from "../controller/api"
 
 class HomeScreen extends Component {
   constructor(props){
@@ -19,6 +22,9 @@ class HomeScreen extends Component {
     this.state={
       like: 0,
       comment: 0,
+      feed: [],
+      allArtwork: [],
+      fetch: false,
       image: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png",
     }
   }
@@ -29,7 +35,8 @@ class HomeScreen extends Component {
     if(this.props.image){
       this.setState({ image : this.props.image })
     }
-    
+    this.getFeed()
+
   }
 
 
@@ -74,180 +81,196 @@ class HomeScreen extends Component {
       }
     }
   }
+
+
+
+  getFeed= async ()=>{
+
+      var url = apiUrl + "artwork" ;
+
+      if( "jwt" in this.props.jwt  || !this.props.jwt
+        || !this.props.userId
+        ){
+        url = apiUrl + "artwork/withoutJwt" ;
+      }
+      var result = await fetch(url, {
+        method: 'GET',
+        headers: { 
+          'content-type': 'application/json',
+          "Authorization": `Bearer ${this.props.jwt.jwt}`
+         }
+      });
+      var response = await result;
+      if(response.status !== 200 ){
+        console.warn("fetching feeds failed response")
+        this.setState({
+          feed: []
+        })
+        return
+      }
+      else{
+        var res = await response.json();
+        if (res[0]._id) {
+          // console.warn(res[0])
+          this.setState({
+            feed: res
+          })
+          this.mapAllFeed()
+        }
+
+        else  {
+          console.warn("Can't get feeds")
+          this.setState({
+            feed: []
+          })
+          
+        }
+      }
+    
+  }
+
+  mapAllFeed = async ()=>{
+    var allArtwork = await this.state.feed.map(artwork => 
+      (
+        <Card key={artwork._id}>
+              <CardItem>
+                <Left>
+                  <Body>
+                    <Text>{artwork.title} {`(${artwork.year ? artwork.year : "Unknown"})`}</Text>
+                      <Text note>{artwork.artistName}</Text>
+                  </Body>
+                </Left>
+                <Right>
+                  <Button transparent onPress={async () => {
+                    if(!this.props.userId){
+                      return Toast.show({
+                        text: "You need to sign in",
+                        buttonText: "Okay",
+                        duration: 3000,
+                        type: 'danger'
+                      })
+                    }
+                    await this.props.moreArtworkDetailsAction({artworkId : artwork._id })
+                    this.props.navigation.navigate("Detail", { routeName: "Home"})} 
+                  }>
+                       <Text>More</Text>
+                  </Button>
+                  <TouchableOpacity 
+                    onPress={()=> {
+                      if(!this.props.userId){
+                        return Toast.show({
+                          text: "You need to sign in",
+                          buttonText: "Okay",
+                          duration: 3000,
+                          type: 'danger'
+                        })
+                      }
+                      this.props.navigation.navigate("Profile", {id: artwork.userId, routeName: "Home"})
+                    }}
+                  >
+                    <Text note>See Sponsor</Text>
+                  </TouchableOpacity>   
+                </Right>
+              </CardItem>
+              <CardItem cardBody>
+                <Image source={{ uri: artwork.imageURL } } style={{height: 200, width: null, flex: 1}}/>
+              </CardItem>
+              <CardItem>
+                <Left>
+                  <Button transparent 
+                    onPress={()=>{ 
+                      if(!this.props.userId){
+                        return Toast.show({
+                          text: "You need to sign in",
+                          buttonText: "Okay",
+                          duration: 3000,
+                          type: 'danger'
+                        })
+                      }
+
+                      like({
+                      jwt: this.props.jwt.jwt,
+                      userId: this.props.userId,
+                      artworkId: artwork._id
+                    })
+                    
+                  }}
+                  >
+                    <Icon active name="thumbs-up" />
+                    <Text>{artwork.like.length <= 0 ? 0 : artwork.like.length} Likes</Text>
+                  </Button>
+                </Left>
+                <Body>
+                  <Button transparent 
+                    onPress={()=>{
+                      this.props.navigation.navigate("Comment", {
+                        id: artwork._id,
+                        comment: artwork.comment,
+                        routeName: "Home"
+                      })
+                    }}
+                  >
+                    <Icon active name="chatbubbles" />
+                    <Text>{ artwork.comment.length <=  0 ? 0 : artwork.comment.length } Comments</Text>
+                  </Button>
+                  
+                </Body>
+                <Right>
+                  <Button transparent onPress= {async ()=>{ 
+                    if(!this.props.userId){
+                      return Toast.show({
+                        text: "You need to sign in",
+                        buttonText: "Okay",
+                        duration: 3000,
+                        type: 'danger'
+                      })
+                    }
+                    
+                   await  this.props.buyArtworkAction({id: artwork._id})
+                    this.props.navigation.navigate("Buy", { routeName: "Home"})} 
+                    }>
+                      <Icon active name="pricetag" />
+                      <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
+                  </Button>
+                </Right>
+              </CardItem>
+            </Card>
+      )
+    )
+    this.setState({ allArtwork : allArtwork, fetch: true })
+  }
+
+
   
   render() {
+    if(!(this.state.fetch)){
+      return(
+        <Container>
+        <Content >
+          <Body>
+            <Spinner color="red" />
+          </Body>
+        </Content>
+          <FooterScreen 
+              navigation={this.props.navigation}
+              activeMe = { true } 
+          />
+        </Container>
+      )
+    }
+    else {
     return (
       <Container>
         <Content >
-          <Card>
-            <CardItem>
-              <Left>
-                <TouchableOpacity
-                  onPress={()=> this.props.navigation.navigate("Profile")}
-                >
-                 <Thumbnail source={{ uri : this.state.image }} />
-                </TouchableOpacity>
-                <Body>
-                  <Text>Artwork Title</Text>
-                  <TouchableOpacity  onPress={()=> this.props.navigation.navigate("Profile")} >
-                    <Text note style={{ color : "blue"}}>User Full Name</Text>
-                  </TouchableOpacity>
-                </Body>
-              </Left>
-              <Right>
-                <Button transparent onPress={() => this.props.navigation.navigate("Detail") }>
-                    <Icon active name="open" style={{ paddingRight: 25, fontSize: 20}} />
-                     <Text>More</Text>
-                </Button>
-
-                {/* <Text>{this.props.time != null || this.props.time != undefined  ? this.props.time : 0 }h ago</Text> */}
-              </Right>
-            </CardItem>
-            <CardItem cardBody>
-              <Image source={{ uri: "https://res.cloudinary.com/artered/image/upload/v1565393034/ykxz7pqmbr8qtxinfoea.jpg"} } style={{height: 200, width: null, flex: 1}}/>
-            </CardItem>
-            <CardItem>
-              <Left>
-                <Button transparent onPress={()=>{
-                  if(!this.props.userId){
-                      Toast.show({
-                        text: "You need to sign in to like this artwork",
-                        buttonText: "Okay",
-                        duration: 3000,
-                        type: 'danger'
-                      })
-                  }
-                  else{
-                      this.setState({
-                        like: this.state.like++
-                      })
-                  }
-                }}>
-                  <Icon active name="thumbs-up" />
-                  <Text>{this.state.like  } Likes</Text>
-                </Button>
-              </Left>
-              <Body>
-                <Button transparent onPress={()=> {
-                  if(!this.props.userId){
-                      Toast.show({
-                        text: "You need to sign in to comment",
-                        buttonText: "Okay",
-                        duration: 3000,
-                        type: 'danger'
-                      })
-                  }
-                  else{
-                      this.setState({
-                        like: this.state.comment++
-                      })
-                  }
-                }
-              }>
-                  <Icon active name="chatbubbles" />
-                  <Text>{ this.state.comment } Comments</Text>
-                </Button>
-                
-              </Body>
-              <Right>
-                <Button transparent onPress= {()=> this.props.navigation.navigate("Buy")}>
-                    <Icon active name="pricetag" />
-                    <Text>NGN {this.props.comment != null || this.props.comment != undefined  ? this.props.comment : 0 }</Text>
-                </Button>
-
-                {/* <Text>{this.props.time != null || this.props.time != undefined  ? this.props.time : 0 }h ago</Text> */}
-              </Right>
-            </CardItem>
-          </Card>
-          <Card>
-            <CardItem>
-              <Left>
-                <TouchableOpacity
-                  onPress={()=> this.props.navigation.navigate("Profile")}
-                >
-                 <Thumbnail source={{ uri : this.state.image }}  />
-                </TouchableOpacity>
-                <Body>
-                  <Text>Artwork Title</Text>
-                  <TouchableOpacity  onPress={()=> this.props.navigation.navigate("Profile")} >
-                    <Text note style={{ color : "blue"}}>User Full Name</Text>
-                  </TouchableOpacity>
-                </Body>
-              </Left>
-              <Right>
-                <Button transparent onPress={() => this.props.navigation.navigate("Detail") }>
-                    <Icon active name="open" style={{ paddingRight: 25, fontSize: 20}} />
-                    <Text>More</Text>
-                </Button>
-
-                {/* <Text>{this.props.time != null || this.props.time != undefined  ? this.props.time : 0 }h ago</Text> */}
-              </Right>
-            </CardItem>
-            <CardItem cardBody>
-              <Image source={ require('../assets/splash.png') } style={{height: 200, width: null, flex: 1}}/>
-            </CardItem>
-            <CardItem>
-              <Left>
-                <Button transparent onPress={()=>{
-                  if(!this.props.userId){
-                      Toast.show({
-                        text: "You need to sign in to like this artwork",
-                        buttonText: "Okay",
-                        duration: 3000,
-                        type: 'danger'
-                      })
-                  }
-                  else{
-                      this.setState({
-                        like: this.state.like++
-                      })
-                  }
-                }}>
-                  <Icon active name="thumbs-up" />
-                  <Text>{this.state.like  } Likes</Text>
-                </Button>
-              </Left>
-              <Body>
-                <Button transparent onPress={()=> {
-                  if(!this.props.userId){
-                      Toast.show({
-                        text: "You need to sign in to comment",
-                        buttonText: "Okay",
-                        duration: 3000,
-                        type: 'danger'
-                      })
-                  }
-                  else{
-                      this.setState({
-                        like: this.state.comment++
-                      })
-                  }
-                }
-              }>
-                  <Icon active name="chatbubbles" />
-                  <Text>{ this.state.comment } Comments</Text>
-                </Button>
-                
-              </Body>
-              <Right>
-                <Button transparent onPress= {()=> this.props.navigation.navigate("Buy")}>
-                    <Icon active name="pricetag" />
-                    <Text>NGN {this.props.comment != null || this.props.comment != undefined  ? this.props.comment : 0 }</Text>
-                </Button>
-
-                {/* <Text>{this.props.time != null || this.props.time != undefined  ? this.props.time : 0 }h ago</Text> */}
-              </Right>
-            </CardItem>
-          </Card>
+         {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : <Text>No feed to show in your network</Text> }
         </Content>
         <FooterScreen 
             navigation={this.props.navigation}
             activeMe = { true } 
-            // post= {this._pickImage}
         />
 
       </Container>
-    );
+    );}
   }
 }
 
@@ -259,4 +282,5 @@ const mapStateToProps = state => ({
   profile: state.userProfile
 })
 
-export default connect(mapStateToProps, {loginAction, getUserIdAction, getUserProfileAction })(HomeScreen)
+export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtworkAction,
+   moreArtworkDetailsAction, getUserProfileAction })(HomeScreen)

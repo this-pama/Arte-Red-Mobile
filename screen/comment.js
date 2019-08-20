@@ -1,25 +1,132 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, Button, Icon, Title, Footer, 
-    FooterTab, Form, Textarea, Item, Input } from 'native-base';
-
+import { Container, Header, Content, List, ListItem, Left, Body, Right, Toast, Text, Button, Icon, Title, Footer, 
+FooterTab,Textarea } from 'native-base';
 import { Modal, TouchableHighlight, View, Alert } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { apiUrl } from './service/env';
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import { getUserProfileAction } from "../redux/userProfileAction"
+import { buyArtworkAction } from "../redux/buyAction"
+import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
+import {connect} from 'react-redux'
 
-export default class CommentScreen extends Component {
+class CommentScreen extends Component {
     state = {
         modalVisible: false,
+        comment: [],
+        routeName: "Home",
+        allComment: [],
+        fetch: false,
+        artworkId: "",
+        userComment: "",
+        disable: true,
+        count: 0
       };
+
+  async componentDidMount(){
+    const comment = this.props.navigation.getParam("comment", [])
+    const routeName = this.props.navigation.getParam("routeName", "Home")
+    const artworkId = this.props.navigation.getParam("id", null)
+    await this.setState({ comment, routeName, artworkId })
+    this.mapAllComment()
+  }
+
+  mapAllComment = async ()=>{
+    var allComment= await this.state.comment.map(comment => 
+      (
+          <TouchableOpacity key={this.state.count++}
+            onPress={()=>{ 
+              if(!this.props.userId){
+                return Toast.show({
+                  text: "You need to sign in",
+                  buttonText: "Okay",
+                  duration: 3000,
+                  type: 'danger'
+                })
+              }
+              this.props.navigation.navigate("Profile", {id: comment.userId })
+            }}
+          >
+              <ListItem avatar>
+              <Body>
+                <Text>{comment.name}</Text>
+                <Text note>{comment.comment}</Text>
+              </Body>
+              <Right>
+                <Text note>{comment.time}</Text>
+                <Text note>{comment.date}</Text>
+              </Right>
+            </ListItem>
+          </TouchableOpacity>
+      )
+    )
+    this.setState({ allComment, fetch: true })
+
+  }
+
+
+  writeComment = async () =>{
+    var url = apiUrl + "artwork/comment/" + this.state.artworkId;
+      var result = await fetch(url, {
+        method: 'POST',
+        headers: { 
+          'content-type': 'application/json',
+          "Authorization": `Bearer ${this.props.jwt.jwt}`
+         },
+         body: JSON.stringify({
+          name: `${this.props.profile.firstName} ${this.props.profile.lastName}`,
+          comment: this.state.userComment,
+          date: new Date().toLocaleDateString(),
+          time: new Date().toLocaleTimeString(),
+          userId: this.props.userId
+        })
+      });
+
+      var response = await result;
+      if(response.status !== 200 ){
+        console.warn("fetching comment failed")
+        this.setModalVisible(!this.state.modalVisible)
+        return
+      }
+      else{
+        var res = await response.json();
+        if (res._id) {
+          this.props.navigation.navigate(this.state.routeName)
+        }
+
+        else  {
+          console.warn("Can't save comment")
+          this.setModalVisible(!this.state.modalVisible)
+        }
+      }
+  }
     
 setModalVisible = (visible) => {
     this.setState({ modalVisible: visible });
 }
 
+validateComment=()=>{
+  if(this.state.userComment.length > 0 ){
+    this.setState({ disable : false })
+  }
+}
+
+handleComment= comment =>{
+  if( comment.length > 0 ){
+    this.setState({ userComment: comment }, this.validateComment)
+  }
+  else{
+    this.setState({ userComment: "" })
+  }
+}
+
   render() {
-      const comments = this.props.navigation.getParam("comment")
     return (
       <Container>
-        <Header style={{ backgroundColor: "#990000"}}>
+        <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
           <Left>
-            <Button transparent onPress={()=> this.props.navigation.goBack()}>
+            <Button transparent onPress={()=> this.props.navigation.navigate(this.state.routeName)}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
@@ -28,31 +135,28 @@ setModalVisible = (visible) => {
           </Body>
           <Right>
             <Button transparent>
-              <Icon name="people" />
+              <Icon name="chatbubbles" />
             </Button>
           </Right>
         </Header>
         <Content>
           <List>
-            <ListItem avatar>
-              <Left>
-                <Thumbnail source={require('../assets/splash.png')} />
-              </Left>
-              <Body>
-                <Text>Kumar Pratik</Text>
-                <Text note>This is a comment...</Text>
-              </Body>
-              <Right>
-                <Text note>3:43 pm</Text>
-              </Right>
-            </ListItem>
+            { this.state.fetch ? this.state.allComment : <Body><Text>No comment</Text></Body>}
           </List>
         </Content>
 
         <Footer>
           <FooterTab style={{ backgroundColor: "#fff"}}>
-          <Button vertical
+          <Button vertical 
             onPress={() => {
+              if(!this.props.userId){
+                return Toast.show({
+                  text: "You need to sign in",
+                  buttonText: "Okay",
+                  duration: 3000,
+                  type: 'danger'
+                })
+              }
                 this.setModalVisible(true);
             }}
           >
@@ -78,10 +182,15 @@ setModalVisible = (visible) => {
                 <Text >Close</Text>
             </Button>
             <View>
-                <Textarea rowSpan={5} bordered placeholder="Write your comment about the post " />
+                <Textarea rowSpan={5} bordered placeholder="Write your comment about the post "
+                onChangeText={this.handleComment} value={this.state.userComment} />
                 <View style={{ paddingTop: 30}}>
                         <Button bordered warning
-                            onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                        disabled={ this.state.disable }
+                            onPress={() => {
+                              
+                              this.writeComment()
+                            } }
                         >
                             <Text >Post</Text>
                         </Button>            
@@ -95,3 +204,12 @@ setModalVisible = (visible) => {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  jwt: state.login,
+  userId: state.getUserId.userId,
+  profile: state.userProfile
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtworkAction,
+   moreArtworkDetailsAction, getUserProfileAction })(CommentScreen)

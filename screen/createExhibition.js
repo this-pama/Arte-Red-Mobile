@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Left, Body, Right, Form, Item, Label,
- Text, Button, Icon, Title, Segment, Input, Textarea } from 'native-base';
+ Text, Button, Icon, Title, Segment, Input, Textarea, Spinner } from 'native-base';
 import FooterTabs from "./service/footer"
 import { Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -8,6 +8,7 @@ import { Permissions } from 'expo';
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
 import PropTypes from 'prop-types'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default class CreateExhibitionScreen extends Component {
   constructor(props){
@@ -49,11 +50,13 @@ export default class CreateExhibitionScreen extends Component {
             style={{height: 300, width: null, flex: 1}}
         />
       )
+
+      const routeName = this.props.navigation.getParam("routeName", "Home")
     return (
       <Container>
-        <Header hasSegment style={{ backgroundColor: "#990000"}}>
+        <Header hasSegment style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
           <Left>
-            <Button transparent onPress={()=> this.props.navigation.goBack()}>
+            <Button transparent onPress={()=> this.props.navigation.navigate(routeName)}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
@@ -74,6 +77,7 @@ export default class CreateExhibitionScreen extends Component {
             <Text>Create Exhibition</Text>
           </Button>
         </Segment>
+        <KeyboardAwareScrollView>
         <Content padder style={{ paddingBottom: 20 }}>
                 <Item>
                   <Right>
@@ -93,30 +97,45 @@ export default class CreateExhibitionScreen extends Component {
                     </Item>
                     <Item stackedLabel>
                         <Label>Address</Label>
-                        <Input onChangeText= { this.props.handleArtistName } value={this.props.artistName}  autoCapitalize='words'/>
+                        <Input onChangeText= { this.props.handleAddress } value={this.props.address}  autoCapitalize='words'/>
                     </Item>
                     <Item stackedLabel>
                         <Label>Short Description</Label>
-                        <Input onChangeText= { this.props.handleSize } value={this.props.size} autoCapitalize='words'  />
+                        <Input onChangeText= { this.props.handleShort } value={this.props.short} autoCapitalize='words'  />
                     </Item>
                       <Textarea rowSpan={5} bordered 
                         placeholder="Write a full description about about the exhibition."
-                        value={this.props.story}
-                        onChangeText={this.props.handleStory}
+                        value={this.props.long}
+                        onChangeText={this.props.handleLong}
                       />
                     <Item stackedLabel>
                         <Label>Country</Label>
-                        <Input onChangeText= {this.props.handleLocation } value={this.props.location }  autoCapitalize='words'/>
+                        <Input onChangeText= {this.props.handleCountry} value={this.props.country }  autoCapitalize='words'/>
                     </Item>
                     <Item stackedLabel>
-                        <Label>Organizer</Label>
-                        <Input onChangeText= {this.props.handleLocation } value={this.props.location }  autoCapitalize='words'/>
+                        <Label>Exhibition Capacity</Label>
+                        <Input onChangeText= {this.props.handleCapacity} value={this.props.capacity }  keyboardType="numeric"/>
+                    </Item>
+                    <Item stackedLabel>
+                        <Label>Organizer Name</Label>
+                        <Input onChangeText= {this.props.handleName } value={this.props.name }  autoCapitalize='words'/>
+                    </Item>
+                    <Item stackedLabel>
+                        <Label>Organizer Email</Label>
+                        <Input onChangeText= {this.props.handleEmail } value={this.props.email }  autoCapitalize='words'/>
                     </Item>
                 </Form>
-                <Button block danger>
-                    <Text> Create Exhibition </Text>
+                <Button block danger
+                  disabled={ this.props.disable}
+                  onPress={this.props.create}
+                >
+                    {
+                      this.props.spin ? <Spinner color="white" /> 
+                    : <Text> Create Exhibition </Text>
+                    }
                 </Button>
         </Content>
+        </KeyboardAwareScrollView>
         <FooterTabs 
           activeExhibition= { true }
           navigation={this.props.navigation}
@@ -124,4 +143,26 @@ export default class CreateExhibitionScreen extends Component {
       </Container>
     );
   }
+}
+
+CreateExhibitionScreen.propTypes={
+  title: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  short : PropTypes.string.isRequired,
+  long: PropTypes.string.isRequired,
+  country: PropTypes.string.isRequired,
+  capacity: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  handleTitle: PropTypes.func.isRequired,
+  handleAddress: PropTypes.func.isRequired,
+  handleShort: PropTypes.func.isRequired,
+  handleLong: PropTypes.func.isRequired,
+  handleCountry: PropTypes.func.isRequired,
+  handleCapacity: PropTypes.func.isRequired,
+  handleName: PropTypes.func.isRequired,
+  handleEmail: PropTypes.func.isRequired,
+  create: PropTypes.func.isRequired,
+  disable : PropTypes.bool.isRequired,
+  spin : PropTypes.bool.isRequired,
 }

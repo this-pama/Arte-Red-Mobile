@@ -2,19 +2,34 @@ import React, { Component } from 'react';
 import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, 
     Toast, Button, Icon, Title, Segment, Spinner } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {connect} from 'react-redux'
+import { loginAction } from "../../redux/loginAction"
+import { getUserIdAction } from "../../redux/getUserId"
+import { getUserProfileAction } from "../../redux/userProfileAction"
+import { buyArtworkAction } from "../../redux/buyAction"
+import { moreArtworkDetailsAction } from "../../redux/artworkDetailsAction"
+import {apiUrl} from "./env"
+import { getUserProfile } from "../../controller/api"
 
-export default class ProfileScreen extends Component {
+class ProfileScreen extends Component {
     constructor(props){
         super(props)
         this.state={
+            follow: "Follow",
             profile: {},
-            image: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png",
+            id: "",
+            image: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png"
         }
     }
 
+       //props expectation
+      // 1. id as a param in navigation
+      // 2. routeName  as a param in navigation
+
     async componentDidMount(){
       const userId = this.props.navigation.getParam("id", null)
-
+        this.setState({ id : userId })
+        // console.warn(userId)
       var url = apiUrl + "user/" + userId;
       var result = await fetch(url, {
         method: 'GET',
@@ -75,7 +90,7 @@ export default class ProfileScreen extends Component {
               <Button first active >
                 <Text>Profile</Text>
               </Button>
-              <Button  onPress={()=> this.props.navigation.navigate("ProfileArtwork")}>
+              <Button  onPress={()=> this.props.navigation.navigate("UserProfileCollection", {id: this.state.id, routeName: "Profile"})}>
                 <Text>Collection</Text>
               </Button>
             </Segment>
@@ -109,23 +124,43 @@ export default class ProfileScreen extends Component {
           <Button first active >
             <Text>Profile</Text>
           </Button>
-          <Button  onPress={()=> this.props.navigation.navigate("UserProfileCollection")}>
+          <Button  onPress={()=> this.props.navigation.navigate("UserProfileCollection", {id: this.state.id, routeName: "Profile"})}>
             <Text>Collection</Text>
           </Button>
         </Segment>
         <Content padder>
-          <List>
+        <List>
               <ListItem avatar>
                 <Left>
                   <Thumbnail source={{ uri :  this.state.image }} />
                 </Left>
                 <Body>
-                  <Text>{this.state.profile.firstname ? `${this.state.profile.firstname} ${this.state.profile.firstname}` : "Unknown"}</Text>
-                  <Text note>{this.state.profile.nickName}</Text>
-                  <Text note>{this.state.profile.userType}</Text>
-                  <Text note>{this.state.profile.country}</Text>
+                  <Text>{this.state.profile.firstName ? this.state.profile.firstName : "First Name"}</Text>
+                  <Text note> {this.state.profile.lastName ? this.state.profile.lastName : "Last Name"}</Text>
+                  <Text note>{this.state.profile.telephone ? this.state.profile.telephone : "Telephone"}</Text>
                 </Body>
                 <Right>
+                    <Text note>{this.state.profile.userType ? this.state.profile.userType : "Type of User"}</Text>
+                    <Text note>{this.state.profile.country ? this.state.profile.country : "Country"}</Text>
+                </Right>
+              </ListItem>
+              <ListItem>
+                <Text note>{this.state.profile.description ? this.state.profile.description : "About me"}</Text>
+              </ListItem>
+              <ListItem>
+                  <Left>
+                    <Text note>
+                        Following {this.state.profile.following.length }
+                      </Text>
+                  </Left>
+                  <Right>
+                    <Text note>
+                        {this.state.profile.follower.length} Followers
+                      </Text>
+                  </Right>
+              </ListItem>
+              <ListItem>
+              <Left>
                   <TouchableOpacity
                     onPress={()=> {
                         if(!this.props.userId){
@@ -146,48 +181,13 @@ export default class ProfileScreen extends Component {
                   >
                     <Text style={{ color: "blue" }} note>{this.state.follow}</Text>
                   </TouchableOpacity>
-                </Right>
-              </ListItem>
-              <ListItem>
-                 <Text note>{this.state.profile.description}</Text>
-              </ListItem>
-              <ListItem>
-                  <Left>
-                      <Text note>
-                        Following {!this.state.profile.following ? 0 : this.state.profile.following.length}
-                      </Text>
-                  </Left>
+                </Left>
                   <Right>
-                    <Text note>
-                        {!this.state.profile.follower ? 0 : this.state.profile.follower.length} Followers
-                      </Text>
-                  </Right>
-              </ListItem>
-              <ListItem>
-                  <Left>
-                    <TouchableOpacity>
-                        <Text note>
-                            {}
-                         </Text>
-                    </TouchableOpacity>
-                  </Left>
-                  <Right>
-                    <TouchableOpacity 
-                        onPress={()=>{
-                            if(!this.props.userId){
-                                Toast.show({
-                                    text: "You need to sign in to send messages",
-                                    buttonText: "Okay",
-                                    duration: 3000,
-                                    type: 'danger'
-                                  })
-                            }
-                        }}
-                    >
-                        <Text note style={{ color: "blue"}}>
-                            Send Message
-                         </Text>
-                    </TouchableOpacity>
+                    <TouchableOpacity >
+                          <Text note style={{ color: "blue"}}>
+                              Send Message
+                          </Text>
+                      </TouchableOpacity>
                   </Right>
               </ListItem>
             </List>
@@ -196,3 +196,14 @@ export default class ProfileScreen extends Component {
     );}
   }
 }
+
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId.userId,
+  profile: state.userProfile,
+  artworkId: state.artworkDetails.artworkId
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction, 
+    getUserProfileAction, buyArtworkAction, moreArtworkDetailsAction })(ProfileScreen)

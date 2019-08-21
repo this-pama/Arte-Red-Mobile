@@ -1,33 +1,100 @@
 import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Title, Right, Text, Button, Icon, Left, Body,
- Toast, View } from 'native-base';
+ Toast, View, Spinner } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { apiUrl } from './service/env';
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import { getUserProfileAction } from "../redux/userProfileAction"
+import { buyArtworkAction } from "../redux/buyAction"
+import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
+import {connect} from 'react-redux'
 
-export default class ExpandExhibitionScreen extends Component {
+class ExpandExhibitionScreen extends Component {
 
     constructor(props){
         super(props);
         this.state={
           like: 0,
           comment: 0,
-          register: "Register"
+          register: "Register",
+          exhibition: {},
+          fetch: false
+        }
+      }
+
+      async componentDidMount(){
+        const id= this.props.navigation.getParam("id", null )
+
+        var url = apiUrl + "exhibition/" + id;
+        var result = await fetch(url, {
+          method: 'GET',
+          headers: { 
+            'content-type': 'application/json',
+            "Authorization": `Bearer ${this.props.jwt}`
+          }
+        });
+        var response = await result;
+        if(response.status !== 200 ){
+          console.warn("fetching exhibition failed response")
+          this.setState({
+            exhibition: {}
+          })
+          
+          return
+        }
+        else{
+          var res = await response.json();
+          if (res._id) {
+            this.setState({
+              exhibition: res,
+              fetch: true
+            })
+          }
+
+          else  {
+            console.warn("Can't get exhibition")
+            this.setState({
+              exhibition: {}
+            })
+            
+          }
         }
       }
 
   render() {
-      const story = this.props.navigation.getParam("story")
-      const title= this.props.navigation.getParam("title")
-      const year = this.props.navigation.getParam("year")
-      const artistName = this.props.navigation.getParam("artistName")
-      const location = this.props.navigation.getParam("location")
-      const size = this.props.navigation.getParam("size")
-      const category = this.props.navigation.getParam("category")
-      const available = this.props.navigation.getParam("available")
-      const price = this.props.navigation.getParam("price")
+
+    if(!this.state.fetch){
+      return(
+        <Container>
+        <Header style={{ backgroundColor: "#990000",paddingTop: 50, paddingBottom: 40 }}>
+          <Left>
+            <Button transparent onPress={()=> this.props.navigation.navigate("Exhibition") }>
+              <Icon name="arrow-back" />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Exhibition</Title>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name="eye" />
+            </Button>
+          </Right>
+        </Header>
+        <Content>
+          <Body>
+            <Spinner color="red" />
+          </Body>
+        </Content>
+        </Container>
+      )
+    }
+      else {
     return (
       <Container>
-        <Header style={{ backgroundColor: "#990000",paddingTop: 40, paddingBottom: 30 }}>
+        <Header style={{ backgroundColor: "#990000",paddingTop: 50, paddingBottom: 40 }}>
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate("Exhibition") }>
               <Icon name="arrow-back" />
@@ -47,34 +114,34 @@ export default class ExpandExhibitionScreen extends Component {
           <CardItem>
               <Left>
                 <Body>
-                  <Text>{!title ? "Organizer" : title}</Text>
-                  <Text note>{!year ? "Country" : year}</Text>
+                  <Text>{this.state.exhibition.title}</Text>
+                  <Text note>{this.state.exhibition.country}</Text>
                 </Body>
               </Left>
               <Right>
                 <Body>
-                    <Text note >{!artistName ? "Address" : artistName}</Text>
-                  <Text note>{!location ? "Date" : location}</Text>
+                    <Text note >{this.state.exhibition.organizerName}</Text>
+                  <Text note>{this.state.exhibition.date}</Text>
                 </Body>
               </Right>
             </CardItem>
             <CardItem cardBody>
-              <Image source={{ uri: "https://res.cloudinary.com/artered/image/upload/v1565393034/ykxz7pqmbr8qtxinfoea.jpg"} } style={{height: 300, width: null, flex: 1}}/>
+              <Image source={{ uri: this.state.exhibition.imageUrl } } style={{height: 300, width: null, flex: 1}}/>
             </CardItem>
             <CardItem >
                 <Text>
-                  This is the full detail of the exhition
+                  {this.state.exhibition.longDescription}
+                </Text>
+            </CardItem>
+            <CardItem >
+                <Text>
+                  {this.state.exhibition.address}
                 </Text>
             </CardItem>
             <View style={{ paddingTop: 30 }} >
                 <Button block danger
                   onPress={()=>{
-                      if(process.env.NODE_ENV === 'development'){
-                          this.setState({
-                              register: "Registered"
-                          })
-                      }
-                    else if(!this.props.userId){
+                    if(!this.props.userId){
                         Toast.show({
                           text: "You need to sign in to register",
                           buttonText: "Okay",
@@ -94,6 +161,16 @@ export default class ExpandExhibitionScreen extends Component {
           </Card>
         </Content>
       </Container>
-    );
+    );}
   }
 }
+
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId.userId,
+  profile: state.userProfile
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtworkAction,
+   moreArtworkDetailsAction, getUserProfileAction })(ExpandExhibitionScreen)

@@ -28,7 +28,7 @@ import LandingScreen from '../screen/landing';
 import SettingScreen from '../screen/setting';
 import EditProfileController from '../controller/editProfile';
 import ExpandExhibitionScreen from '../screen/expandExhibition';
-import CreateExhibitionScreen from '../screen/createExhibition';
+import CreateExhibitionScreen from '../controller/createExhibition';
 import MyProfileScreen from '../screen/myProfile';
 import HelpScreen from '../screen/help'
 import AccountScreen from '../screen/account'
@@ -46,8 +46,6 @@ const DrawerNavigator = createDrawerNavigator(
       Wallet: WalletScreen,
       Bank: BankScreen,
       Withdraw: WithdrawScreen,
-      Exhibition: ExhibitionScreen,
-      CreateExhibition: CreateExhibitionScreen,
       Rave: RaveScreen,
     },
     {
@@ -149,6 +147,8 @@ const switchNavigator = createSwitchNavigator({
   Profile: ProfileScreen,
   UserProfileCollection: ProfileArtworkScreen,
   Comment: CommentScreen,
+  Exhibition: ExhibitionScreen,
+  CreateExhibition: CreateExhibitionScreen,
   App: StackNavigator,
 },
 {

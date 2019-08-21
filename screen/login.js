@@ -20,7 +20,7 @@ export default class LoginScreen extends Component {
     const signin = <Text> Sign In </Text>
     return (
       <Container style={{backgroundColor: "#e6e6e6",}}>
-        <Header style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }} >
+        <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }} >
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate('Landing') }>
               <Icon name="arrow-back" />

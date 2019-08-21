@@ -8,11 +8,11 @@ export default class LandingScreen extends React.Component{
         return (
             <Container >
                 
-                <ImageBackground imageStyle={{resizeMode:"cover"}} source={ require("../assets/bg.png")} style={{ flex: 1 }}>
+                <ImageBackground imageStyle={{resizeMode:"cover"}} source={ require("../assets/bg.jpg")} style={{ flex: 1 }}>
                 <Content>
-                    <Body>
-                        <Image source={ require("../assets/logo.png")} 
-                            style={{height: 300, width: 400, flex: 1}} />
+                    <Body style={{ paddingTop: 100, paddingBottom: 60 }}>
+                        <Image source={ require("../assets/logo.jpg")} 
+                            style={{ flex: 1}} />
                     </Body>
                     <Body>
                     <ListItem style={{ justifyContent: "center", alignItems: "center", }}>

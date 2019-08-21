@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Left, Body, Right, Form, Item, Label,
- Text, Button, Icon, Title, Segment, Input, Textarea, Spinner } from 'native-base';
+ Text, Button, Icon, Title, Segment, Input, Textarea, Spinner, DatePicker } from 'native-base';
 import FooterTabs from "./service/footer"
 import { Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Permissions } from 'expo';
-import Constants from 'expo-constants'
-import * as ImagePicker from 'expo-image-picker';
 import PropTypes from 'prop-types'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
+import { KeyboardAvoidingView } from "react-native"
 export default class CreateExhibitionScreen extends Component {
   constructor(props){
     super(props);
@@ -18,35 +15,11 @@ export default class CreateExhibitionScreen extends Component {
     }
   }
 
-  componentDidMount() {
-    this.getPermissionAsync();
-    }
-
-    getPermissionAsync = async () => {
-    if (Constants.platform.ios) {
-        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to post!');
-        }
-    }
-    }
-
-    pickImage = async () => {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [6, 5],
-        base64: true
-      });
-
-      if (!result.cancelled) {
-        this.setState({ image: result.uri })
-      }
-    }
+  
 
   render() {
       const imagePlaceholder =(
-        <Image source={{uri: this.state.image }}
+        <Image source={{uri: this.props.image }}
             style={{height: 300, width: null, flex: 1}}
         />
       )
@@ -77,19 +50,27 @@ export default class CreateExhibitionScreen extends Component {
             <Text>Create Exhibition</Text>
           </Button>
         </Segment>
-        <KeyboardAwareScrollView>
+        <KeyboardAwareScrollView
+          extraScrollHeight={100}
+          enableOnAndroid={true} 
+          keyboardShouldPersistTaps='handled'
+        >
         <Content padder style={{ paddingBottom: 20 }}>
                 <Item>
+                  <Body>
+                    <Text note style={{ color: "red"}}>{this.props.errMessage} </Text>
+                  </Body>
                   <Right>
                     <Button transparent
-                        onPress={this.pickImage }
+                        onPress={this.props.pickImage }
                     >  
                       <Icon name="camera" active />
                         <Text> Upload Image </Text>
                     </Button>
                   </Right>
                 </Item>
-                {this.state.image  ? imagePlaceholder : null }
+                {this.props.image  ? imagePlaceholder : null }
+                {/* <KeyboardAvoidingView behavior="padding"> */}
                 <Form>
                     <Item stackedLabel>
                         <Label>Title</Label>
@@ -98,6 +79,23 @@ export default class CreateExhibitionScreen extends Component {
                     <Item stackedLabel>
                         <Label>Address</Label>
                         <Input onChangeText= { this.props.handleAddress } value={this.props.address}  autoCapitalize='words'/>
+                    </Item>
+                    <Item >
+                    <DatePicker
+                          defaultDate={new Date()}
+                          minimumDate={new Date(2018, 1, 1)}
+                          maximumDate={new Date(2030, 12, 31)}
+                          locale={"en"}
+                          timeZoneOffsetInMinutes={undefined}
+                          modalTransparent={false}
+                          animationType={"fade"}
+                          androidMode={"default"}
+                          placeHolderText="Select date"
+                          textStyle={{ color: "green" }}
+                          placeHolderTextStyle={{ color: "#000000" }}
+                          onDateChange={this.props.handleDate}
+                          disabled={false}
+                          />
                     </Item>
                     <Item stackedLabel>
                         <Label>Short Description</Label>
@@ -124,9 +122,11 @@ export default class CreateExhibitionScreen extends Component {
                         <Label>Organizer Email</Label>
                         <Input onChangeText= {this.props.handleEmail } value={this.props.email }  autoCapitalize='words'/>
                     </Item>
+                    
                 </Form>
+                {/* </KeyboardAvoidingView> */}
                 <Button block danger
-                  disabled={ this.props.disable}
+                  disabled={this.props.disable}
                   onPress={this.props.create}
                 >
                     {
@@ -161,8 +161,12 @@ CreateExhibitionScreen.propTypes={
   handleCountry: PropTypes.func.isRequired,
   handleCapacity: PropTypes.func.isRequired,
   handleName: PropTypes.func.isRequired,
+  handleDate: PropTypes.func.isRequired,
   handleEmail: PropTypes.func.isRequired,
   create: PropTypes.func.isRequired,
   disable : PropTypes.bool.isRequired,
   spin : PropTypes.bool.isRequired,
+  errMessage: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  pickImage: PropTypes.func.isRequired,
 }

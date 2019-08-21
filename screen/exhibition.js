@@ -3,6 +3,7 @@ import { Container, Header, Content, List, ListItem, Left, Body, Right,
   Card, CardItem, Toast, Text, Button, Icon, Title, Segment } from 'native-base';
 import FooterTabs from "./service/footer"
 import { Image } from 'react-native'
+import { ScrollView, RefreshControl } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { apiUrl } from './service/env';
 import { loginAction } from "../redux/loginAction"
@@ -20,12 +21,20 @@ class ExhibitionScreen extends Component {
       register: "Register",
       feed: [],
       allArtwork: [],
-      fetch: false
+      fetch: false,
+      refreshing: false,
     }
   }
 
   componentDidMount(){
     this.getFeed()
+  }
+
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getFeed().then(() => {
+      this.setState({refreshing: false});
+    });
   }
 
   getFeed= async ()=>{
@@ -56,8 +65,9 @@ class ExhibitionScreen extends Component {
       var res = await response.json();
       if (res[0]._id) {
         // console.warn(res[0])
+        let reverseResp = res.reverse()
         this.setState({
-          feed: res
+          feed: reverseResp
         })
         this.mapAllExhibition()
       }
@@ -74,7 +84,7 @@ class ExhibitionScreen extends Component {
 }
 
 mapAllExhibition = async ()=>{
-  var allArtwork = await this.state.feed.map(exhibition=> 
+  var allArtwork = await this.state.feed.reverse().map(exhibition=> 
     (
       <Card style={{flex: 0}} key={exhibition._id}>
             <CardItem>
@@ -108,7 +118,7 @@ mapAllExhibition = async ()=>{
               <Image source={{ uri: exhibition.imageUrl} } style={{height: 200, width: null, flex: 1}}/>
             </CardItem>
             <CardItem >
-                <Text>
+                <Text note>
                   {exhibition.shortDescription}
                 </Text>
                 
@@ -138,13 +148,13 @@ mapAllExhibition = async ()=>{
                         })
                     }
                     else{
-                        this.setState({
-                          register: "Registered"
+                        this.props.navigation.navigate("RegisterForExhibition", {
+                          id: exhibition._id
                         })
                     }
                   }}
                 >
-                  <Text>{this.state.register}</Text>
+                  <Text>Register</Text>
                 </Button>
               </Right>
             </CardItem>
@@ -190,7 +200,14 @@ mapAllExhibition = async ()=>{
             <Text>Create Exhibition</Text>
           </Button>
         </Segment>
-        <Content padder>
+        <Content padder
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
+        >
         {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : <Body><Text>No Exhibition to show</Text></Body> }
         </Content>
         <FooterTabs 

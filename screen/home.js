@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Image, Modal, View } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, 
   Toast, Textarea, Spinner } from 'native-base';
+  import { ScrollView, RefreshControl } from 'react-native';
 import FooterScreen from './service/footer'
 import { Permissions } from 'expo';
 import Constants from 'expo-constants'
@@ -25,6 +26,7 @@ class HomeScreen extends Component {
       feed: [],
       allArtwork: [],
       fetch: false,
+      refreshing: false,
       image: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png",
     }
   }
@@ -39,6 +41,12 @@ class HomeScreen extends Component {
 
   }
 
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getFeed().then(() => {
+      this.setState({refreshing: false});
+    });
+  }
 
   fetchUserProfile= async () =>{
     if(!this.props.userId || this.props.userId.length <= 0  || !this.props.jwt.jwt 
@@ -112,8 +120,9 @@ class HomeScreen extends Component {
         var res = await response.json();
         if (res[0]._id) {
           // console.warn(res[0])
+          let reverseResp = res.reverse()
           this.setState({
-            feed: res
+            feed: reverseResp
           })
           this.mapAllFeed()
         }
@@ -131,111 +140,17 @@ class HomeScreen extends Component {
 
   mapAllFeed = async ()=>{
     var allArtwork = await this.state.feed.map(artwork => 
-      (
-        <Card key={artwork._id}>
-              <CardItem>
-                <Left>
-                  <Body>
-                    <Text>{artwork.title} {`(${artwork.year ? artwork.year : "Unknown"})`}</Text>
-                      <Text note>{artwork.artistName}</Text>
-                  </Body>
-                </Left>
-                <Right>
-                  <Button transparent onPress={async () => {
-                    if(!this.props.userId){
-                      return Toast.show({
-                        text: "You need to sign in",
-                        buttonText: "Okay",
-                        duration: 3000,
-                        type: 'danger'
-                      })
-                    }
-                    await this.props.moreArtworkDetailsAction({artworkId : artwork._id })
-                    this.props.navigation.navigate("Detail", { routeName: "Home"})} 
-                  }>
-                       <Text>More</Text>
-                  </Button>
-                  <TouchableOpacity 
-                    onPress={()=> {
-                      if(!this.props.userId){
-                        return Toast.show({
-                          text: "You need to sign in",
-                          buttonText: "Okay",
-                          duration: 3000,
-                          type: 'danger'
-                        })
-                      }
-                      this.props.navigation.navigate("Profile", {id: artwork.userId, routeName: "Home"})
-                    }}
-                  >
-                    <Text note>See Sponsor</Text>
-                  </TouchableOpacity>   
-                </Right>
-              </CardItem>
-              <CardItem cardBody>
-                <Image source={{ uri: artwork.imageURL } } style={{height: 200, width: null, flex: 1}}/>
-              </CardItem>
-              <CardItem>
-                <Left>
-                  <Button transparent 
-                    onPress={()=>{ 
-                      if(!this.props.userId){
-                        return Toast.show({
-                          text: "You need to sign in",
-                          buttonText: "Okay",
-                          duration: 3000,
-                          type: 'danger'
-                        })
-                      }
-
-                      like({
-                      jwt: this.props.jwt.jwt,
-                      userId: this.props.userId,
-                      artworkId: artwork._id
-                    })
-                    
-                  }}
-                  >
-                    <Icon active name="thumbs-up" />
-                    <Text>{artwork.like.length <= 0 ? 0 : artwork.like.length} Likes</Text>
-                  </Button>
-                </Left>
-                <Body>
-                  <Button transparent 
-                    onPress={()=>{
-                      this.props.navigation.navigate("Comment", {
-                        id: artwork._id,
-                        comment: artwork.comment,
-                        routeName: "Home"
-                      })
-                    }}
-                  >
-                    <Icon active name="chatbubbles" />
-                    <Text>{ artwork.comment.length <=  0 ? 0 : artwork.comment.length } Comments</Text>
-                  </Button>
-                  
-                </Body>
-                <Right>
-                  <Button transparent onPress= {async ()=>{ 
-                    if(!this.props.userId){
-                      return Toast.show({
-                        text: "You need to sign in",
-                        buttonText: "Okay",
-                        duration: 3000,
-                        type: 'danger'
-                      })
-                    }
-                    
-                   await  this.props.buyArtworkAction({id: artwork._id})
-                    this.props.navigation.navigate("Buy", { routeName: "Home"})} 
-                    }>
-                      <Icon active name="pricetag" />
-                      <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
-                  </Button>
-                </Right>
-              </CardItem>
-            </Card>
-      )
+      <MapArtwork 
+        key={artwork._id} 
+        artwork= {artwork} 
+        navigation = {this.props.navigation}
+        userId={ this.props.userId}
+        jwt = {this.props.jwt}
+        profile= {this.props.profile}
+        moreArtworkDetailsAction = { this.props.moreArtworkDetailsAction}
+        buyArtworkAction= {this.props.buyArtworkAction}
+        like= {like}
+      />
     )
     this.setState({ allArtwork : allArtwork, fetch: true })
   }
@@ -261,7 +176,14 @@ class HomeScreen extends Component {
     else {
     return (
       <Container>
-        <Content >
+        <Content 
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
+        >
          {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : <Text>No feed to show in your network</Text> }
         </Content>
         <FooterScreen 
@@ -284,3 +206,135 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtworkAction,
    moreArtworkDetailsAction, getUserProfileAction })(HomeScreen)
+
+
+   class MapArtwork extends Component{
+     constructor(props){
+       super(props)
+       this.state = {
+         likeCount :  0,
+         color: "blue"
+       }
+     }
+
+     conmponentDidMount(){
+      let artwork = this.props.artwork
+      this.setState({ likeCount: artwork.like.length })
+     }
+     
+     render(){
+      let artwork = this.props.artwork
+       return(
+        <Card >
+        <CardItem>
+          <Left>
+            <Body>
+              <Text>{artwork.title} {`(${artwork.year ? artwork.year : "Unknown"})`}</Text>
+                <Text note>{artwork.artistName}</Text>
+            </Body>
+          </Left>
+          <Right>
+            <Button transparent onPress={async () => {
+              if(!this.props.userId){
+                return Toast.show({
+                  text: "You need to sign in",
+                  buttonText: "Okay",
+                  duration: 3000,
+                  type: 'danger'
+                })
+              }
+              await this.props.moreArtworkDetailsAction({artworkId : artwork._id })
+              this.props.navigation.navigate("Detail", { routeName: "Home"})} 
+            }>
+                 <Text>More</Text>
+            </Button>
+            <TouchableOpacity 
+              onPress={()=> {
+                if(!this.props.userId){
+                  return Toast.show({
+                    text: "You need to sign in",
+                    buttonText: "Okay",
+                    duration: 3000,
+                    type: 'danger'
+                  })
+                }
+                this.props.navigation.navigate("Profile", {id: artwork.userId, routeName: "Home"})
+              }}
+            >
+              <Text note>See Sponsor</Text>
+            </TouchableOpacity>   
+          </Right>
+        </CardItem>
+        <CardItem cardBody>
+          <Image source={{ uri: artwork.imageURL } } style={{height: 200, width: null, flex: 1}}/>
+        </CardItem>
+        <CardItem>
+          <Left>
+            <Button transparent 
+              onPress={()=>{ 
+                if(!this.props.userId){
+                  return Toast.show({
+                    text: "You need to sign in",
+                    buttonText: "Okay",
+                    duration: 3000,
+                    type: 'danger'
+                  })
+                }
+                if(artwork.like.findIndex(id => { 
+                  return id = this.props.userId
+                }) >= 0 ){
+                  return this.setState({ color: "red"})
+                }
+
+                like({
+                jwt: this.props.jwt.jwt,
+                userId: this.props.userId,
+                artworkId: artwork._id
+              })
+              
+              this.setState({ color: "red", likeCount: artwork.like.length + 1})
+              
+            }}
+            >
+              <Icon style={{ color : this.state.color }} name="thumbs-up" />
+              <Text>{artwork.like.length <= 0 ? 0 : artwork.like.length} Likes</Text>
+            </Button>
+          </Left>
+          <Body>
+            <Button transparent 
+              onPress={()=>{
+                this.props.navigation.navigate("Comment", {
+                  id: artwork._id,
+                  comment: artwork.comment,
+                  routeName: "Home"
+                })
+              }}
+            >
+              <Icon active name="chatbubbles" />
+              <Text>{ artwork.comment.length <=  0 ? 0 : artwork.comment.length } Comments</Text>
+            </Button>
+            
+          </Body>
+          <Right>
+            <Button transparent onPress= {async ()=>{ 
+              if(!this.props.userId){
+                return Toast.show({
+                  text: "You need to sign in",
+                  buttonText: "Okay",
+                  duration: 3000,
+                  type: 'danger'
+                })
+              }
+              
+             await  this.props.buyArtworkAction({id: artwork._id})
+              this.props.navigation.navigate("Buy", { routeName: "Home"})} 
+              }>
+                <Icon active name="pricetag" />
+                <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
+            </Button>
+          </Right>
+        </CardItem>
+      </Card>
+       )
+     }
+   }

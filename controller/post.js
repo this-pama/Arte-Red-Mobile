@@ -11,7 +11,8 @@ class PostController extends Component{
         this.state={
             title: "",
             artistName: "",
-            size: "",
+            length: "",
+            breadth: "",
             story: "",
             location: "",
             price: 0,
@@ -51,7 +52,7 @@ class PostController extends Component{
          },
         body: JSON.stringify({
           title: this.state.title,
-          size: this.state.size,
+          size: `${this.state.length} x ${this.state.breadth}`,
           story: this.state.story,
           location: this.state.location,
           price: this.state.price,
@@ -67,8 +68,8 @@ class PostController extends Component{
 
       if(response.status !== 200){
         console.warn(response.error)
-        this.setState({ spin : false })
-        alert("Error occured while uploading")
+        this.setState({ spin : false, errMessage: "Error occured while uploading" })
+        // alert("Error occured while uploading")
       }
       else{
         var res = await response.json();
@@ -91,8 +92,8 @@ class PostController extends Component{
           return this.props.navigation.navigate("Home")
         }
         else{
-          this.setState({ spin : false })
-          alert("Error while uploading")
+          this.setState({ spin : false, errMessage: "Error occured while uploading" })
+          // alert("Error while uploading")
         }
       }
       
@@ -161,22 +162,40 @@ class PostController extends Component{
       };
 
 
-      handleSize = size => {
-        if (size.length > 0) {
+      handleLength = length => {
+        if (length.length > 0) {
           this.setState(
             {
-              size,
+              length,
               errMessage: ""
             },
             this.validateForm
           );
         } else {
           this.setState({
-            size: '',
-            errMessage: 'Size cannot be empty'
+            length: '',
+            errMessage: 'Length cannot be empty'
           });
         }
       };
+
+      handleBreadth = breadth => {
+        if (breadth.length > 0) {
+          this.setState(
+            {
+              breadth,
+              errMessage: ""
+            },
+            this.validateForm
+          );
+        } else {
+          this.setState({
+            breadth: '',
+            errMessage: 'Breadth cannot be empty'
+          });
+        }
+      };
+
 
       handleStory = story => {
         if (story.length > 0) {
@@ -314,7 +333,8 @@ class PostController extends Component{
             <Post
                 title= { this.state.title }
                 artistName= { this.state.artistName }
-                size= { this.state.size }
+                length= { this.state.length }
+                breadth= {this.state.breadth}
                 story= { this.state.story }
                 location= { this.state.location }
                 price= { this.state.price }
@@ -325,7 +345,8 @@ class PostController extends Component{
                 disable= { this.state.disable }
                 handleTitle= { this.handleTitle }
                 handleArtistName= { this.handleArtistName }
-                handleSize= { this.handleSize }
+                handleLength= { this.handleLength }
+                handleBreadth= { this.handleBreadth }
                 handleStory= { this.handleStory }
                 handleLocation= { this.handleLocation }
                 handlePrice= { this.handlePrice }
@@ -336,6 +357,7 @@ class PostController extends Component{
                 post= { this.post }
                 navigation= {this.props.navigation}
                 spin={this.state.spin}
+                errMessage= {this.state.errMessage}
             />
         )
     }

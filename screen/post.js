@@ -4,6 +4,7 @@ import { Container, Header, Content, Card, CardItem,Title, Thumbnail, Text,
   Button, Icon, Left, Body, Right,
 Form, Label, Input, Picker, Item, Textarea, Spinner } from 'native-base';
 import PropTypes from "prop-types"
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default class PostScreen extends Component {
     constructor(props){
@@ -33,6 +34,11 @@ export default class PostScreen extends Component {
             </Button>
           </Right>
         </Header>
+        <KeyboardAwareScrollView
+          extraScrollHeight={100}
+          enableOnAndroid={true} 
+          keyboardShouldPersistTaps='handled'
+        >
         <Content>
           <Card>
             <CardItem cardBody>
@@ -41,6 +47,7 @@ export default class PostScreen extends Component {
           </Card>
           <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
                 <Form>
+                  <Text note style={{ color: "red"}}>{this.props.errMessage}</Text>
                     <Item stackedLabel>
                         <Label>Title</Label>
                         <Input onChangeText= {this.props.handleTitle  } value={this.props.title}  autoCapitalize='words'/>
@@ -50,8 +57,12 @@ export default class PostScreen extends Component {
                         <Input onChangeText= { this.props.handleArtistName } value={this.props.artistName}  autoCapitalize='words'/>
                     </Item>
                     <Item stackedLabel>
-                        <Label>Size (inches)</Label>
-                        <Input onChangeText= { this.props.handleSize } value={this.props.size}  keyboardType='numeric' />
+                        <Label>Length (inches)</Label>
+                        <Input onChangeText= { this.props.handleLength } value={this.props.length}  keyboardType='numeric' />
+                    </Item>
+                    <Item stackedLabel>
+                        <Label>Breadth (inches)</Label>
+                        <Input onChangeText= { this.props.handleBreadth } value={this.props.breadth}  keyboardType='numeric' />
                     </Item>
                       <Textarea rowSpan={5} bordered 
                         placeholder="Write a story about the artwork."
@@ -119,6 +130,7 @@ export default class PostScreen extends Component {
             </Button>
           </View>         
         </Content>
+        </KeyboardAwareScrollView>
       </Container>
     );
   }
@@ -138,7 +150,8 @@ const styles = {
 PostScreen.propTypes= {
     title: PropTypes.string.isRequired,
     artistName: PropTypes.string,
-    size: PropTypes.string,
+    length: PropTypes.string,
+    breadth: PropTypes.string,
     story: PropTypes.string,
     location: PropTypes.string,
     price: PropTypes.number,
@@ -146,6 +159,7 @@ PostScreen.propTypes= {
     number: PropTypes.string,
     category: PropTypes.string,
     masterpiece: PropTypes.string,
+    errMessage: PropTypes.string,
     disable: PropTypes.bool,
     spin: PropTypes.bool,
     handleTitle: PropTypes.func.isRequired,

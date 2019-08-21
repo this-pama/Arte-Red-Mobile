@@ -3,6 +3,7 @@ import { Container, Header, Left, Body, Right, Button, Icon, Title,
   Segment, Content, Text, Card, Thumbnail, CardItem  } from 'native-base';
 import {TouchableOpacity} from "react-native-gesture-handler"
 import { Image } from "react-native"
+import { ScrollView, RefreshControl } from 'react-native';
 import FooterTabs from "./service/footer"
 import {connect} from 'react-redux'
 import { loginAction } from "../redux/loginAction"
@@ -20,7 +21,8 @@ class NetworkScreen extends Component {
       post: [],
       artworkId: [],
       allArtwork: [],
-      count: 1
+      count: 1,
+      refreshing: false,
     }
   }
 
@@ -32,6 +34,13 @@ class NetworkScreen extends Component {
     }
 
     this.getPost()
+  }
+
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getPost().then(() => {
+      this.setState({refreshing: false});
+    });
   }
 
   getPost= async ()=>{
@@ -90,72 +99,18 @@ class NetworkScreen extends Component {
 
 
   mapAllPost = async ()=>{
-    var allArtwork = await this.state.post.map(artwork => 
-      (
-        <Card key={artwork._id}>
-              <CardItem>
-                <Left>
-                  <Body>
-                    <Text>{artwork.title} {`(${artwork.year})`}</Text>
-                      <Text note>{artwork.artistName}</Text>
-                  </Body>
-                </Left>
-                <Right>
-                  <Button transparent onPress={async () => {
-                    await this.props.moreArtworkDetailsAction({artworkId : artwork._id })
-                    this.props.navigation.navigate("Detail", { routeName: "Network"})} 
-                  }>
-                      <Icon active name="open" style={{ paddingRight: 25, fontSize: 20}} />
-                       <Text>More</Text>
-                  </Button>
-                </Right>
-              </CardItem>
-              <CardItem cardBody>
-                <Image source={{ uri: artwork.imageURL } } style={{height: 200, width: null, flex: 1}}/>
-              </CardItem>
-              <CardItem>
-                <Left>
-                  <Button transparent 
-                   onPress={()=>{ 
-                        like({
-                        jwt: this.props.jwt.jwt,
-                        userId: this.props.userId,
-                        artworkId: artwork._id
-                      })
-                      
-                    }}
-                   >
-                    <Icon active name="thumbs-up" />
-                    <Text>{artwork.like.length <= 0 ? 0 :artwork.like.length } Likes</Text>
-                  </Button>
-                </Left>
-                <Body>
-                  <Button transparent 
-                    onPress={()=>{
-                      this.props.navigation.navigate("Comment", {
-                        id: artwork._id,
-                        comment: artwork.comment,
-                        routeName: "Network"
-                      })
-                    }}
-                  >
-                    <Icon active name="chatbubbles" />
-                    <Text>{ artwork.comment.length <= 0 ? 0 : artwork.comment.length } Comments</Text>
-                  </Button>
-                  
-                </Body>
-                <Right>
-                  <Button transparent onPress= {async ()=>{ 
-                   await  this.props.buyArtworkAction({id: artwork._id})
-                    this.props.navigation.navigate("Buy", { routeName: "Network"})} 
-                    }>
-                      <Icon active name="pricetag" />
-                      <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
-                  </Button>
-                </Right>
-              </CardItem>
-            </Card>
-      )
+    var allArtwork = await this.state.post.reverse().map(artwork => 
+      <MapArtwork 
+        key={artwork._id} 
+        artwork= {artwork} 
+        navigation = {this.props.navigation}
+        userId={ this.props.userId}
+        jwt = {this.props.jwt}
+        profile= {this.props.profile}
+        moreArtworkDetailsAction = { this.props.moreArtworkDetailsAction}
+        buyArtworkAction= {this.props.buyArtworkAction}
+        like= {like}
+      />
     )
     this.setState({ allArtwork : allArtwork })
   }
@@ -190,7 +145,14 @@ class NetworkScreen extends Component {
             <Text>Posts</Text>
           </Button>
         </Segment>
-        <Content padder>
+        <Content padder
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
+        >
           {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : <Text>You currently have no posts.</Text> }
         </Content>
 
@@ -213,3 +175,95 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {loginAction, getUserIdAction, 
     getUserProfileAction, moreArtworkDetailsAction, buyArtworkAction })(NetworkScreen)
+
+
+
+    class MapArtwork extends Component{
+      constructor(props){
+        super(props)
+        this.state = {
+          likeCount :  0,
+          color: "blue"
+        }
+      }
+ 
+      conmponentDidMount(){
+       let artwork = this.props.artwork
+       this.setState({ likeCount: artwork.like.length })
+      }
+      render(){
+       let artwork = this.props.artwork
+        return(
+          <Card key={artwork._id}>
+          <CardItem>
+            <Left>
+              <Body>
+                <Text>{artwork.title} {`(${artwork.year})`}</Text>
+                  <Text note>{artwork.artistName}</Text>
+              </Body>
+            </Left>
+            <Right>
+              <Button transparent onPress={async () => {
+                await this.props.moreArtworkDetailsAction({artworkId : artwork._id })
+                this.props.navigation.navigate("Detail", { routeName: "Network"})} 
+              }>
+                  <Icon active name="open" style={{ paddingRight: 25, fontSize: 20}} />
+                   <Text>More</Text>
+              </Button>
+            </Right>
+          </CardItem>
+          <CardItem cardBody>
+            <Image source={{ uri: artwork.imageURL } } style={{height: 200, width: null, flex: 1}}/>
+          </CardItem>
+          <CardItem>
+            <Left>
+              <Button transparent 
+               onPress={()=>{ 
+                  if(artwork.like.findIndex(id => { 
+                    return id = this.props.userId
+                  }) >= 0 ){
+                    return this.setState({ color: "red"})
+                  }
+
+                    like({
+                    jwt: this.props.jwt.jwt,
+                    userId: this.props.userId,
+                    artworkId: artwork._id
+                  })
+                  this.setState({ color: "red"})
+                  
+                }}
+               >
+                <Icon style={{ color : this.state.color }} name="thumbs-up" />
+                <Text>{artwork.like.length <= 0 ? 0 :artwork.like.length } Likes</Text>
+              </Button>
+            </Left>
+            <Body>
+              <Button transparent 
+                onPress={()=>{
+                  this.props.navigation.navigate("Comment", {
+                    id: artwork._id,
+                    comment: artwork.comment,
+                    routeName: "Network"
+                  })
+                }}
+              >
+                <Icon active name="chatbubbles" />
+                <Text>{ artwork.comment.length <= 0 ? 0 : artwork.comment.length } Comments</Text>
+              </Button>
+              
+            </Body>
+            <Right>
+              <Button transparent onPress= {async ()=>{ 
+               await  this.props.buyArtworkAction({id: artwork._id})
+                this.props.navigation.navigate("Buy", { routeName: "Network"})} 
+                }>
+                  <Icon active name="pricetag" />
+                  <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
+              </Button>
+            </Right>
+          </CardItem>
+        </Card>
+        )
+      }
+    }

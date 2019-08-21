@@ -148,8 +148,8 @@ class BuyScreen extends Component {
         this.state.lastName.length > 0 &&
         this.state.email.length > 0 && 
         testEmail.test(this.state.email) &&
-        +this.state.quantity &&
-        +this.state.total > 0
+        this.state.quantity > 0 &&
+        this.state.total > 0
         
       ) {
         this.setState({
@@ -212,6 +212,11 @@ class BuyScreen extends Component {
             </Button>
           </Right>
         </Header>
+        <KeyboardAwareScrollView
+          extraScrollHeight={100}
+          enableOnAndroid={true} 
+          keyboardShouldPersistTaps='handled'
+        >
         <Content>
           
           <Card style={{flex: 0}}>
@@ -295,6 +300,7 @@ class BuyScreen extends Component {
           </Button>
           </KeyboardAwareScrollView>
         </Content>
+        </KeyboardAwareScrollView>
       </Container>
     );}
   }

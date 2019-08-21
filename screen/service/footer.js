@@ -55,7 +55,8 @@ class FooterTabs extends Component {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
-        aspect: [6, 5],
+        aspect: [10, 10],
+        quality: 0.5,
         base64: true
       });
 

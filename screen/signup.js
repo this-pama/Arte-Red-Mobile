@@ -36,14 +36,26 @@ export default class SignUpScreen extends Component {
           </Right>
         </Header>
         <Content style={{  padding: 20 }}>
+          <Body>
+          <Text note style={{ color: "red"}}>{this.props.errMessage}</Text>
+          </Body>
+
           <Form>
             <Item floatingLabel>
               <Label>Email</Label>
               <Input onChangeText= { this.props.handleEmail } value={this.props.email}  autoCapitalize='none'/>
             </Item>
-            <Item floatingLabel last>
+            <Item floatingLabel>
+              <Label>Phone Number</Label>
+              <Input onChangeText= { this.props.handlePhone } value={this.props.phone}  keyboardType= "numbers-and-punctuation" />
+            </Item>
+            <Item floatingLabel>
               <Label>Password</Label>
-              <Input onChangeText= { this.props.handlePassword } value={this.props.password } autoCapitalize='none' />
+              <Input onChangeText= { this.props.handlePassword } value={this.props.password}  autoCapitalize='none'/>
+            </Item>
+            <Item floatingLabel last>
+              <Label>Confirm Password</Label>
+              <Input onChangeText= { this.props.handleConfirm } value={this.props.confirm } autoCapitalize='none' />
             </Item>
             
           </Form>
@@ -69,9 +81,13 @@ export default class SignUpScreen extends Component {
 SignUpScreen.propTypes ={
   email: PropType.string.isRequired,
   password: PropType.string.isRequired,
+  phone: PropType.string.isRequired,
+  confirm: PropType.string.isRequired,
   signUp: PropType.func.isRequired,
   handleEmail: PropType.func.isRequired,
+  handlePhone: PropType.func.isRequired,
   handlePassword: PropType.func.isRequired,
+  handleConfirm: PropType.func.isRequired,
   disable: PropType.bool.isRequired,
   spin: PropType.bool.isRequired
 }

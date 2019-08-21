@@ -9,6 +9,8 @@ export default class SignUpController extends Component{
             email: "",
             password: "",
             errMessage: "",
+            phone: "",
+            confirm: "",
             spin: false,
             disable: true
         }
@@ -66,7 +68,7 @@ export default class SignUpController extends Component{
         } else {
           this.setState({
             email: '',
-            errMessage: 'Email cannot be empty'
+            errMessage: 'Email must be valid'
           });
         }
       };
@@ -82,7 +84,39 @@ export default class SignUpController extends Component{
         } else {
           this.setState({
             password: '',
-            errMessage: 'password cannot be empty'
+            errMessage: 'Password cannot be empty'
+          });
+        }
+      };
+
+      handlePhone = phone => {
+        if (phone.length > 0) {
+          this.setState(
+            {
+              phone
+            },
+            this.validateForm
+          );
+        } else {
+          this.setState({
+            phone: '',
+            errMessage: 'Phone Number cannot be empty'
+          });
+        }
+      };
+
+      handleConfirm = confirm => {
+        if (confirm.length > 0) {
+          this.setState(
+            {
+              confirm
+            },
+            this.validateForm
+          );
+        } else {
+          this.setState({
+            confirm: '',
+            errMessage: 'Confirm Password'
           });
         }
       };
@@ -92,6 +126,9 @@ export default class SignUpController extends Component{
         if (
           this.state.email.length > 0 &&
           this.state.password.length > 0 &&
+          this.state.phone.length > 0 &&
+          this.state.confirm.length > 0 &&
+          this.state.password === this.state.confirm &&
           testEmail.test(this.state.email) 
         ) {
           this.setState({
@@ -113,10 +150,15 @@ export default class SignUpController extends Component{
                 password= {this.state.password}
                 handleEmail = { this.handleEmail}
                 handlePassword= { this.handlePassword }
+                handleConfirm={this.handleConfirm}
+                handlePhone={this.handlePhone}
+                phone= {this.state.phone}
+                confirm={this.state.confirm}
                 signUp= { this.signUp }
                 disable= { this.state.disable }
                 spin = { this.state.spin }
                 navigation= {this.props.navigation}
+                errMessage= {this.state.errMessage}
             />
         )
     }

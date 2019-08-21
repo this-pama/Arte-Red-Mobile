@@ -134,7 +134,7 @@ class ExpandExhibitionScreen extends Component {
                 </Text>
             </CardItem>
             <CardItem >
-                <Text>
+                <Text note >
                   {this.state.exhibition.address}
                 </Text>
             </CardItem>
@@ -150,9 +150,9 @@ class ExpandExhibitionScreen extends Component {
                         })
                     }
                     else{
-                        this.setState({
-                          register: "Registered"
-                        })
+                      this.props.navigation.navigate("RegisterForExhibition", {
+                        id: this.state.exhibition._id
+                      })
                     }
                   }} >
                   <Text>{this.state.register}</Text>

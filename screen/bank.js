@@ -6,6 +6,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { View, KeyboardAvoidingView } from "react-native"
 import FooterTabs from './service/footer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from "prop-types"
 
 export default class BankScreen extends Component {
@@ -29,12 +30,16 @@ export default class BankScreen extends Component {
             </Button>
           </Right>
         </Header>
+        <KeyboardAwareScrollView
+          extraScrollHeight={100}
+          enableOnAndroid={true} 
+          keyboardShouldPersistTaps='handled'
+        >
         <Content style={{ paddingBottom: 20}}>
-        <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
                 <Form>
                     <Item stackedLabel>
                         <Label>First Name</Label>
-                        <Input onChangeText= {this.props.handleFirstname  } value={this.props.firstName}  autoCapitalize='words'/>
+                        <Input onChangeText= {this.props.handleFirstName  } value={this.props.firstName}  autoCapitalize='words'/>
                     </Item>
                     <Item stackedLabel>
                         <Label>Last Name</Label>
@@ -67,8 +72,6 @@ export default class BankScreen extends Component {
                         </Picker>
                     </Item>
                 </Form>
-                
-            </KeyboardAvoidingView>
 
             <View style={{ padding : 10}}>
               <Button  block danger 
@@ -79,6 +82,7 @@ export default class BankScreen extends Component {
               </Button>
             </View>
         </Content>
+        </KeyboardAwareScrollView>
         
       </Container>
     );
@@ -103,7 +107,7 @@ BankScreen.propsType={
   bankName: PropTypes.string.isRequired,
   disable: PropTypes.bool.isRequired,
   spin: PropTypes.string.isRequired,
-  handleFirstname: PropTypes.func.isRequired,
+  handleFirstName: PropTypes.func.isRequired,
   handleLastName: PropTypes.func.isRequired,
   handleAccountNumber: PropTypes.func.isRequired,
   handlebankName: PropTypes.func.isRequired,

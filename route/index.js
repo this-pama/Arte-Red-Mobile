@@ -32,6 +32,7 @@ import CreateExhibitionScreen from '../controller/createExhibition';
 import MyProfileScreen from '../screen/myProfile';
 import HelpScreen from '../screen/help'
 import AccountScreen from '../screen/account'
+import RegisterExhibitionScreen from "../screen/registerForExhibition"
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -149,6 +150,7 @@ const switchNavigator = createSwitchNavigator({
   Comment: CommentScreen,
   Exhibition: ExhibitionScreen,
   CreateExhibition: CreateExhibitionScreen,
+  RegisterForExhibition: RegisterExhibitionScreen,
   App: StackNavigator,
 },
 {

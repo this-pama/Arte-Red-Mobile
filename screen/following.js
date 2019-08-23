@@ -13,8 +13,10 @@ class FolloweringScreen extends Component {
     super(props)
     this.state={
       following: [],
+      follow: [],
       followingId: [],
-      count: 1
+      count: 1,
+      image : "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png"
     }
   }
 
@@ -76,7 +78,7 @@ class FolloweringScreen extends Component {
 
 
   mapAllPost = async ()=>{
-    var allArtwork = await this.state.post.map(following => 
+    var allFollow = await this.state.following.map(following => 
       (
         <List key={following._id}>
               <TouchableOpacity 
@@ -84,7 +86,7 @@ class FolloweringScreen extends Component {
               >
                 <ListItem avatar>
                   <Left>
-                    <Thumbnail source={{uri : following.profileImage }} />
+                    <Thumbnail source={{uri : following.profileImage ? following.profileImage : this.state.image }} />
                   </Left>
                   <Body>
                     <Text>{following.firstName} {following.lastName}</Text>
@@ -95,7 +97,7 @@ class FolloweringScreen extends Component {
             </List>
       )
     )
-    this.setState({ following : following })
+    this.setState({ follow : allFollow })
   }
 
   render() {
@@ -128,7 +130,7 @@ class FolloweringScreen extends Component {
           </Button>
         </Segment>
         <Content padder>
-        {this.state.following && this.state.following.length > 0 ? this.state.following: <Text>You are not following anyone.</Text> }
+        {this.state.follow && this.state.follow.length > 0 ? this.state.follow: <Text>You are not following anyone.</Text> }
         </Content>
 
         <FooterTabs 

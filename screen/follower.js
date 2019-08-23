@@ -13,8 +13,10 @@ class FollowerScreen extends Component {
     super(props)
     this.state={
       follower: [],
+      follow: [],
       followerId: [],
-      count: 1
+      count: 1,
+      image : "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png"
     }
   }
 
@@ -76,7 +78,7 @@ class FollowerScreen extends Component {
 
 
   mapAllPost = async ()=>{
-    var allArtwork = await this.state.post.map(follower => 
+    var allFollower = await this.state.follower.map(follower => 
       (
         <List key={follower._id}>
               <TouchableOpacity 
@@ -84,7 +86,7 @@ class FollowerScreen extends Component {
               >
                 <ListItem avatar>
                   <Left>
-                    <Thumbnail source={{uri : follower.profileImage }} />
+                    <Thumbnail source={{uri : follower.profileImage ? follower.profileImage : this.state.image }} />
                   </Left>
                   <Body>
                     <Text>{follower.firstName} {follower.lastName}</Text>
@@ -95,7 +97,7 @@ class FollowerScreen extends Component {
             </List>
       )
     )
-    this.setState({ follower : follower })
+    this.setState({ follow : allFollower })
   }
 
   render() {
@@ -128,7 +130,7 @@ class FollowerScreen extends Component {
           </Button>
         </Segment>
         <Content padder>
-        {this.state.follower && this.state.follower.length > 0 ? this.state.follower: <Text>You currently have no follower.</Text> }
+        {this.state.follow && this.state.follow.length > 0 ? this.state.follow: <Text>You currently have no follower.</Text> }
         </Content>
         <FooterTabs 
           activeNetwork= { true }

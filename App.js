@@ -14,6 +14,7 @@ import AppNavigation from './route'
 import HomeScreen from './screen/home';
 import NetworkScreen from './screen/network';
 import LandingScreen from './screen/landing';
+import ChatScreen from "./screen/service/sendMessage"
 
 export default class App extends React.Component {
   constructor(props) {

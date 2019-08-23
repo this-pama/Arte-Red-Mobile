@@ -30,6 +30,7 @@ export const getUserProfile = async  user =>{
       }
 }
 
+// api call for liking an artwork
 export const like = async  user =>{
  
   var url = apiUrl + "artwork/like/" + user.userId + "/" + user.artworkId ;
@@ -56,6 +57,39 @@ export const like = async  user =>{
 
     else  {
       console.warn("fetching like failed")
+      return
+    }
+  }
+}
+
+
+//api call for following a user
+export const follow = async  user =>{
+ 
+  var url = apiUrl + "user/follow/" + user.IdOfPersonToFollow + "/" + user.userId;
+  var result = await fetch(url, {
+    method: 'POST',
+    headers: { 
+      'content-type': 'application/json',
+      "Authorization": `Bearer ${user.jwt}`
+     }
+  });
+  var response = await result;
+  
+  if(response.status !== 200 ){
+    console.warn("failed response")
+    return
+  }
+  else{
+    var res = await response.json();
+    // console.warn(res)
+    if (res.message === "Following successful" ) {
+      // console.warn(res)
+      return res
+    }
+
+    else  {
+      console.warn("following failed")
       return
     }
   }

@@ -91,7 +91,8 @@ class ProfileArtworkScreen extends Component {
     
     
       mapAllPost = async ()=>{
-        var allArtwork = await this.state.artwork.reverse().map(artwork => 
+        let reArrange = this.state.artwork.reverse()
+        var allArtwork = await reArrange.map(artwork => 
           <MapArtwork 
             key={artwork._id} 
             artwork= {artwork} 

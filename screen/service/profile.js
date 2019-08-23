@@ -9,7 +9,7 @@ import { getUserProfileAction } from "../../redux/userProfileAction"
 import { buyArtworkAction } from "../../redux/buyAction"
 import { moreArtworkDetailsAction } from "../../redux/artworkDetailsAction"
 import {apiUrl} from "./env"
-import { getUserProfile } from "../../controller/api"
+
 
 class ProfileScreen extends Component {
     constructor(props){
@@ -45,10 +45,27 @@ class ProfileScreen extends Component {
       }
       else{
         var res = await response.json();
+        // console.warn(res)
         if (res._id) {
+          if(
+            "follower" in res && 
+            res.follower.length > 0 && 
+            res.follower.findIndex(id => {
+              return id === this.props.userId
+            }) >= 0 
+          ){
+            await this.setState({ follow: "Following"})
+          }
+
+          if(
+            "profileImage" in res &&
+            res.profileImage.length > 0
+            ){
+            this.setState({ image : res.profileImage })
+          }
+
           this.setState({
             profile: res,
-            image: res.profileImage,
             fetch: true
           })
         }
@@ -137,7 +154,7 @@ class ProfileScreen extends Component {
                 <Body>
                   <Text>{this.state.profile.firstName ? this.state.profile.firstName : "First Name"}</Text>
                   <Text note> {this.state.profile.lastName ? this.state.profile.lastName : "Last Name"}</Text>
-                  <Text note>{this.state.profile.telephone ? this.state.profile.telephone : "Telephone"}</Text>
+                  {/* <Text note>{this.state.profile.telephone ? this.state.profile.telephone : "Telephone"}</Text> */}
                 </Body>
                 <Right>
                     <Text note>{this.state.profile.userType ? this.state.profile.userType : "Type of User"}</Text>
@@ -171,19 +188,32 @@ class ProfileScreen extends Component {
                                 type: 'danger'
                               })
                         }
-                        else if(this.state.follow === "Follow"){
-                            this.setState({ follow : "Following"})
+                        else if( this.state.follow === "Following"){
+                          return
                         }
                         else{
-                            this.setState({ follow : "Follow"})
+                            this.setState({ follow : "Following"})
+                            follow({
+                              userId: this.props.userId,
+                              jwt: this.props.jwt,
+                              IdOfPersonToFollow: this.props.navigation.getParam("id", null)
+                            })
                         }
+          
                     }}
                   >
                     <Text style={{ color: "blue" }} note>{this.state.follow}</Text>
                   </TouchableOpacity>
                 </Left>
                   <Right>
-                    <TouchableOpacity >
+                    <TouchableOpacity 
+                      onPress={()=>{
+                        this.props.navigation.navigate("Chat", {
+                          routeName: "Profile",
+                          id: this.props.navigation.getParam("id", null)
+                        })
+                      }}
+                    >
                           <Text note style={{ color: "blue"}}>
                               Send Message
                           </Text>

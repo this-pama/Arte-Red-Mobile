@@ -85,7 +85,8 @@ import {connect} from 'react-redux'
           this.setState({
             email: '',
             password: "",
-            spin: false
+            spin: false,
+            errMessage: "Login failed"
           });
         }
         else{
@@ -108,7 +109,8 @@ import {connect} from 'react-redux'
             this.setState({
               email: '',
               password: "",
-              spin: false
+              spin: false,
+              errMessage: "Incorrect Email & Password"
             });
           }
         }
@@ -177,6 +179,7 @@ import {connect} from 'react-redux'
                 disable= { this.state.disable }
                 spin = { this.state.spin }
                 navigation= {this.props.navigation}
+                errMessage= { this.state.errMessage }
             />
         )
     }

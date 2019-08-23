@@ -99,7 +99,8 @@ class NetworkScreen extends Component {
 
 
   mapAllPost = async ()=>{
-    var allArtwork = await this.state.post.reverse().map(artwork => 
+    let reArrange = await this.state.post.reverse()
+    var allArtwork = await reArrange.map(artwork => 
       <MapArtwork 
         key={artwork._id} 
         artwork= {artwork} 

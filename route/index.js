@@ -33,6 +33,7 @@ import MyProfileScreen from '../screen/myProfile';
 import HelpScreen from '../screen/help'
 import AccountScreen from '../screen/account'
 import RegisterExhibitionScreen from "../screen/registerForExhibition"
+import ChatScreen from "../screen/service/sendMessage"
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -151,6 +152,7 @@ const switchNavigator = createSwitchNavigator({
   Exhibition: ExhibitionScreen,
   CreateExhibition: CreateExhibitionScreen,
   RegisterForExhibition: RegisterExhibitionScreen,
+  Chat: ChatScreen,
   App: StackNavigator,
 },
 {

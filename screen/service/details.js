@@ -71,7 +71,7 @@ class ArtworkDetailScreen extends Component {
     if(!(this.state.fetch)){
       return(
         <Container>
-        <Header style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }}>
+        <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
           <Left>
             <Button transparent onPress={()=> {
             this.props.navigation.navigate(routeName)}}>
@@ -98,7 +98,7 @@ class ArtworkDetailScreen extends Component {
     else{
     return (
       <Container>
-        <Header style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }}>
+        <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
           <Left>
             <Button transparent onPress={()=> {
             this.props.navigation.navigate(routeName)}}>

@@ -37,6 +37,9 @@ export default class LoginScreen extends Component {
         </Header>
         <Content style={{  padding: 20 }}>
           <Form>
+          <Item floatingLabel>
+              <Text note >{this.props.errMessage} </Text>
+            </Item>
             <Item floatingLabel>
               <Label>Email</Label>
               <Input onChangeText= { this.props.handleEmail } value={this.props.email}  autoCapitalize='none'/>

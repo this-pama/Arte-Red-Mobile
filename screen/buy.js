@@ -58,6 +58,7 @@ class BuyScreen extends Component {
       else{
         var res = await response.json();
         if (res._id) {
+          // console.warn(res)
           this.setState({
             artwork: res,
             price: res.price,
@@ -124,7 +125,12 @@ class BuyScreen extends Component {
     };
 
     handleQuantity = quantity => {
-      if (+quantity) {
+      if(+quantity > this.state.artwork.numberAvailable){
+        alert("Quantity selected is above availble quantity.")
+        this.setState({ quantity: 1, disable: true })
+        return 
+      }
+      else if (+quantity) {
         this.setState(
           {
             quantity,
@@ -248,6 +254,12 @@ class BuyScreen extends Component {
                   <Text>NGN {!this.state.artwork.price ? "0" : this.state.artwork.price}</Text>
                 </Button>
               </Left>
+              <Right>
+                <Button transparent textStyle={{color: '#87838B'}}>
+                  {/* <Icon name="stat" /> */}
+                  <Text>Quantity {!this.state.artwork.numberAvailable ? "1" : this.state.artwork.numberAvailable}</Text>
+                </Button>
+              </Right>
             </CardItem>
           </Card>
           <KeyboardAwareScrollView>

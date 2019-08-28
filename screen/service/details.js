@@ -135,7 +135,7 @@ class ArtworkDetailScreen extends Component {
                 </Body>
               </Right>
             </CardItem>
-            <CardItem>
+            <CardItem cardBody>
               <Image source={{uri : this.state.artwork.imageURL }} style={{height: 300, width: null, flex: 1}} />
             </CardItem>
             <CardItem>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {createStackNavigator, createSwitchNavigator, createDrawerNavigator, createMaterialTopTabNavigator, createAppContainer} from 'react-navigation';
 import { DrawerActions } from 'react-navigation';
 import { Text, Image } from 'react-native'
+import { Modal, TouchableHighlight, Alert, ScrollView, StyleSheet } from 'react-native';
 import { Icon, Content, Body, Left, View, Right, ListItem, List, Input, Form,
 Item, Button } from 'native-base'
 import { TouchableOpacity } from "react-native-gesture-handler"
@@ -34,6 +35,7 @@ import HelpScreen from '../screen/help'
 import AccountScreen from '../screen/account'
 import RegisterExhibitionScreen from "../screen/registerForExhibition"
 import ChatScreen from "../screen/service/sendMessage"
+import SearchIcon from "../screen/service/search"
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -70,38 +72,6 @@ class HeaderBar extends Component{
   }
 }
 
-class SearchIcon extends Component{
-  constructor(props){
-    super(props);
-    this.state={
-      search: false
-    }
-  }
-  render(){
-      if(this.state.search){
-        return(
-          <Item>
-              <Input placeholder="Search" style={{ color: "white" }} />
-              <Icon name="ios-people"  style={{ color: "white" }}/>
-              <Button transparent
-                onPress={()=> this.setState({ search : false })}
-              >
-                <Text style={{ color: "white", paddingRight: 15 }}>Search       </Text>
-            </Button>
-          </Item>
-        )
-      }
-      else{
-        return(
-          <TouchableOpacity
-            onPress={()=> this.setState({ search : true })}
-          >
-              <Icon name="search" style={{color: "white", fontSize: 20, paddingRight: 20}} />
-          </TouchableOpacity>
-        )
-      }
-  }
-}
 
 
 const StackNavigator = createStackNavigator({
@@ -109,7 +79,7 @@ const StackNavigator = createStackNavigator({
         screen: DrawerNavigator,
         navigationOptions: ({ navigation }) => ({
         headerTitle: <HeaderBar />,  
-        headerRight: <SearchIcon />,
+        headerRight: <SearchIcon navigation= {navigation} />,
         headerLeft: 
         <List>
           <ListItem>
@@ -160,6 +130,9 @@ const switchNavigator = createSwitchNavigator({
   contentComponent: LandingScreen,
  }
 )
+
+
+
 
 export default  AppContainer = createAppContainer(switchNavigator);
  

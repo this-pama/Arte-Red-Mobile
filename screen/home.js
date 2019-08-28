@@ -299,8 +299,8 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
               <Icon style={{ color : artwork.like.findIndex(id =>{
                                          return id === this.props.userId
                                     }) >= 0 ? "red" : this.state.color
-              }} name="thumbs-up" />
-              <Text>{artwork.like.length <= 0 ? 0 : artwork.like.length} Likes</Text>
+              }} name="star" />
+              <Text>{artwork.like.length <= 0 ? 0 : artwork.like.length} Stars</Text>
             </Button>
           </Left>
           <Body>

@@ -187,6 +187,8 @@ class ProfileScreen extends Component {
                                 duration: 3000,
                                 type: 'danger'
                               })
+                        }else if( this.props.userId === this.props.navigation.getParam("id", null)){
+                            this.setState({ follow : ""})
                         }
                         else if( this.state.follow === "Following"){
                           return
@@ -206,7 +208,8 @@ class ProfileScreen extends Component {
                   </TouchableOpacity>
                 </Left>
                   <Right>
-                    <TouchableOpacity 
+                    { this.props.userId === this.props.navigation.getParam("id", null) ? null :
+                    (<TouchableOpacity 
                       onPress={()=>{
                         this.props.navigation.navigate("Chat", {
                           routeName: "Profile",
@@ -217,7 +220,8 @@ class ProfileScreen extends Component {
                           <Text note style={{ color: "blue"}}>
                               Send Message
                           </Text>
-                      </TouchableOpacity>
+                      </TouchableOpacity>) 
+                    }
                   </Right>
               </ListItem>
             </List>

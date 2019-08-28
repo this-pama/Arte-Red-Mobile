@@ -142,7 +142,7 @@ class SettingScreen extends Component {
                 onPress={()=> this.props.navigation.navigate("Help")}
               >
                 <Text>Help</Text>
-                <Text note>FAQ, Contact us, Privacy Policy ...</Text>
+                <Text note>FAQ, Privacy Policy ...</Text>
               </TouchableOpacity>
             </Body>
           </ListItem>

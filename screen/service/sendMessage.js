@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Header, Left, Button,Icon, Body,Title,Right,
-Text, Input, Footer, Content, Item, ListItem, Spinner, FooterTab } from 'native-base';
+Text, Input, Footer, Content, Item, ListItem, Spinner, FooterTab, Drawer,
+Badge, 
+Toast} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {connect} from 'react-redux'
@@ -9,6 +11,9 @@ import { apiUrl } from './env';
 import { getUserProfileAction } from "../../redux/userProfileAction"
 import { getUserIdAction } from "../../redux/getUserId"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Sidebar from "../chatService/drawer"
+import io from 'socket.io-client';
+
 
 
 class ChatScreen extends Component {
@@ -16,40 +21,88 @@ class ChatScreen extends Component {
     super(props);
     this.state={
       isFetch: false,
+      text: "",
   
     }
   }
 
- async componentDidMount(){
-    if(!( "walletId" in this.props.profile)){
-      this.setState({ isFetch: false })
+  closeDrawer = () => {
+    this.drawer._root.close()
+  };
+  openDrawer = () => {
+    this.drawer._root.open()
+  };
+
+  handleText= text =>{
+    if(text.length > 0){
+      this.setState({ text })
     }
     else{
-      const url = apiUrl + "wallet/" + this.props.profile.walletId;
-       var result = await fetch(url,{
-        headers: { 
-          'content-type': 'application/json',
-          "Authorization": `Bearer ${this.props.jwt}`
-         }
-       })
-       
-        if(result.status !== 200){
-          this.setState({ isFetch: true })
-        }
-        else {
-          var resp = await result.json()
-          // console.warn(resp)
-          if(resp._id){
-            return
-          }
-          else{
-            alert("No wallet found")
-          }
-        }
+      this.setState({ text: ""})
+    }
+  }
+
+  send= async () =>{
+    var result = await fetch('http://localhost:3000/v1/chat/5d628a6d0cb3f55d6830754e',{
+      method: 'PUT',
+      headers: { 
+        'content-type': 'application/json',
+        "Authorization": `Bearer ${this.props.jwt}`
+       },
+      body: JSON.stringify({
+        date: new Date().toLocaleDateString,
+        time: new Date().toLocaleTimeString,
+        message: this.state.text,
+        senderName:` ${this.props.profile.firstName} ${this.props.profile.lastName}`,
+        senderId: this.props.userId
+      })
+    })
+
+    var response = await result;
         
+    if(response.status !== 200 ){
+      console.warn("response failure")
+      Toast.show({
+        duration: 2000,
+        buttonText: "Okay",
+        position: "top",
+        type: "danger",
+        text: "Error while sending message"
+      })
+    }
+    else{
+      this.setState({text: ""})
+      var res = await response.json();
+      if (res._id) {
+        console.warn(res)
+      } 
+      else  {
+        console.warn("error")
+        Toast.show({
+          duration: 2000,
+          type: DangerZone,
+          text: "Error while sending message",
+          buttonText: "Okay",
+          position: "top"
+        })
+      }
     }
 
   }
+
+ async componentDidMount(){
+  const socket = io.connect('http://192.168.99.1:3000/v1/chat');
+
+  socket.on("connection", ()=>{
+    console.warn("connected to socket server")
+  })
+
+  socket.on("message", data=>{
+    console.warn("message",data)
+  } )
+}
+
+
 
   render() {
       return (
@@ -67,35 +120,45 @@ class ChatScreen extends Component {
               <Text note>Bode Ade </Text>
             </Body>
             <Right>
-              <Button transparent>
-                <Icon name="chatbubbles" />
+              <Button transparent 
+                onPress={()=> this.openDrawer() }
+              >
+                <Icon name="more" />
+                <Badge ><Text>3</Text></Badge>
               </Button>
             </Right>
           </Header>
-          {/* <KeyboardAwareScrollView
-            extraScrollHeight={100}
-            enableOnAndroid={true} 
-            keyboardShouldPersistTaps='handled'
-          > */}
+          <Drawer
+            ref={(ref) => { this.drawer = ref; }}
+            content={<Sidebar/>}
+            onClose={() => this.closeDrawer()} 
+          >
           <Content style={ {
               flex: 1
             }}>
             <Body >
               <Item rounded>
-                <Input style={{ color: "black" }} block placeholder='Send message'/>
+                <Input style={{ color: "black" }} block placeholder='Send message'
+                  onChangeText={this.handleText} value={this.state.text}
+                />
                 <TouchableOpacity>
-                  <Button transparent>
-                    <Icon name="send" />
-                    <Text>Send</Text>
-                  </Button>
+                <Icon name="brush" />
+                  
                 </TouchableOpacity>
+                <TouchableOpacity>
+                  <Button transparent 
+                      onPress={ this.send}
+                    > 
+                      <Text>Send</Text>
+                  </Button>
+                </ TouchableOpacity>
               </Item>
             </Body>
-            {/* <EmojiInput
-              onEmojiSelected={(emoji) => {console.log(emoji)}}
-            /> */}
+            <Text>
+              {/* { this.listenToEvent() } */}
+            </Text>
           </Content>
-        {/* </KeyboardAwareScrollView> */}
+          </Drawer>
         </Container>
       )
   }

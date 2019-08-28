@@ -35,11 +35,11 @@ export default class LoginScreen extends Component {
             </Button>
           </Right>
         </Header>
-        <Content style={{  padding: 20 }}>
+        <Content style={{  padding: 10 }}>
+        <Body>
+          <Text note style={{ color: "red"}}>{this.props.errMessage} </Text>
+        </Body>
           <Form>
-          <Item floatingLabel>
-              <Text note >{this.props.errMessage} </Text>
-            </Item>
             <Item floatingLabel>
               <Label>Email</Label>
               <Input onChangeText= { this.props.handleEmail } value={this.props.email}  autoCapitalize='none'/>

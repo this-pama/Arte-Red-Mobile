@@ -63,6 +63,38 @@ export const like = async  user =>{
 }
 
 
+// api call for unLiking an artwork
+export const unLike = async  user =>{
+ 
+  var url = apiUrl + "artwork/unlike/" + user.userId + "/" + user.artworkId ;
+  var result = await fetch(url, {
+    method: 'POST',
+    headers: { 
+      'content-type': 'application/json',
+      "Authorization": `Bearer ${user.jwt}`
+     }
+  });
+  var response = await result;
+  
+  if(response.status !== 200 ){
+    console.warn("fetching unLike response failure")
+    return
+  }
+  else{
+    var res = await response.json();
+    console.warn(res)
+    if (res._id) {
+      // console.warn(res)
+      return res
+    }
+
+    else  {
+      console.warn("fetching unLike failed")
+      return
+    }
+  }
+}
+
 //api call for following a user
 export const follow = async  user =>{
  
@@ -90,6 +122,41 @@ export const follow = async  user =>{
 
     else  {
       console.warn("following failed")
+      return
+    }
+  }
+}
+
+
+// api call for unLiking an artwork
+export const rating = async  user =>{
+  var url = apiUrl + "artwork/rating/" + user.artworkId ;
+  var result = await fetch(url, {
+    method: 'POST',
+    headers: { 
+      'content-type': 'application/json',
+      "Authorization": `Bearer ${user.jwt}`
+     },
+     body: JSON.stringify({
+      rating: user.rating,
+    })
+  });
+  var response = await result;
+  
+  if(response.status !== 200 ){
+    console.warn("rating response failure")
+    return
+  }
+  else{
+    var res = await response.json();
+    console.warn(res)
+    if (res._id) {
+      // console.warn(res)
+      return res
+    }
+
+    else  {
+      console.warn("rating failed")
       return
     }
   }

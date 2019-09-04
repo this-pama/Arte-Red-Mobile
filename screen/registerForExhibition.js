@@ -65,7 +65,7 @@ class RegisterExhibitionScreen extends Component {
             if (res._id) {
               this.props.navigation.navigate("Exhibition")
             } 
-            else if (res.message = "Exhibition is sold out") {
+            else if (res.message) {
                 this.setState({
                     email: '',
                     fullName: "",
@@ -127,6 +127,7 @@ class RegisterExhibitionScreen extends Component {
                 })
             }else{
             this.setState({
+                fullName: "",
                 errMessage : "Full Name can not be empty"
             })
             }

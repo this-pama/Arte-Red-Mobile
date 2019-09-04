@@ -204,7 +204,7 @@ class ProfileScreen extends Component {
           
                     }}
                   >
-                    <Text style={{ color: "blue" }} note>{this.state.follow}</Text>
+                    <Text style={{ color: "blue" }} note>{this.props.userId === this.props.navigation.getParam("id", null) ? null : this.state.follow}</Text>
                   </TouchableOpacity>
                 </Left>
                   <Right>

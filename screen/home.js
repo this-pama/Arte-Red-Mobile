@@ -15,7 +15,9 @@ import { getUserProfileAction } from "../redux/userProfileAction"
 import { buyArtworkAction } from "../redux/buyAction"
 import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
 import {connect} from 'react-redux'
-import { like } from "../controller/api"
+import { like, unLike, rating } from "../controller/api"
+import { Rating, AirbnbRating } from 'react-native-ratings';
+import Lightbox from "react-native-lightbox"
 
 class HomeScreen extends Component {
   constructor(props){
@@ -150,6 +152,7 @@ class HomeScreen extends Component {
         moreArtworkDetailsAction = { this.props.moreArtworkDetailsAction}
         buyArtworkAction= {this.props.buyArtworkAction}
         like= {like}
+        unLike= { unLike }
       />
     )
     this.setState({ allArtwork : allArtwork, fetch: true })
@@ -221,6 +224,12 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
       let artwork = this.props.artwork
       this.setState({ likeCount: artwork.like.length })
      }
+
+     ratingCompleted = (rating) =>{
+      console.warn(rating)
+      // console.warn(artwork._id)
+      // console.warn(rating)
+    }
      
      render(){
       let artwork = this.props.artwork
@@ -265,11 +274,48 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
             </TouchableOpacity>   
           </Right>
         </CardItem>
-        <CardItem cardBody>
-          <Image source={{ uri: artwork.imageURL } } style={{height: 200, width: null, flex: 1}}/>
-        </CardItem>
+        <Lightbox>
+            <Image 
+              source={{ uri: artwork.imageURL } } 
+              style={{height: 200, width: null, flex: 1}}
+              resizeMode="contain"
+            />
+        </Lightbox>
         <CardItem>
           <Left>
+            <Button transparent 
+              onPress={()=>{ 
+                if(!this.props.userId){
+                  return Toast.show({
+                    text: "You need to sign in",
+                    buttonText: "Okay",
+                    duration: 3000,
+                    type: 'danger'
+                  })
+                }
+                if(artwork.unlike.findIndex(id => { 
+                  return id = this.props.userId
+                }) >= 0 ){
+                  return this.setState({ color: "red"})
+                }
+
+                unLike({
+                jwt: this.props.jwt.jwt,
+                userId: this.props.userId,
+                artworkId: artwork._id
+              })
+              
+              this.setState({ color: "red" })
+              
+            }}
+            >
+              <Icon style={{ color : artwork.unlike ? (artwork.unlike.findIndex(id =>{
+                                         return id === this.props.userId
+                                    }) >= 0 ? "red" : this.state.color)
+                                    : this.state.color
+              }} name="thumbs-down" />
+              <Text>{artwork.unlike ? artwork.unlike.length : 0 }</Text>
+            </Button>
             <Button transparent 
               onPress={()=>{ 
                 if(!this.props.userId){
@@ -299,12 +345,12 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
               <Icon style={{ color : artwork.like.findIndex(id =>{
                                          return id === this.props.userId
                                     }) >= 0 ? "red" : this.state.color
-              }} name="star" />
-              <Text>{artwork.like.length <= 0 ? 0 : artwork.like.length} Stars</Text>
+              }} name="thumbs-up" />
+              <Text>{artwork.like.length <= 0 ? 0 : artwork.like.length}</Text>
             </Button>
           </Left>
-          <Body>
-            <Button transparent 
+          <Body style={{ paddingLeft: 35 }}>
+            <Button transparent  style={{ paddingLeft: 15 }}
               onPress={()=>{
                 this.props.navigation.navigate("Comment", {
                   id: artwork._id,
@@ -314,7 +360,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
               }}
             >
               <Icon active name="chatbubbles" />
-              <Text>{ artwork.comment.length <=  0 ? 0 : artwork.comment.length } Comments</Text>
+              <Text>{ artwork.comment.length <=  0 ? 0 : artwork.comment.length }</Text>
             </Button>
             
           </Body>
@@ -332,10 +378,29 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
              await  this.props.buyArtworkAction({id: artwork._id})
               this.props.navigation.navigate("Buy", { routeName: "Home"})} 
               }>
-                <Icon active name="pricetag" />
+                {/* <Icon active name="pricetag" /> */}
                 <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
             </Button>
           </Right>
+        </CardItem>
+        <CardItem >
+        <AirbnbRating
+          count={10}
+          reviews={["Terrible", "Bad", "Fair", "Good", "Amazing", "Awesome",  "Wow", "Incredible", "Unbelievable", "Great"]}
+          defaultRating={ artwork.rating }
+          size={20}
+          reviewSize={ 15 }
+          selectedColor= "red"
+          reviewColor="blue"
+          onFinishRating={rate =>{
+              rating({
+                rating: rate,
+                artworkId: artwork._id,
+                jwt: this.props.jwt.jwt,
+                userId: this.props.userId
+              })
+          }}
+        />
         </CardItem>
       </Card>
        )

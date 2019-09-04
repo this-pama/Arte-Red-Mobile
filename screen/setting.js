@@ -6,8 +6,35 @@ import {connect} from 'react-redux'
 import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import { getUserProfileAction } from "../redux/userProfileAction"
+import {Share } from 'react-native';
 
 class SettingScreen extends Component {
+
+  onShare = async () => {
+    try {
+      const result = await Share.share({
+        title: "Arte Red",
+        message:
+          'Arte Red | Check out this platform. It is an app that i use to connect with other stakeholders in the Art industry. Get it from www.artered.com',
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+          console.warn(result)
+        } else {
+          // shared
+          console.warn(result)
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+        return
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   render() {
 
     const myProfile = (
@@ -153,7 +180,11 @@ class SettingScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={()=> {
+                  this.onShare()
+                }}
+              >
                 <Text>Invite a friend</Text>
               </TouchableOpacity>
             </Body>

@@ -59,7 +59,7 @@ export default class AccountScreen extends Component {
           </Right>
         </Header>
         <Content style={{padding: 10 }}>
-          <ListItem icon style={{ paddingTop: 30, paddingBottom: 50  }}>
+          {/* <ListItem icon style={{ paddingTop: 30, paddingBottom: 50  }}>
             <Left>
               <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="swap" />
@@ -87,7 +87,7 @@ export default class AccountScreen extends Component {
                     <Text>Change Email</Text>
                 </TouchableOpacity>
             </Body>
-          </ListItem>
+          </ListItem> */}
           <ListItem icon style={{ paddingTop: 20, paddingBottom: 50 }}>
             <Left>
               <Button style={{ backgroundColor: "#990000" }}>

@@ -18,6 +18,7 @@ import {connect} from 'react-redux'
 import { like, unLike, rating } from "../controller/api"
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import Lightbox from "react-native-lightbox"
+import { SliderBox } from 'react-native-image-slider-box';
 
 class HomeScreen extends Component {
   constructor(props){
@@ -233,6 +234,38 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
      
      render(){
       let artwork = this.props.artwork
+
+      const forSale= artwork => (
+        <Button transparent onPress= {async ()=>{ 
+          if(!this.props.userId){
+            return Toast.show({
+              text: "You need to sign in",
+              buttonText: "Okay",
+              duration: 3000,
+              type: 'danger'
+            })
+          }
+          
+         await  this.props.buyArtworkAction({id: artwork._id})
+          this.props.navigation.navigate("Buy", { routeName: "Home"})} 
+          }>
+            {/* <Icon active name="pricetag" /> */}
+            <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
+        </Button>
+      )
+
+      const showcase=( 
+        <Button transparent >
+            <Text>Showcase</Text>
+        </Button>
+        )
+
+      const progressShot =( 
+        <Button transparent >
+            <Text>Progress Shot</Text>
+        </Button>
+        )
+      
        return(
         <Card >
         <CardItem>
@@ -274,13 +307,29 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
             </TouchableOpacity>   
           </Right>
         </CardItem>
-        <Lightbox>
+        {typeof(artwork.imageURL) == 'object' ?
+        (
+          <SliderBox
+                images={artwork.imageURL}
+                sliderBoxHeight={200}
+                onCurrentImagePressed={index =>
+                    console.warn(`image ${index} pressed`)
+                }
+                dotColor="red"
+                inactiveDotColor="#90A4AE"
+          />
+        )
+        : 
+        (
+          <Lightbox>
             <Image 
               source={{ uri: artwork.imageURL } } 
               style={{height: 200, width: null, flex: 1}}
               resizeMode="contain"
             />
-        </Lightbox>
+          </Lightbox>
+        )
+        }
         <CardItem>
           <Left>
             <Button transparent 
@@ -365,22 +414,10 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
             
           </Body>
           <Right>
-            <Button transparent onPress= {async ()=>{ 
-              if(!this.props.userId){
-                return Toast.show({
-                  text: "You need to sign in",
-                  buttonText: "Okay",
-                  duration: 3000,
-                  type: 'danger'
-                })
-              }
-              
-             await  this.props.buyArtworkAction({id: artwork._id})
-              this.props.navigation.navigate("Buy", { routeName: "Home"})} 
-              }>
-                {/* <Icon active name="pricetag" /> */}
-                <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
-            </Button>
+          { artwork.forSale ? forSale(artwork) : 
+            (artwork.showcase ? showcase : 
+              ( artwork.progressShot ? progressShot : forSale(artwork)))
+          }
           </Right>
         </CardItem>
         <CardItem >

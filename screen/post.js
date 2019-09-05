@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { Image, KeyboardAvoidingView, View } from 'react-native';
 import { Container, Header, Content, Card, CardItem,Title, Thumbnail, Text, 
-  Button, Icon, Left, Body, Right, CheckBox,
+  Button, Icon, Left, Body, Right, CheckBox, ActionSheet,
 Form, Label, Input, Picker, Item, Textarea, Spinner } from 'native-base';
 import PropTypes from "prop-types"
+import { Permissions } from 'expo';
+import Constants from 'expo-constants'
+import * as ImagePicker from 'expo-image-picker';
+import Gallery from 'react-native-image-gallery';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SliderBox } from 'react-native-image-slider-box';
+
 
 export default class PostScreen extends Component {
     constructor(props){
@@ -12,6 +18,19 @@ export default class PostScreen extends Component {
         this.state={
 
         }
+    }
+
+    componentDidMount() {
+      this.getPermissionAsync();
+    }
+
+    getPermissionAsync = async () => {
+      if (Constants.platform.ios) {
+          const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+          if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to post!');
+          }
+      }
     }
  
   render() {
@@ -28,11 +47,6 @@ export default class PostScreen extends Component {
               <Label>Breadth (inches)</Label>
               <Input onChangeText= { this.props.handleBreadth } value={this.props.breadth}  keyboardType='numeric' />
           </Item>
-            <Textarea rowSpan={5} bordered 
-              placeholder="Write a story about the artwork."
-              value={this.props.story}
-              onChangeText={this.props.handleStory}
-            />
           <Item stackedLabel>
               <Label>Location</Label>
               <Input onChangeText= {this.props.handleLocation } value={this.props.location }  autoCapitalize='words'/>
@@ -153,7 +167,31 @@ export default class PostScreen extends Component {
         <Content>
           <Card>
             <CardItem cardBody>
-              <Image source={{uri: `${image.uri}`}} style={{height: 300, width: null, flex: 1}}/>
+            <SliderBox
+                images={this.props.imagesToUpload}
+                sliderBoxHeight={200}
+                onCurrentImagePressed={index =>
+                    console.warn(`image ${index} pressed`)
+                }
+                dotColor="red"
+                inactiveDotColor="#90A4AE"
+            />
+              {/* <Gallery
+                style={{ flex: 1, backgroundColor: 'black', height: 200, width: null,  }}
+                images={this.props.imagesToUpload}
+              /> */}
+              {/* <ImageGallery items={this.props.imagesToUpload} /> */}
+              {/* <Image source={{uri: `${image.uri}`}} style={{height: 300, width: null, flex: 1}}/> */}
+            </CardItem>
+            <CardItem>
+              <Right>
+                <Button transparent active 
+                  onPress= {this.props.addMoreImage }
+                >
+                  <Icon name="add" />
+                  <Text>Add More Image </Text>
+                </Button>
+              </Right>
             </CardItem>
           </Card>
           <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -174,7 +212,7 @@ export default class PostScreen extends Component {
                       />
                     <Item style={{ paddingTop: 15, paddingBottom: 10 }}>
                       <Left>
-                        <CheckBox checked={this.props.forSale} onPress={this.props.forSale} />
+                        <CheckBox checked={this.props.forSale} onPress={this.props.handleForSale} />
                         <Body>
                           <Text>For Sale</Text>
                         </Body>
@@ -237,6 +275,9 @@ PostScreen.propTypes= {
     errMessage: PropTypes.string,
     disable: PropTypes.bool,
     spin: PropTypes.bool,
+    forSale: PropTypes.bool.isRequired,
+    progressShot: PropTypes.bool.isRequired,
+    checkShowcase: PropTypes.bool.isRequired,
     handleTitle: PropTypes.func.isRequired,
     handleArtistName: PropTypes.func.isRequired,
     handleSize: PropTypes.func.isRequired,
@@ -247,4 +288,10 @@ PostScreen.propTypes= {
     handleCategory: PropTypes.func.isRequired,
     handleMasterpiece: PropTypes.func.isRequired,
     post: PropTypes.func.isRequired,
+    handleForSale: PropTypes.func.isRequired,
+    handleProgressShot: PropTypes.func.isRequired,
+    handleShowcase: PropTypes.func.isRequired,
+    pickImage: PropTypes.func.isRequired,
+    useCamera: PropTypes.func.isRequired,
+    imagesToUpload: PropTypes.array.isRequired
 }

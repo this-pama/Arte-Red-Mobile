@@ -1,9 +1,17 @@
 import React, { Component } from 'react'
+import { ActionSheet} from "native-base"
 import Post from "../screen/post"
 import { cloudinaryUrl, apiUrl } from "../screen/service/env"
 import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import {connect} from 'react-redux'
+import { Permissions } from 'expo';
+import Constants from 'expo-constants'
+import * as ImagePicker from 'expo-image-picker';
+
+var BUTTONS = ["Camera", "Gallery", "Close"];
+var DESTRUCTIVE_INDEX = 2;
+var CANCEL_INDEX = 2;
 
 class PostController extends Component{
     constructor(props){
@@ -20,16 +28,76 @@ class PostController extends Component{
             number: "",
             category: "",
             masterpiece: "",
-            imageUrl: "",
+            imageUrl: [],
             errMessage: "",
             disable: true,
-            spin: false
+            spin: false,
+            forSale: false,
+            progressShot: true,
+            checkShowcase: false,
+            imageArray: [],
+            imagesToUpload: []
         }
     }
 
     componentDidMount(){
-      console.warn(this.props.jwt)
-      console.warn(this.props.userId)
+      const image = this.props.navigation.getParam("image")
+      this.setState({
+        imageArray : [ ... this.state.imageArray, image ],
+        imagesToUpload: [... this.state.imagesToUpload, image.uri ]
+      })
+    }
+
+    useCamera = async () => {
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 0.3,
+        base64: true
+      });
+
+      if (!result.cancelled) {
+        this.setState({
+          imageArray : [ ... this.state.imageArray, result ],
+          imagesToUpload: [... this.state.imagesToUpload, result.uri  ]
+        })
+      }
+    }
+
+    pickImage = async () => {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 0.3,
+        base64: true
+      });
+
+      if (!result.cancelled) {
+        this.setState({
+          imageArray : [ ... this.state.imageArray, result ],
+          imagesToUpload: [... this.state.imagesToUpload, result.uri ]
+        })
+      }
+    }
+
+    addMoreImage = ()=>{
+      ActionSheet.show(
+                     {
+                       options: BUTTONS,
+                       cancelButtonIndex: CANCEL_INDEX,
+                       destructiveButtonIndex: DESTRUCTIVE_INDEX,
+                       title: "Add More Artwork"
+                     },
+                     buttonIndex => {
+                       this.setState({ clicked: BUTTONS[buttonIndex] });
+                       if(BUTTONS[buttonIndex] === "Camera" ){
+                         this.useCamera()
+                       }
+                       else if(BUTTONS[buttonIndex] === "Gallery" ){
+                         this.pickImage()
+                       }
+                     }
+                   )
     }
 
     saveToDb = async ()=>{
@@ -61,7 +129,10 @@ class PostController extends Component{
           category: this.state.category,
           isMasterpiece: masterpiece,
           numberAvailable : this.state.number,
-          imageURL : this.state.imageUrl
+          imageURL : this.state.imageUrl,
+          forSale: this.state.forSale,
+          progressShot: this.state.progressShot,
+          checkShowcase: this.state.checkShowcase
         })
       });
       var response = await result;
@@ -101,30 +172,34 @@ class PostController extends Component{
 
     post= async () => {
       this.setState({ spin: true })
-        const result = this.props.navigation.getParam("image")
-        if(!result.base64){
+        if(!this.state.imageArray[0].base64){
          return alert("There seams to be an error with the image")
         }
-        let base64Img = `data:image/jpg;base64,${result.base64}`
-        let data = {
-          "file": base64Img,
-          "upload_preset": "artered",
-        }
 
-        fetch(cloudinaryUrl, {
-          body: JSON.stringify(data),
-          headers: {
-            'content-type': 'application/json'
-          },
-          method: 'POST',
+        this.state.imageArray.forEach(result =>{
+          let base64Img = `data:image/jpg;base64,${result.base64}`
+          let data = {
+            "file": base64Img,
+            "upload_preset": "artered",
+          }
+  
+          fetch(cloudinaryUrl, {
+            body: JSON.stringify(data),
+            headers: {
+              'content-type': 'application/json'
+            },
+            method: 'POST',
+          })
+          .then(async r => {
+              let data = await r.json()
+              this.setState({ imageUrl : [ ... this.state.imageUrl, data.secure_url] })
+              
+          })
+          .catch(err=>console.log(err))
         })
-        .then(async r => {
-            let data = await r.json()
-            this.setState({ imageUrl : data.secure_url })
-            this.saveToDb()
-        })
-        .catch(err=>console.log(err))
 
+        //save to db 
+        this.saveToDb()
     };
     
     handleTitle = title => {
@@ -283,18 +358,18 @@ class PostController extends Component{
       };
 
       handleCategory = category => {
-            if (category){
-                this.setState({
-                    category,
-                    errMessage: ""
-                })
-            }else{
+        if (category){
             this.setState({
-                errMessage : "Select a category"
+                category,
+                errMessage: ""
             })
-            }
-      
+        }else{
+        this.setState({
+            errMessage : "Select a category"
+        })
         }
+      
+      }
 
         handleMasterpiece = masterpiece => {
             if (masterpiece){
@@ -308,6 +383,30 @@ class PostController extends Component{
             })
             }
       
+        }
+
+        handleForSale =()=>{
+          this.setState({
+            forSale: true,
+            progressShot: false,
+            checkShowcase: false
+          })
+        }
+
+        handleProgressShot =()=>{
+          this.setState({
+            forSale: false,
+            progressShot: true,
+            checkShowcase: false
+          })
+        }
+
+        handleShowcase =()=>{
+          this.setState({
+            forSale: false,
+            progressShot: false,
+            checkShowcase: true
+          })
         }
 
 
@@ -358,6 +457,16 @@ class PostController extends Component{
                 navigation= {this.props.navigation}
                 spin={this.state.spin}
                 errMessage= {this.state.errMessage}
+                handleForSale= {this.handleForSale }
+                handleProgressShot= { this.handleProgressShot}
+                handleShowcase= { this.handleShowcase }
+                forSale= { this.state.forSale }
+                progressShot= { this.state.progressShot }
+                checkShowcase= { this.state.checkShowcase }
+                pickImage= { this.pickImage }
+                useCamera= { this.useCamera }
+                imagesToUpload= { this.state.imagesToUpload }
+                addMoreImage= { this.addMoreImage }
             />
         )
     }

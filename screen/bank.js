@@ -8,8 +8,23 @@ import FooterTabs from './service/footer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from "prop-types"
+import { BackHandler} from "react-native"
 
 export default class BankScreen extends Component {
+
+  componentDidMount() {
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Wallet")
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
+
   render() {
     const add = <Text> Add Bank </Text>
     const spinner = <Spinner color="white" />

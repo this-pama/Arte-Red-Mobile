@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, List, ListItem, Left, Body, Right, Toast, Text, Button, Icon, Title, Footer, 
 FooterTab,Textarea } from 'native-base';
-import { Modal, TouchableHighlight, View, Alert } from 'react-native';
+import { Modal, BackHandler, View, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { apiUrl } from './service/env';
 import { loginAction } from "../redux/loginAction"
@@ -30,6 +30,17 @@ class CommentScreen extends Component {
     const artworkId = this.props.navigation.getParam("id", null)
     await this.setState({ comment, routeName, artworkId })
     this.mapAllComment()
+
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate(this.state.routeName)
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
 
   mapAllComment = async ()=>{

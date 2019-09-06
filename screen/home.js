@@ -19,6 +19,7 @@ import { like, unLike, rating } from "../controller/api"
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import Lightbox from "react-native-lightbox"
 import { SliderBox } from 'react-native-image-slider-box';
+import {BackHandler} from "react-native"
 
 class HomeScreen extends Component {
   constructor(props){
@@ -41,7 +42,15 @@ class HomeScreen extends Component {
       this.setState({ image : this.props.image })
     }
     this.getFeed()
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Landing")
+      return true;
+    });
+  }
 
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
 
   _onRefresh = () => {

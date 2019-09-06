@@ -16,6 +16,7 @@ import { like, unLike, rating } from "../controller/api"
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import Lightbox from "react-native-lightbox"
 import { SliderBox } from 'react-native-image-slider-box';
+import {BackHandler} from "react-native"
 
 class NetworkScreen extends Component {
   constructor(props){
@@ -37,6 +38,16 @@ class NetworkScreen extends Component {
     }
 
     this.getPost()
+
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.goBack()
+      return true;
+    });
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
 
   _onRefresh = () => {

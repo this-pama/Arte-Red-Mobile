@@ -7,8 +7,22 @@ import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import { getUserProfileAction } from "../redux/userProfileAction"
 import {Share } from 'react-native';
+import {BackHandler} from "react-native"
 
 class SettingScreen extends Component {
+
+  componentDidMount() {
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Home")
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
 
   onShare = async () => {
     try {

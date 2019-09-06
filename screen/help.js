@@ -10,8 +10,22 @@ import { buyArtworkAction } from "../redux/buyAction"
 import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
 import {connect} from 'react-redux'
 import { like } from "../controller/api"
+import {BackHandler} from "react-native"
 
 class HelpScreen extends Component {
+  componentDidMount() {
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Setting")
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
+
   render() {
     return (
       <Container>

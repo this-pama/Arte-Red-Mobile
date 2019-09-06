@@ -6,7 +6,7 @@ import { Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import PropTypes from 'prop-types'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { KeyboardAvoidingView } from "react-native"
+import { KeyboardAvoidingView, BackHandler } from "react-native"
 export default class CreateExhibitionScreen extends Component {
   constructor(props){
     super(props);
@@ -15,7 +15,18 @@ export default class CreateExhibitionScreen extends Component {
     }
   }
 
-  
+  componentDidMount() {
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Exhibition")
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
 
   render() {
       const imagePlaceholder =(

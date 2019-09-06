@@ -14,7 +14,7 @@ import { getUserProfile, like, unLike, rating } from "../../controller/api"
 import { SliderBox } from 'react-native-image-slider-box';
 import Lightbox from "react-native-lightbox"
 import { Rating, AirbnbRating } from 'react-native-ratings';
-
+import {BackHandler} from "react-native"
 
 
 class ProfileArtworkScreen extends Component {
@@ -44,6 +44,18 @@ class ProfileArtworkScreen extends Component {
           this.getArtworks(profile.artwork)
         }
         else{ this.setState({message: "User has no collection"})}
+
+        // handle hardware back button press
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+          this.props.navigation.navigate(this.props.navigation.getParam("routeName", "Home"), 
+          {id: this.state.profileId} )
+          return true;
+        });
+
+      }
+
+      componentWillUnmount() {
+        this.backHandler.remove();
       }
     
       getArtworks= async (artwork)=>{

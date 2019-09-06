@@ -11,6 +11,7 @@ import { getUserProfileAction } from "../redux/userProfileAction"
 import { buyArtworkAction } from "../redux/buyAction"
 import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
 import {connect} from 'react-redux'
+import {BackHandler} from "react-native"
 
 class RegisterExhibitionScreen extends Component {
     constructor(props){
@@ -24,9 +25,18 @@ class RegisterExhibitionScreen extends Component {
         }
     }
 
-    // componentDidMount(){
-    //     alert(this.props.navigation.getParam("id"))
-    // }
+    componentDidMount() {
+      // handle hardware back button press
+      this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        this.props.navigation.navigate("Exhibition")
+        return true;
+      });
+
+    }
+
+    componentWillUnmount() {
+      this.backHandler.remove();
+    }
 
     register = async () => {
         

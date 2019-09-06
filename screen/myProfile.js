@@ -10,6 +10,7 @@ import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import {getUserProfileAction } from "../redux/userProfileAction"
 import {connect} from 'react-redux'
+import {BackHandler} from "react-native"
 
 class ProfileScreen extends Component {
 
@@ -23,7 +24,10 @@ class ProfileScreen extends Component {
           image: ""
         }
       }
-    
+
+      componentWillUnmount() {
+        this.backHandler.remove();
+      }
       componentDidMount() {
         this.getPermissionAsync();
 
@@ -44,6 +48,12 @@ class ProfileScreen extends Component {
           }
           else{ return }
         }
+
+        // handle hardware back button press
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+          this.props.navigation.navigate("Setting")
+          return true;
+        });
 
       }
     

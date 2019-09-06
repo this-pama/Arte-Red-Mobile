@@ -13,6 +13,7 @@ import {apiUrl} from "./service/env"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Lightbox from "react-native-lightbox"
 import { SliderBox } from 'react-native-image-slider-box';
+import {BackHandler} from "react-native"
 
 class BuyScreen extends Component {
   constructor(props){
@@ -75,7 +76,20 @@ class BuyScreen extends Component {
           
         }
       }
+
+      // handle hardware back button press
+      this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        this.props.navigation.navigate(this.props.navigation.getParam("routeName", "Home"), 
+        {id: this.state.profileId} )
+        return true;
+      });
+
     }
+
+    componentWillUnmount() {
+      this.backHandler.remove();
+    }
+
 
     handleFirstName = firstName => {
       if (firstName.length > 0) {

@@ -13,7 +13,7 @@ import { getUserIdAction } from "../../redux/getUserId"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Sidebar from "../chatService/drawer"
 import io from 'socket.io-client';
-
+import {BackHandler} from "react-native"
 
 
 class ChatScreen extends Component {
@@ -25,6 +25,20 @@ class ChatScreen extends Component {
   
     }
   }
+
+  componentDidMount() {
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Home")
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
+
 
   closeDrawer = () => {
     this.drawer._root.close()

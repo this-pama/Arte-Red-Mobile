@@ -7,6 +7,7 @@ import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import { getUserProfileAction } from "../redux/userProfileAction"
 import {apiUrl} from "./service/env"
+import {BackHandler} from "react-native"
 
 class FollowerScreen extends Component {
   constructor(props){
@@ -26,6 +27,16 @@ class FollowerScreen extends Component {
     }
 
     this.getPost()
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Landing")
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
 
   getPost= async ()=>{

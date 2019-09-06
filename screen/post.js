@@ -10,6 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Gallery from 'react-native-image-gallery';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SliderBox } from 'react-native-image-slider-box';
+import {BackHandler} from "react-native"
 
 
 export default class PostScreen extends Component {
@@ -22,6 +23,17 @@ export default class PostScreen extends Component {
 
     componentDidMount() {
       this.getPermissionAsync();
+
+      // handle hardware back button press
+      this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        this.props.navigation.navigate(this.props.navigation.getParam("Home"))
+        return true;
+      });
+
+    }
+
+    componentWillUnmount() {
+      this.backHandler.remove();
     }
 
     getPermissionAsync = async () => {

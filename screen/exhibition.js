@@ -12,6 +12,7 @@ import { getUserProfileAction } from "../redux/userProfileAction"
 import { buyArtworkAction } from "../redux/buyAction"
 import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
 import {connect} from 'react-redux'
+import {BackHandler} from "react-native"
 
 
 class ExhibitionScreen extends Component {
@@ -28,6 +29,16 @@ class ExhibitionScreen extends Component {
 
   componentDidMount(){
     this.getFeed()
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Landing")
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
 
   _onRefresh = () => {

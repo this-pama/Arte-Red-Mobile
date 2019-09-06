@@ -13,6 +13,7 @@ import { like, unLike, rating } from "../../controller/api"
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import Lightbox from "react-native-lightbox"
 import { SliderBox } from 'react-native-image-slider-box';
+import {BackHandler} from "react-native"
 
 
 
@@ -68,6 +69,17 @@ class ArtworkDetailScreen extends Component {
         
       }
     }
+
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate(this.props.navigation.getParam("routeName", "Home"))
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
 
   render() {

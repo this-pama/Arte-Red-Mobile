@@ -4,10 +4,22 @@ Text, Label, Footer, Content, List, ListItem, Item, Picker,
 Input, Form,  } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { View, KeyboardAvoidingView } from "react-native"
-import FooterTabs from './service/footer';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {BackHandler} from "react-native"
 
 export default class WithdrawScreen extends Component {
+  componentDidMount() {
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Landing")
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
+
   render() {
     return (
       <Container>

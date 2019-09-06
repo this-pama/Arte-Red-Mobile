@@ -3,7 +3,7 @@ import { Container, Header, Content, Button, ListItem, Text, Icon,
     Title, Left, Body, Right, Toast, ActionSheet } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { apiUrl } from './service/env'
-
+import {BackHandler} from "react-native"
 
 var BUTTONS = ["Delete", "Close"];
 var CANCEL_INDEX = 1;
@@ -13,6 +13,18 @@ export default class AccountScreen extends Component {
     super(props);
     this.state={
     }
+  }
+  componentDidMount() {
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Setting")
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
 
   delete = async () => {

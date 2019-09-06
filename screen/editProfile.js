@@ -6,6 +6,7 @@ import {View, TouchableHighlight } from 'react-native'
 import {KeyboardAvoidingView} from 'react-native';
 import PropTypes from 'prop-types'
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {BackHandler} from "react-native"
 
 
 export default class EditProfileScreen extends Component {
@@ -15,7 +16,19 @@ export default class EditProfileScreen extends Component {
           register: "Register",
         }
       }
+  
+      componentDidMount() {
+        // handle hardware back button press
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+          this.props.navigation.navigate("Setting")
+          return true;
+        });
     
+      }
+    
+      componentWillUnmount() {
+        this.backHandler.remove();
+      }
 
   render() {
     const spinner = <Spinner color='white' />

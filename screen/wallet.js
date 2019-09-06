@@ -13,6 +13,7 @@ import { getUserIdAction } from "../redux/getUserId"
 import { getBankDetailsAction } from "../redux/getBankDetails"
 import BankDetail from './wallet/bankDetails';
 import History from "./wallet/history"
+import {BackHandler} from "react-native"
 
 class WalletScreen extends Component {
   constructor(props){
@@ -28,6 +29,10 @@ class WalletScreen extends Component {
       activeDetails: false,
       activeHistory: true
     }
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
 
  async componentDidMount(){
@@ -69,6 +74,13 @@ class WalletScreen extends Component {
     }
 
     this.fetchBankDetails()
+
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.goBack()
+      return true
+    });
+
   }
 
   fetchBankDetails=async ()=>{

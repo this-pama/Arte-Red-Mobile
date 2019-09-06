@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Form, Item, Input, Label, Button, Text, Header,
 Left, Icon, Body, Right, Title, Spinner  } from 'native-base';
-import {View, TouchableHighlight } from 'react-native'
+import {View, TouchableHighlight, BackHandler } from 'react-native'
 import PropType from "prop-types"
 import {NavigationActions} from 'react-navigation';
 
@@ -13,6 +13,19 @@ export default class LoginScreen extends Component {
     const navigateAction = NavigationActions.navigate({
       routeName: route
     });
+  }
+
+  componentDidMount() {
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Landing")
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
 
   render() {

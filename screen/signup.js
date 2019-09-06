@@ -4,7 +4,7 @@ Left, Icon, Body, Right, Title, Spinner  } from 'native-base';
 import {View, TouchableHighlight, TouchableOpacity } from 'react-native'
 import PropType from "prop-types"
 import {NavigationActions} from 'react-navigation';
-
+import {BackHandler} from "react-native"
 import HeaderTheme from './service/header'
 
 export default class SignUpScreen extends Component {
@@ -14,6 +14,20 @@ export default class SignUpScreen extends Component {
       routeName: route
     });
   }
+
+  componentDidMount() {
+    // handle hardware back button press
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate("Landing")
+      return true;
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
+
 
   render() {
     const spinner = <Spinner color='white' />

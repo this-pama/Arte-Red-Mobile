@@ -10,6 +10,7 @@ import { getUserProfileAction } from "../redux/userProfileAction"
 import { buyArtworkAction } from "../redux/buyAction"
 import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
 import {connect} from 'react-redux'
+import {BackHandler} from "react-native"
 
 class ExpandExhibitionScreen extends Component {
 
@@ -24,6 +25,10 @@ class ExpandExhibitionScreen extends Component {
         }
       }
 
+      componentWillUnmount() {
+        this.backHandler.remove();
+      }
+      
       async componentDidMount(){
         const id= this.props.navigation.getParam("id", null )
 
@@ -61,8 +66,16 @@ class ExpandExhibitionScreen extends Component {
             
           }
         }
+
+        // handle hardware back button press
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+          this.props.navigation.navigate("Landing")
+          return true;
+        });
+
       }
 
+      
   render() {
 
     if(!this.state.fetch){

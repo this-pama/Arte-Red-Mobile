@@ -9,6 +9,7 @@ import { getUserProfileAction } from "../../redux/userProfileAction"
 import { buyArtworkAction } from "../../redux/buyAction"
 import { moreArtworkDetailsAction } from "../../redux/artworkDetailsAction"
 import {apiUrl} from "./env"
+import {BackHandler} from "react-native"
 
 
 class ProfileScreen extends Component {
@@ -25,6 +26,9 @@ class ProfileScreen extends Component {
        //props expectation
       // 1. id as a param in navigation
       // 2. routeName  as a param in navigation
+      componentWillUnmount() {
+        this.backHandler.remove();
+      }
 
     async componentDidMount(){
       const userId = this.props.navigation.getParam("id", null)
@@ -78,6 +82,13 @@ class ProfileScreen extends Component {
           
         }
       }
+
+      // handle hardware back button press
+      this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        this.props.navigation.navigate(this.props.navigation.getParam("routeName", "Home"))
+        return true;
+      });
+
     }
 
 

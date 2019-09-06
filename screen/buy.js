@@ -11,7 +11,8 @@ import { buyArtworkAction } from "../redux/buyAction"
 import { raveAction } from "../redux/raveAction"
 import {apiUrl} from "./service/env"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
+import Lightbox from "react-native-lightbox"
+import { SliderBox } from 'react-native-image-slider-box';
 
 class BuyScreen extends Component {
   constructor(props){
@@ -229,8 +230,8 @@ class BuyScreen extends Component {
           <CardItem>
               <Left>
                 <Body>
-                  <Text>{!this.state.artwork.title ? "Title" : this.state.artwork.title}</Text>
-                  <Text note>{!this.state.artwork.year ? "Year Unknown" : this.state.artwork.year}</Text>
+                  <Text>{!this.state.artwork.title ? "Unknown Title" : this.state.artwork.title}</Text>
+                  <Text note>{!this.state.artwork.year ? "Unknown Year" : this.state.artwork.year}</Text>
                 </Body>
               </Left>
               <Right>
@@ -243,9 +244,29 @@ class BuyScreen extends Component {
               </Right>
             </CardItem>
             <CardItem>
-              {/* <Body> */}
-                <Image source={{uri : this.state.artwork.imageURL }} style={{height: 200, width: 400, flex: 1}} />
-              {/* </Body> */}
+            {typeof(this.state.artwork.imageURL) == 'object' ?
+              (
+                <SliderBox
+                      images={this.state.artwork.imageURL}
+                      sliderBoxHeight={200}
+                      onCurrentImagePressed={index =>
+                          console.warn(`image ${index} pressed`)
+                      }
+                      dotColor="red"
+                      inactiveDotColor="#90A4AE"
+                />
+              )
+              : 
+              (
+                <Lightbox>
+                  <Image 
+                    source={{ uri: this.state.artwork.imageURL } } 
+                    style={{height: 200, width: null, flex: 1}}
+                    resizeMode="contain"
+                  />
+                </Lightbox>
+              )
+              }
             </CardItem>
             <CardItem>
               <Left>

@@ -116,7 +116,7 @@ class SearchIcon extends Component{
                 <ListItem>
                       <SearchInput 
                         onChangeText={(term) => { this.searchUpdated(term) }} 
-                        placeholder="Type a message to search"
+                        placeholder="Search for an Artwork"
                       />
                       
                       <Button transparent>

@@ -267,11 +267,11 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
         )
       
        return(
-        <Card >
+        <Card key={artwork._id} >
         <CardItem>
           <Left>
             <Body>
-              <Text>{artwork.title} {`(${artwork.year ? artwork.year : "Unknown"})`}</Text>
+              <Text>{artwork.title} {`(${artwork.year ? artwork.year : new Date().getFullYear()})`}</Text>
                 <Text note>{artwork.artistName}</Text>
             </Body>
           </Left>

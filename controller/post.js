@@ -36,7 +36,8 @@ class PostController extends Component{
             progressShot: true,
             checkShowcase: false,
             imageArray: [],
-            imagesToUpload: []
+            imagesToUpload: [],
+            isDoneUploading: false 
         }
     }
 
@@ -82,27 +83,25 @@ class PostController extends Component{
 
     addMoreImage = ()=>{
       ActionSheet.show(
-                     {
-                       options: BUTTONS,
-                       cancelButtonIndex: CANCEL_INDEX,
-                       destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                       title: "Add More Artwork"
-                     },
-                     buttonIndex => {
-                       this.setState({ clicked: BUTTONS[buttonIndex] });
-                       if(BUTTONS[buttonIndex] === "Camera" ){
-                         this.useCamera()
-                       }
-                       else if(BUTTONS[buttonIndex] === "Gallery" ){
-                         this.pickImage()
-                       }
-                     }
-                   )
+        {
+          options: BUTTONS,
+          cancelButtonIndex: CANCEL_INDEX,
+          destructiveButtonIndex: DESTRUCTIVE_INDEX,
+          title: "Add More Artwork"
+        },
+        buttonIndex => {
+          this.setState({ clicked: BUTTONS[buttonIndex] });
+          if(BUTTONS[buttonIndex] === "Camera" ){
+            this.useCamera()
+          }
+          else if(BUTTONS[buttonIndex] === "Gallery" ){
+            this.pickImage()
+          }
+        }
+      )
     }
 
-    saveToDb = async ()=>{
-      // this.props.navigation.navigate("Home")
-      // var url = '';
+    saveToDb = async () =>{
       let masterpiece
       if(this.state.masterpiece === "Yes"){
         masterpiece = true
@@ -112,6 +111,7 @@ class PostController extends Component{
       }
 
       var url = apiUrl + "artwork/add/" + this.props.userId;
+      // console.warn("imageUrl",this.state.imageUrl)
       var result = await fetch(url, {
         method: 'POST',
         headers: { 
@@ -138,7 +138,7 @@ class PostController extends Component{
       var response = await result;
 
       if(response.status !== 200){
-        console.warn(response.error)
+        console.warn(response)
         this.setState({ spin : false, errMessage: "Error occured while uploading" })
         // alert("Error occured while uploading")
       }
@@ -158,8 +158,7 @@ class PostController extends Component{
               number: "",
               category: "",
               masterpiece: "",
-              spin : false
-          })
+         })
           return this.props.navigation.navigate("Home")
         }
         else{
@@ -176,7 +175,7 @@ class PostController extends Component{
          return alert("There seams to be an error with the image")
         }
 
-        this.state.imageArray.forEach(result =>{
+         await this.state.imageArray.forEach(async result =>{
           let base64Img = `data:image/jpg;base64,${result.base64}`
           let data = {
             "file": base64Img,
@@ -193,13 +192,22 @@ class PostController extends Component{
           .then(async r => {
               let data = await r.json()
               this.setState({ imageUrl : [ ... this.state.imageUrl, data.secure_url] })
-              
           })
-          .catch(err=>console.log(err))
+          .then(()=>{
+            if(this.state.imageUrl.length === this.state.imageArray.length){
+              // console.warn("isDoneUploading")
+              this.setState({ isDoneUploading : true })
+            }
+          })
+          .then(()=>{
+            //save to db 
+            if(this.state.isDoneUploading){
+              this.saveToDb()
+            }
+          })
+          .catch(err=>console.warn(err))
         })
 
-        //save to db 
-        this.saveToDb()
     };
     
     handleTitle = title => {

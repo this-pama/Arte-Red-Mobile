@@ -9,6 +9,10 @@ import { getUserProfileAction } from "../../redux/userProfileAction"
 import { buyArtworkAction } from "../../redux/buyAction"
 import { moreArtworkDetailsAction } from "../../redux/artworkDetailsAction"
 import {apiUrl} from "./env"
+import { like, unLike, rating } from "../../controller/api"
+import { Rating, AirbnbRating } from 'react-native-ratings';
+import Lightbox from "react-native-lightbox"
+import { SliderBox } from 'react-native-image-slider-box';
 
 
 
@@ -68,6 +72,51 @@ class ArtworkDetailScreen extends Component {
 
   render() {
     const routeName= this.props.navigation.getParam("routeName", "Home")
+    const forSale= artwork => (
+      <Body>
+        <Button transparent onPress= {async ()=>{ 
+          if(!this.props.userId){
+            return Toast.show({
+              text: "You need to sign in",
+              buttonText: "Okay",
+              duration: 3000,
+              type: 'danger'
+            })
+          }
+          
+        await  this.props.buyArtworkAction({id: artwork._id})
+          this.props.navigation.navigate("Buy", { routeName: "Home"})} 
+          }>
+            {/* <Icon active name="pricetag" /> */}
+            <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
+        </Button>
+      </Body>
+    )
+
+    const showcase=( 
+      <Button transparent >
+          <Text>Showcase</Text>
+      </Button>
+      )
+
+    const progressShot =( 
+      <Button transparent >
+          <Text>Progress Shot</Text>
+      </Button>
+      )
+
+      const quantity = (
+        <Button transparent textStyle={{color: '#87838B'}}
+          onPress= {()=> { 
+            this.props.buyArtworkAction({id: this.state.artwork._id})
+            this.props.navigation.navigate("Buy", {routeName : "Detail"})} 
+          }
+          >
+            <Icon name="barcode" />
+            <Text>Quantity: {!this.state.artwork.numberAvailable ? "0" : this.state.artwork.numberAvailable }</Text>
+          </Button>
+      )
+
     if(!(this.state.fetch)){
       return(
         <Container>
@@ -119,8 +168,8 @@ class ArtworkDetailScreen extends Component {
           <CardItem>
               <Left>
                 <Body>
-                  <Text>{!this.state.artwork.title ? "Title" : this.state.artwork.title} {!this.state.artwork.year ? "2019" : this.state.artwork.year}</Text>
-                  <Text note>{!this.state.artwork.size ? "Size in inches" : this.state.artwork.size + " Inches"}</Text>
+                  <Text>{!this.state.artwork.title ? null : this.state.artwork.title} {!this.state.artwork.year ? new Date().getFullYear() : this.state.artwork.year}</Text>
+                  <Text note>{!this.state.artwork.size ? null : this.state.artwork.size + " Inches"}</Text>
                   <TouchableOpacity 
                       onPress={()=> this.props.navigation.navigate("Profile", {id: this.state.artwork.userId})}>
                     <Text style={{color : "blue"}} note >Sponsor</Text>
@@ -129,14 +178,23 @@ class ArtworkDetailScreen extends Component {
               </Left>
               <Right>
                 <Body>
-                    <Text note >{!this.state.artwork.artistName ? "Artist Name" : this.state.artwork.artistName}</Text>
-                  <Text note>{!this.state.artwork.location ? "Location" : this.state.artwork.location}</Text>
-                  <Text note>{!this.state.artwork.category ? "Painting" : this.state.artwork.category}</Text>
+                    <Text note >{!this.state.artwork.artistName ? null : this.state.artwork.artistName}</Text>
+                  <Text note>{!this.state.artwork.location ? null : this.state.artwork.location}</Text>
+                  <Text note>{!this.state.artwork.category ? null : this.state.artwork.category}</Text>
                 </Body>
               </Right>
             </CardItem>
-            <CardItem cardBody>
-              <Image source={{uri : this.state.artwork.imageURL }} style={{height: 300, width: null, flex: 1}} />
+            <CardItem>
+              <SliderBox
+                images={this.state.artwork.imageURL}
+                sliderBoxHeight={300}
+                onCurrentImagePressed={index =>
+                    console.warn(`image ${index} pressed`)
+                }
+                dotColor="red"
+                inactiveDotColor="#90A4AE"
+              />
+              {/* <Image source={{uri : this.state.artwork.imageURL }} style={{height: 300, width: null, flex: 1}} /> */}
             </CardItem>
             <CardItem>
               <Body>
@@ -147,38 +205,17 @@ class ArtworkDetailScreen extends Component {
             </CardItem>
             <CardItem>
               <Left>
-                <Button transparent textStyle={{color: '#87838B'}}
-                onPress= {()=>{ 
-                  this.props.buyArtworkAction({id: this.state.artwork._id})
-                  this.props.navigation.navigate("Buy", {routeName : "Detail"})} 
-                }
-                >
-                  <Icon name="pricetag" />
-                  <Text>NGN {!this.state.artwork.price ? "0" : this.state.artwork.price}</Text>
-                </Button>
+              { this.state.artwork.forSale ? quantity : 
+                (this.state.artwork.showcase ? null : 
+                  ( this.state.artwork.progressShot ? null : null ))
+              }
               </Left>
               <Body>
-                <Button transparent textStyle={{color: '#87838B'}}
-                onPress= {()=> { 
-                  this.props.buyArtworkAction({id: this.state.artwork._id})
-                  this.props.navigation.navigate("Buy", {routeName : "Detail"})} 
+                { this.state.artwork.forSale ? forSale(this.state.artwork) : 
+                  (this.state.artwork.showcase ? showcase : 
+                    ( this.state.artwork.progressShot ? progressShot : forSale(this.state.artwork)))
                 }
-                >
-                  <Icon name="barcode" />
-                  <Text>Quantity: {!this.state.artwork.numberAvailable ? "0" : this.state.artwork.numberAvailable }</Text>
-                </Button>
               </Body>
-              <Right>
-                <Button transparent 
-                  onPress= {()=> { 
-                    this.props.buyArtworkAction({id: this.state.artwork._id})
-                    this.props.navigation.navigate("Buy", {routeName : "Detail"})} 
-                  }
-                  textStyle={{color: '#87838B'}}>
-                  <Icon name="cart" />
-                  <Text>Buy</Text>
-                </Button>
-              </Right>
             </CardItem>
           </Card>
         </Content>

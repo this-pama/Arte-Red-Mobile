@@ -226,7 +226,9 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
        super(props)
        this.state = {
          likeCount :  0,
-         color: "blue"
+         color: "blue",
+         unlikeColor: "blue"
+
        }
      }
 
@@ -354,7 +356,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
                 if(artwork.unlike.findIndex(id => { 
                   return id = this.props.userId
                 }) >= 0 ){
-                  return this.setState({ color: "red"})
+                  return this.setState({ unlikeColor: "red"})
                 }
 
                 unLike({
@@ -363,14 +365,14 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
                 artworkId: artwork._id
               })
               
-              this.setState({ color: "red" })
+              this.setState({ unlikeColor: "red" })
               
             }}
             >
               <Icon style={{ color : artwork.unlike ? (artwork.unlike.findIndex(id =>{
                                          return id === this.props.userId
-                                    }) >= 0 ? "red" : this.state.color)
-                                    : this.state.color
+                                    }) >= 0 ? "red" : this.state.unlikeColor)
+                                    : this.state.unlikeColor
               }} name="thumbs-down" />
               <Text>{artwork.unlike ? artwork.unlike.length : 0 }</Text>
             </Button>
@@ -430,7 +432,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
           </Right>
         </CardItem>
         <CardItem >
-        <AirbnbRating
+        {/* <AirbnbRating
           count={10}
           reviews={["Terrible", "Bad", "Fair", "Good", "Amazing", "Awesome",  "Wow", "Incredible", "Unbelievable", "Great"]}
           defaultRating={ artwork.rating }
@@ -446,7 +448,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
                 userId: this.props.userId
               })
           }}
-        />
+        /> */}
         </CardItem>
       </Card>
        )

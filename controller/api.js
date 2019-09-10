@@ -130,7 +130,7 @@ export const follow = async  user =>{
 
 // api call for unLiking an artwork
 export const rating = async  user =>{
-  var url = apiUrl + "artwork/rating/" + user.artworkId ;
+  var url = apiUrl + "user/rating/" + user.userId ;
   var result = await fetch(url, {
     method: 'POST',
     headers: { 

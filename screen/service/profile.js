@@ -10,6 +10,8 @@ import { buyArtworkAction } from "../../redux/buyAction"
 import { moreArtworkDetailsAction } from "../../redux/artworkDetailsAction"
 import {apiUrl} from "./env"
 import {BackHandler} from "react-native"
+import { like, unLike, rating } from "../../controller/api"
+import { Rating, AirbnbRating } from 'react-native-ratings';
 
 
 class ProfileScreen extends Component {
@@ -187,7 +189,8 @@ class ProfileScreen extends Component {
                       </Text>
                   </Right>
               </ListItem>
-              <ListItem>
+              { this.props.userId === this.props.navigation.getParam("id", null) ? null : 
+              (<ListItem>
               <Left>
                   <TouchableOpacity
                     onPress={()=> {
@@ -234,7 +237,29 @@ class ProfileScreen extends Component {
                       </TouchableOpacity>) 
                     }
                   </Right>
-              </ListItem>
+              </ListItem>) }
+              { this.props.userId === this.props.navigation.getParam("id", null) ? null :
+              (<ListItem>
+                <Left>
+                  <Text note >Rate User Collection</Text>
+                </Left>
+                <AirbnbRating
+                    count={5}
+                    reviews={["Good", "Great", "Awesome", "Incredible", "Wow"]}
+                    defaultRating={ this.state.profile.rating }
+                    size={20}
+                    reviewSize={ 15 }
+                    selectedColor= "yellow"
+                    reviewColor="blue"
+                    onFinishRating={rate =>{
+                        rating({
+                          rating: rate,
+                          jwt: this.props.jwt.jwt,
+                          userId: this.props.userId
+                        })
+                    }}
+                  />
+              </ListItem>) }
             </List>
         </Content>
       </Container>

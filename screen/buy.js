@@ -31,16 +31,12 @@ class BuyScreen extends Component {
     }
   }
 
-    componentWillUnmount(){
-      this.props.buyArtworkAction({})
-    }
-
     async componentDidMount(){
       this.setState({
         artwork: {}
       })
 
-      var url = apiUrl + "artwork/" + this.props.artworkId;
+      var url = apiUrl + "artwork/" + this.props.navigation.getParam("artworkId", null );
       var result = await fetch(url, {
         method: 'GET',
         headers: { 
@@ -193,7 +189,10 @@ class BuyScreen extends Component {
         <Header style={{ backgroundColor: "#990000", paddingBottom: 40, paddingTop: 50}}>
           <Left>
             <Button transparent onPress={()=> 
-              this.props.navigation.navigate(routeName)}>
+              this.props.navigation.navigate(routeName, {
+                routeName: "Buy", 
+                artworkId: this.props.navigation.getParam("artworkId", null )
+              })}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
@@ -220,7 +219,10 @@ class BuyScreen extends Component {
         <Header style={{ backgroundColor: "#990000", paddingBottom: 40, paddingTop: 50}}>
           <Left>
             <Button transparent onPress={()=>
-            this.props.navigation.navigate(routeName)}>
+            this.props.navigation.navigate(routeName, {
+              routeName: "Buy", 
+              artworkId: this.props.navigation.getParam("artworkId", null )
+            })}>
               <Icon name="arrow-back" />
             </Button>
           </Left>

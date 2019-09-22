@@ -15,7 +15,7 @@ import { getUserProfileAction } from "../redux/userProfileAction"
 import { buyArtworkAction } from "../redux/buyAction"
 import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
 import {connect} from 'react-redux'
-import { like, unLike, rating } from "../controller/api"
+import { like, unLike, rating, registerForPushNotificationsAsync } from "../controller/api"
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import Lightbox from "react-native-lightbox"
 import { SliderBox } from 'react-native-image-slider-box';
@@ -47,6 +47,13 @@ class HomeScreen extends Component {
       this.props.navigation.navigate("Landing")
       return true;
     });
+
+
+    //send device expo token to server
+    if(this.props.userId){
+      registerForPushNotificationsAsync(this.props.userId)
+    }
+    
   }
 
   componentWillUnmount() {
@@ -258,7 +265,9 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
           }
           
          await  this.props.buyArtworkAction({id: artwork._id})
-          this.props.navigation.navigate("Buy", { routeName: "Home"})} 
+          this.props.navigation.navigate("Negotiation", { routeName: "Home",
+            artworkId: artwork._id
+        })} 
           }>
             {/* <Icon active name="pricetag" /> */}
             <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
@@ -287,7 +296,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
             </Body>
           </Left>
           <Right>
-            <Button transparent onPress={async () => {
+            {/* <Button transparent onPress={async () => {
               if(!this.props.userId){
                 return Toast.show({
                   text: "You need to sign in",
@@ -300,7 +309,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
               this.props.navigation.navigate("Detail", { routeName: "Home"})} 
             }>
                  <Text>More</Text>
-            </Button>
+            </Button> */}
             <TouchableOpacity 
               onPress={()=> {
                 if(!this.props.userId){
@@ -323,8 +332,11 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
           <SliderBox
                 images={artwork.imageURL}
                 sliderBoxHeight={200}
-                onCurrentImagePressed={index =>
-                    console.warn(`image ${index} pressed`)
+                onCurrentImagePressed={async index =>
+                    {
+                      await this.props.moreArtworkDetailsAction({artworkId : artwork._id })
+                      this.props.navigation.navigate("Detail", { routeName: "Home"})
+                    } 
                 }
                 dotColor="red"
                 inactiveDotColor="#90A4AE"

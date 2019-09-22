@@ -17,7 +17,8 @@ export default class PostScreen extends Component {
     constructor(props){
         super(props);
         this.state={
-
+          isNegotiable: false,
+          isNotNegotiable: false,
         }
     }
 
@@ -44,7 +45,23 @@ export default class PostScreen extends Component {
           }
       }
     }
- 
+    
+
+    handleIsNegotiable =()=>{
+      this.setState({
+        isNegotiable: true,
+        isNotNegotiable: false,
+      })
+    }
+
+    handleIsNotNegotiable =()=>{
+      this.setState({
+        isNegotiable: false,
+        isNotNegotiable: true,
+      })
+    }
+
+
   render() {
       const image = this.props.navigation.getParam("image")
       const spinner = <Spinner color="white" />
@@ -106,10 +123,61 @@ export default class PostScreen extends Component {
               <Label>Location</Label>
               <Input onChangeText= {this.props.handleLocation } value={this.props.location }  autoCapitalize='words'/>
           </Item>
+          <Item picker>
+            <Picker
+                  mode="dropdown"
+                  iosIcon={<Icon name="arrow-down" />}
+                  style={{ width: undefined }}
+                  placeholder="Currency"
+                  placeholderStyle={{ color: "#bfc6ea" }}
+                  placeholderIconColor="#007aff"
+                  selectedValue={this.props.currency}
+                  onValueChange={ this.props.handleCurrency }
+              >
+                  <Picker.Item label="NGN" value="NGN" />
+                  <Picker.Item label="USD" value="USD" />
+                  <Picker.Item label="EURO" value="USD" />
+              </Picker>
+          </Item>
           <Item stackedLabel>
               <Label>Price</Label>
               <Input onChangeText= { this.props.handlePrice } value={this.props.price} keyboardType='numeric'  />
           </Item>
+          <Item style={{ paddingTop: 15, paddingBottom: 10 }}>
+            <Left>
+                <Text>Is this price negotiable?</Text>
+            </Left>
+            <Body>
+              <CheckBox checked={this.state.isNegotiable} onPress={this.handleIsNegotiable}/>
+                <Text>Yes</Text>
+            </Body>
+            <Right>
+              <CheckBox checked={this.state.isNotNegotiable} onPress={this.handleIsNotNegotiable} />
+                <Text>No</Text>
+            </Right>
+          </Item>
+          {this.state.isNegotiable ?(
+            <Item picker>
+              {/* <Label>Select maximum allowable negotiable percentage</Label> */}
+                <Picker
+                    mode="dropdown"
+                    iosIcon={<Icon name="arrow-down" />}
+                    style={{ width: undefined }}
+                    placeholder="Select maximum allowable negotiable percentage"
+                    placeholderStyle={{ color: "#bfc6ea" }}
+                    placeholderIconColor="#007aff"
+                    selectedValue={this.props.negotiationPercentage}
+                    onValueChange={ this.props.handleNegotiationPercentage }
+                >
+                    <Picker.Item label="Maximum allowable negotiation %" value={null} />
+                    <Picker.Item label="10%" value="10" />
+                    <Picker.Item label="20%" value="20" />
+                    <Picker.Item label="30%" value="30" />
+                    <Picker.Item label="40%" value="40" />
+                    <Picker.Item label="50%" value="50" />
+                </Picker>
+            </Item>
+          ) : null }
           <Item stackedLabel>
               <Label>Year</Label>
               <Input onChangeText= { this.props.handleYear } value={this.props.year} keyboardType='numeric' />
@@ -305,5 +373,9 @@ PostScreen.propTypes= {
     handleShowcase: PropTypes.func.isRequired,
     pickImage: PropTypes.func.isRequired,
     useCamera: PropTypes.func.isRequired,
-    imagesToUpload: PropTypes.array.isRequired
+    imagesToUpload: PropTypes.array.isRequired,
+    negotiationPercentage: PropTypes.number,
+    handleNegotiationPercentage : PropTypes.func,
+    currency: PropTypes.string.isRequired,
+    handleCurrency: PropTypes.func.isRequired,
 }

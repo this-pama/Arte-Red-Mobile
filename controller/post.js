@@ -37,7 +37,10 @@ class PostController extends Component{
             checkShowcase: false,
             imageArray: [],
             imagesToUpload: [],
-            isDoneUploading: false 
+            isDoneUploading: false,
+            negotiationPercentage: 0,
+            isNegotiable: false,
+            currency: "NGN"
         }
     }
 
@@ -132,7 +135,10 @@ class PostController extends Component{
           imageURL : this.state.imageUrl,
           forSale: this.state.forSale,
           progressShot: this.state.progressShot,
-          checkShowcase: this.state.checkShowcase
+          checkShowcase: this.state.checkShowcase,
+          isNegotiable: this.state.isNegotiable,
+          negotiationPercent: this.state.negotiationPercentage,
+          currency: this.state.currency,
         })
       });
       var response = await result;
@@ -379,6 +385,31 @@ class PostController extends Component{
       
       }
 
+      handleCurrency = currency => {
+        if (currency){
+            this.setState({
+              currency,
+                errMessage: ""
+            })
+        }
+      }
+
+      handleNegotiationPercentage = negotiationPercentage => {
+        if (+negotiationPercentage){
+            this.setState({
+                negotiationPercentage,
+                isNegotiable: true,
+                errMessage: ""
+            })
+        }else{
+        this.setState({
+            errMessage : "Select a  negotiation percentage",
+            isNegotiable: false,
+        })
+        }
+      
+      }
+
         handleMasterpiece = masterpiece => {
             if (masterpiece){
                 this.setState({
@@ -475,6 +506,10 @@ class PostController extends Component{
                 useCamera= { this.useCamera }
                 imagesToUpload= { this.state.imagesToUpload }
                 addMoreImage= { this.addMoreImage }
+                negotiationPercentage={this.state.negotiationPercentage}
+                handleNegotiationPercentage= {this.handleNegotiationPercentage }
+                currency= {this.state.currency}
+                handleCurrency= {this.handleCurrency}
             />
         )
     }

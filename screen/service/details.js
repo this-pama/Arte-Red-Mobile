@@ -176,7 +176,7 @@ class ArtworkDetailScreen extends Component {
           </Right>
         </Header>
         <Content>
-          <Card style={{flex: 0}} key={this.state.artworkId}>
+          <Card key={this.state.artworkId}>
           <CardItem>
               <Left>
                 <Body>

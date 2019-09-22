@@ -36,6 +36,7 @@ import AccountScreen from '../screen/account'
 import RegisterExhibitionScreen from "../screen/registerForExhibition"
 import ChatScreen from "../screen/service/sendMessage"
 import SearchIcon from "../screen/service/search"
+import NegotiationScreen from "../screen/negotiation"
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -123,6 +124,7 @@ const switchNavigator = createSwitchNavigator({
   CreateExhibition: CreateExhibitionScreen,
   RegisterForExhibition: RegisterExhibitionScreen,
   Chat: ChatScreen,
+  Negotiation: NegotiationScreen,
   App: StackNavigator,
 },
 {

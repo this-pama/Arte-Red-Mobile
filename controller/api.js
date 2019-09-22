@@ -1,4 +1,8 @@
 import {apiUrl} from "../screen/service/env"
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+
+const PUSH_ENDPOINT = apiUrl + '/user/push-token';
 
 export const getUserProfile = async  user =>{
  
@@ -160,4 +164,43 @@ export const rating = async  user =>{
       return
     }
   }
+}
+
+
+
+export const registerForPushNotificationsAsync = async user => {
+  const { status: existingStatus } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  let finalStatus = existingStatus;
+
+  if (existingStatus !== 'granted') {
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    finalStatus = status;
+  }
+
+  if (finalStatus !== 'granted') {
+    return;
+  }
+
+  // Get the token that uniquely identifies this device
+  let token = await Notifications.getExpoPushTokenAsync();
+
+  console.warn("token", token)
+  // POST the token to your backend server from where you can retrieve it to send push notifications.
+  return fetch(PUSH_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      token: {
+        value: token,
+      },
+      user: {
+        username: user.userId,
+      },
+    }),
+  });
 }

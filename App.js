@@ -15,6 +15,7 @@ import HomeScreen from './screen/home';
 import NetworkScreen from './screen/network';
 import LandingScreen from './screen/landing';
 import ChatScreen from "./screen/service/sendMessage"
+import { registerForPushNotificationsAsync } from "./controller/api"
 
 export default class App extends React.Component {
   constructor(props) {
@@ -31,10 +32,11 @@ export default class App extends React.Component {
       ...Ionicons.font,
     });
     this.setState({ isReady: true });
+
   }
 
   render() {
-    if (!this.state.isReady) {
+    if (!this.state.isReady){
       return <AppLoading />;
     }
 

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Button, ListItem, Text, Icon, 
     Title, Left, Body, Right, Form, Picker, Item, Toast, Footer, 
-    View, FooterTab, Label, Spinner, Input } from 'native-base';
+    View, FooterTab, Label, Spinner, Input,
+  Card, CardItem } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { apiUrl } from './service/env';
 import { loginAction } from "../redux/loginAction"
@@ -39,6 +40,7 @@ class NegotiationScreen extends Component {
         history: []
       },
       comment: "",
+      spin: false,
     }
   }
 
@@ -117,14 +119,14 @@ class NegotiationScreen extends Component {
        }
     })
     var response = await result
-    if(response.status !== 200 ){
-      console.warn(response)
-      this.setState({
-        fetch: true
-      })
-      return
-    }
-    else{
+    // if(response.status !== 200 ){
+    //   console.warn(response)
+    //   this.setState({
+    //     fetch: true
+    //   })
+    //   return
+    // }
+    // else{
       var res = await response.json();
       if (res._id) {
         console.warn(res)
@@ -140,7 +142,7 @@ class NegotiationScreen extends Component {
         })
         return    
       }
-    }
+    // }
   } else{
     console.warn("no id")
     this.setState({
@@ -209,9 +211,9 @@ class NegotiationScreen extends Component {
     }
   };
 
-  sendNotification = async () => {
+  sendNotification = async (userMessage, sponsorMessage, sponsorId, email ) => {
     let MESSAGE_ENPOINT = apiUrl + "user/send-notification"
-    let message= `You have a new negotiation request for your artwork!`
+   
     fetch(MESSAGE_ENPOINT, {
       method: 'POST',
       headers: {
@@ -219,19 +221,13 @@ class NegotiationScreen extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message: message,
+        userMessage,
+        sponsorMessage,
+        subject: 'New Negotiation Request',
         user:{
-          username: this.props.userId
+          username: sponsorId
         },
-        email: this.props.profile.email,
-        data: {
-          userId: this.props.userId,
-          askingPrice: this.state.negotiationValue,
-          comment: this.state.comment,
-          name: this.props.profile.firstName,
-          time: new Date().toLocaleTimeString(),
-          date: new Date().toLocaleDateString()
-      }
+        userEmail: email,
       }),
     });
   }
@@ -255,6 +251,9 @@ class NegotiationScreen extends Component {
     var response = await result;
     if(response.status !== 200 ){
       console.warn("failed response")
+      this.setState({
+        spin: false
+      })
       return
     }
     else{
@@ -262,18 +261,104 @@ class NegotiationScreen extends Component {
       if (res._id) {
         console.warn(res)
         this.setState({
-          errMessage: "Negotiation Request sent successfully"
+          errMessage: "Negotiation Request sent successfully",
+          spin: false
         })
       }
 
       else  {
         console.warn("Negotiation Request failed")
         this.setState({
-          errMessage: "Negotiation Request failed"
+          errMessage: "Negotiation Request failed",
+          spin: false
         })
         
       }
     }
+  }
+
+  reject =async (userId, askingPrice)=>{
+    let ENPOINT = apiUrl + "negotiation/reject/" + this.state.negotiationData._id
+    let result = fetch(ENPOINT, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        accept: false,
+        reject: true,
+        askingPrice,
+        userId
+      }),
+    });
+
+    var response = await result;
+
+      var res = await response.json();
+      if (res._id) {
+        console.warn(res)
+        this.setState({
+          errMessage: "Notification sent!",
+          spin: false
+        })
+        let userMessage= `Your response to the negotiation request has been sent.`
+        let sponsorMessage= `You have a new response to a negotiation request.`
+        this.sendNotification(userMessage, sponsorMessage, 
+          userId, this.props.profile.email
+          )
+      }
+
+      else  {
+        console.warn("Notification failed")
+        this.setState({
+          errMessage: "Notification failed",
+          spin: false
+        })
+        
+      }
+  }
+
+  accept =async (userId, askingPrice)=>{
+    let ENPOINT = apiUrl + "negotiation/accept/" + this.state.negotiationData._id
+    let result = fetch(ENPOINT, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        accept: true,
+        reject: false,
+        askingPrice,
+        userId
+      }),
+    });
+
+    var response = await result;
+
+      var res = await response.json();
+      if (res._id) {
+        console.warn(res)
+        this.setState({
+          errMessage: "Notification sent!",
+          spin: false
+        })
+        let userMessage= `Your response to the negotiation request has been sent.`
+        let sponsorMessage= `You have a new response to a negotiation request.`
+        this.sendNotification(userMessage, sponsorMessage, 
+          userId, this.props.profile.email
+          )
+      }
+
+      else  {
+        console.warn("Notification failed")
+        this.setState({
+          errMessage: "Notification failed",
+          spin: false
+        })
+        
+      }
   }
 
   render() {
@@ -342,11 +427,18 @@ class NegotiationScreen extends Component {
           <View style={{ paddingTop : 50}}>
               <Button danger block
                onPress={()=>{
-                this.sendNotification()
+                this.setState({
+                  spin: true
+                })
+                let userMessage= `Your negotiation request has been sent to the sponsor of the artwork.`
+                let sponsorMessage= `You have a new negotiation request for your artwork.`
+                this.sendNotification(userMessage, sponsorMessage, 
+                  this.state.artwork.userId, this.props.profile.email
+                  )
                 this.sendNegotiation()
               }}
             >
-              <Text>Send Negotiation Request</Text>
+              {this.state.spin ? <Spinner color="red" /> : <Text>Send Negotiation Request</Text> }
             </Button>
           </View>   
       </Form>
@@ -356,8 +448,9 @@ class NegotiationScreen extends Component {
       <Card key={index} >
         <CardItem>
           <Left>
-            <Body>
-              <Text>Asking Price</Text>
+            <Body >
+              <Text >{data.name}</Text>
+              <Text note>Asking Price</Text>
                 <Text note>{this.state.artwork.currency} {data.askingPrice}</Text>
             </Body>
           </Left>
@@ -369,19 +462,24 @@ class NegotiationScreen extends Component {
         <CardItem>
           <Text>{data.comment}</Text>
         </CardItem>
-        <CardItem>
           {data.accept ? "Accepted" : (data.reject ? "Rejected" : (
-            <View>
-              <Button transparent >
-                <Text>Accept</Text>
-              </Button>
-              <Button transparent >
+            <CardItem>
+              <Left>
+              <Button transparent
+                onPress={()=> this.reject(data.userId, data.askingPrice) }
+               >
                 <Text>Reject</Text>
               </Button>
-            </View>
+            </Left>
+            <Right>
+            <Button transparent 
+              onPress={()=> this.accept(data.userId, data.askingPrice) }
+            >
+              <Text>Accept</Text>
+            </Button>
+          </Right>
+          </CardItem>
           ))}
-            
-        </CardItem>
     </Card>
     ))
 
@@ -413,6 +511,7 @@ class NegotiationScreen extends Component {
             ): null }
             { this.state.artwork.userId === this.props.userId ? history : negotiate }   
         </Content>
+        { this.state.artwork.userId != this.props.userId ? (
         <Footer >
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
             <Button vertical
@@ -430,7 +529,7 @@ class NegotiationScreen extends Component {
               <Text>Pay</Text>
             </Button>
           </FooterTab>
-        </Footer>
+        </Footer>) : null }
       </Container>
     )};
   }

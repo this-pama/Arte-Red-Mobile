@@ -178,23 +178,7 @@ class HomeScreen extends Component {
 
   
   render() {
-    if(!(this.state.fetch)){
-      return(
-        <Container>
-        <Content >
-          <Body>
-            <Spinner color="red" />
-          </Body>
-        </Content>
-          <FooterScreen 
-              navigation={this.props.navigation}
-              activeMe = { true } 
-          />
-        </Container>
-      )
-    }
-    else {
-    return (
+        return (
       <Container>
         <Content 
           refreshControl={
@@ -204,7 +188,12 @@ class HomeScreen extends Component {
             />
           }
         >
-         {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : <Text>No feed to show in your network</Text> }
+          {!this.state.fetch ? (
+              <Body>
+                <Spinner color="red"  small />
+              </Body>
+            ) : null }
+         {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : null }
         </Content>
         <FooterScreen 
             navigation={this.props.navigation}
@@ -212,7 +201,7 @@ class HomeScreen extends Component {
         />
 
       </Container>
-    );}
+    )
   }
 }
 

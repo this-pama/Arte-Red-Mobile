@@ -199,7 +199,7 @@ export const registerForPushNotificationsAsync = async user => {
         value: token,
       },
       user: {
-        username: user.userId,
+        username: user,
       },
     }),
   });

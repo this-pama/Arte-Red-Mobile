@@ -119,14 +119,7 @@ class NegotiationScreen extends Component {
        }
     })
     var response = await result
-    // if(response.status !== 200 ){
-    //   console.warn(response)
-    //   this.setState({
-    //     fetch: true
-    //   })
-    //   return
-    // }
-    // else{
+
       var res = await response.json();
       if (res._id) {
         console.warn(res)
@@ -152,35 +145,35 @@ class NegotiationScreen extends Component {
   }
 }
 
-  ngn_usdConvertion= async() =>{
-    let url = `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=NGN&to_currency=USD&apikey=8E5NV5DT9IXIY1JG`
-    await fetch(url, {
-      method: 'GET'
-    })
-    .then( res=>{
-      return res.json()
-    }).then(net=> {
-      this.setState({
-        ngn_usd: net["Realtime Currency Exchange Rate"]["5. Exchange Rate"],
-        exchangeRateIsFetech: true
-      })
-    })
-  }
+  // ngn_usdConvertion= async() =>{
+  //   let url = `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=NGN&to_currency=USD&apikey=8E5NV5DT9IXIY1JG`
+  //   await fetch(url, {
+  //     method: 'GET'
+  //   })
+  //   .then( res=>{
+  //     return res.json()
+  //   }).then(net=> {
+  //     this.setState({
+  //       ngn_usd: net["Realtime Currency Exchange Rate"]["5. Exchange Rate"],
+  //       exchangeRateIsFetech: true
+  //     })
+  //   })
+  // }
 
-  ngn_euroConvertion= async() =>{
-    let url = `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=NGN&to_currency=EUR&apikey=8E5NV5DT9IXIY1JG`
-    await fetch(url, {
-      method: 'GET'
-    })
-    .then( res=>{
-      return res.json()
-    }).then(net=> {
-      this.setState({
-        ngn_euro: net["Realtime Currency Exchange Rate"]["5. Exchange Rate"],
-        exchangeRateIsFetech: true
-      })
-    })
-  }
+  // ngn_euroConvertion= async() =>{
+  //   let url = `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=NGN&to_currency=EUR&apikey=8E5NV5DT9IXIY1JG`
+  //   await fetch(url, {
+  //     method: 'GET'
+  //   })
+  //   .then( res=>{
+  //     return res.json()
+  //   }).then(net=> {
+  //     this.setState({
+  //       ngn_euro: net["Realtime Currency Exchange Rate"]["5. Exchange Rate"],
+  //       exchangeRateIsFetech: true
+  //     })
+  //   })
+  // }
 
   handleNegotiationValue = negotiationValue => {
     if (+negotiationValue){
@@ -277,7 +270,7 @@ class NegotiationScreen extends Component {
     }
   }
 
-  reject =async (userId, askingPrice)=>{
+  reject =async (userId, askingPrice, time, date)=>{
     let ENPOINT = apiUrl + "negotiation/reject/" + this.state.negotiationData._id
     let result = fetch(ENPOINT, {
       method: 'POST',
@@ -286,10 +279,10 @@ class NegotiationScreen extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        accept: false,
-        reject: true,
         askingPrice,
-        userId
+        userId,
+        time,
+        date
       }),
     });
 
@@ -299,6 +292,7 @@ class NegotiationScreen extends Component {
       if (res._id) {
         console.warn(res)
         this.setState({
+          negotiationData: res,
           errMessage: "Notification sent!",
           spin: false
         })
@@ -319,7 +313,7 @@ class NegotiationScreen extends Component {
       }
   }
 
-  accept =async (userId, askingPrice)=>{
+  accept =async (userId, askingPrice, time, date)=>{
     let ENPOINT = apiUrl + "negotiation/accept/" + this.state.negotiationData._id
     let result = fetch(ENPOINT, {
       method: 'POST',
@@ -328,10 +322,10 @@ class NegotiationScreen extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        accept: true,
-        reject: false,
         askingPrice,
-        userId
+        userId,
+        date,
+        time
       }),
     });
 
@@ -339,8 +333,9 @@ class NegotiationScreen extends Component {
 
       var res = await response.json();
       if (res._id) {
-        console.warn(res)
+        console.warn("accept",res)
         this.setState({
+          negotiationData: res,
           errMessage: "Notification sent!",
           spin: false
         })
@@ -362,28 +357,7 @@ class NegotiationScreen extends Component {
   }
 
   render() {
-    if(!(this.state.fetch)){
-      return(
-        <Container>
-        <Content >
-          <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
-            <Left>
-              <Button transparent onPress={()=> this.props.navigation.navigate("Home")}>
-                <Icon name="arrow-back" />
-              </Button>
-            </Left>
-            <Body>
-              <Title>Negotiate</Title>
-            </Body>
-          </Header>
-          <Body>
-            <Spinner color="red" />
-          </Body>
-        </Content>
-        </Container>
-      )
-    }
-    else {
+    
     const negotiate= (
       <Form >
           <Item >
@@ -424,7 +398,7 @@ class NegotiationScreen extends Component {
             <Input onChangeText= { this.handleComment } value={this.state.comment } autoCapitalize='none' />
           </Item>
 
-          <View style={{ paddingTop : 50}}>
+          <View style={{ paddingTop : 15, paddingBottom: 25 }}>
               <Button danger block
                onPress={()=>{
                 this.setState({
@@ -438,50 +412,68 @@ class NegotiationScreen extends Component {
                 this.sendNegotiation()
               }}
             >
-              {this.state.spin ? <Spinner color="red" /> : <Text>Send Negotiation Request</Text> }
+              {this.state.spin ? <Spinner color="white" small /> : <Text>Send Negotiation Request</Text> }
             </Button>
           </View>   
       </Form>
     )
     
     const history = this.state.negotiationData.history.map( (data, index) =>(
-      <Card key={index} >
-        <CardItem>
-          <Left>
-            <Body >
-              <Text >{data.name}</Text>
-              <Text note>Asking Price</Text>
-                <Text note>{this.state.artwork.currency} {data.askingPrice}</Text>
-            </Body>
-          </Left>
-          <Right>
-              <Text note>{data.time}</Text>  
-              <Text note>{data.date}</Text>
-          </Right>
-        </CardItem>
-        <CardItem>
-          <Text>{data.comment}</Text>
-        </CardItem>
-          {data.accept ? "Accepted" : (data.reject ? "Rejected" : (
-            <CardItem>
-              <Left>
-              <Button transparent
-                onPress={()=> this.reject(data.userId, data.askingPrice) }
-               >
-                <Text>Reject</Text>
-              </Button>
-            </Left>
-            <Right>
-            <Button transparent 
-              onPress={()=> this.accept(data.userId, data.askingPrice) }
-            >
-              <Text>Accept</Text>
-            </Button>
-          </Right>
-          </CardItem>
-          ))}
-    </Card>
+      <NegotiationHistory data= {data} index={index} 
+        accept={this.accept}
+        reject={this.reject}
+        currency= {this.state.artwork.currency}
+      />
     ))
+
+    const buyerHistory = this.state.negotiationData.history.map( (data, index) =>{
+      if(data.userId = this.props.userId){
+        return(
+          <View style={{ paddingBottom: 25}}>
+          <Card key={index} >
+              <CardItem>
+                <Left>
+                  <Body >
+                    <Text note>Asking Price</Text>
+                    <Text note>{this.props.currency} {data.askingPrice}</Text>
+                  </Body>
+                </Left>
+                <Right>
+                    <Text note>{data.time}</Text>  
+                    <Text note>{data.date}</Text>
+                </Right>
+              </CardItem>
+              <CardItem>
+                <Text>{data.comment}</Text>
+              </CardItem>
+              <CardItem>
+                  <Right>
+                    <Button transparent >
+                      { data.accept ? (
+                        <TouchableOpacity
+                        onPress={()=> this.props.navigation.navigate("Buy",
+                          { routeName: "Negotiation",
+                            artworkId: this.state.artwork._id})
+                            } 
+                        >
+                          <Text>Accepted! Proceed to Payment</Text>
+                        </TouchableOpacity>
+                        
+                      ) : (
+                        data.reject ? (
+                          <Text>Rejected</Text>
+                        ) : 
+                        <Text>Awaiting Response</Text>
+                      ) }
+                    </Button>
+                  </Right>
+              </CardItem>
+          </Card>
+          </View>
+        )
+      }
+      else{ return null }
+      })
 
     return (
       <Container>
@@ -495,22 +487,33 @@ class NegotiationScreen extends Component {
             <Title>Negotiate</Title>
           </Body>
         </Header>
-        <Content style={{padding: 10 }}>
-        <Body>
-          <Text note style={{color: "red"}}> {this.state.errMessage} </Text>
-        </Body>
-            <Text style={{paddingLeft: 20, paddingTop: 15 }}>Selling Price</Text>
-            <Text note style={{paddingLeft: 20 }}>
-              {`${this.state.artwork.currency}  ${this.state.artwork.price}`}
-            </Text>
-            {this.state.negotiating ? (
-              <View>
-                <Text style={{paddingLeft: 20, paddingTop: 25 }}>Asking Price</Text>
-                <Text note style={{paddingLeft: 20 }}>{this.state.artwork.currency}  {this.state.negotiationValue}</Text>
-              </View>
-            ): null }
-            { this.state.artwork.userId === this.props.userId ? history : negotiate }   
-        </Content>
+        {/* load a spinner when all data are not fetchfrom server */}
+            <Content style={{padding: 10 }}>
+            {!this.state.fetch ? (
+              <Body>
+                <Spinner color="red"  small />
+              </Body>
+            ) : null }
+          <Body>
+            <Text note style={{color: "red"}}> {this.state.errMessage} </Text>
+          </Body>
+              <Text style={{paddingLeft: 20, paddingTop: 15 }}>Selling Price</Text>
+              <Text note style={{paddingLeft: 20 }}>
+                {`${this.state.artwork.currency}  ${this.state.artwork.price}`}
+              </Text>
+              {/* show list of available negotiation prices to buyer if artwork is negotiable */}
+              {this.state.negotiating ? (
+                <View>
+                  <Text style={{paddingLeft: 20, paddingTop: 25 }}>Asking Price</Text>
+                  <Text note style={{paddingLeft: 20 }}>{this.state.artwork.currency}  {this.state.negotiationValue}</Text>
+                </View>
+              ): null }
+              {/* show history of negotiation to seller */}
+              { this.state.artwork.userId === this.props.userId ? history : negotiate }
+              {/* show history of negotiated values and reply to buyer    */}
+              {buyerHistory}
+          </Content>
+        
         { this.state.artwork.userId != this.props.userId ? (
         <Footer >
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
@@ -530,8 +533,9 @@ class NegotiationScreen extends Component {
             </Button>
           </FooterTab>
         </Footer>) : null }
+        
       </Container>
-    )};
+    );
   }
 }
 
@@ -543,3 +547,62 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtworkAction,
    moreArtworkDetailsAction, getUserProfileAction })(NegotiationScreen)
+
+
+class NegotiationHistory extends React.Component{
+  render(){
+    return(
+      <Card key={this.props.index} >
+        <CardItem>
+          <Left>
+            <Body >
+              <Text >{this.props.data.name}</Text>
+              <Text note>Asking Price</Text>
+                <Text note>{this.props.currency} {this.props.data.askingPrice}</Text>
+            </Body>
+          </Left>
+          <Right>
+              <Text note>{this.props.data.time}</Text>  
+              <Text note>{this.props.data.date}</Text>
+          </Right>
+        </CardItem>
+        <CardItem>
+          <Text>{this.props.data.comment}</Text>
+        </CardItem>
+        <CardItem>
+          {this.props.data.accept ? ( 
+              <Right>
+                <Button transparent >
+                  <Text>Accepted</Text>
+                </Button>
+              </Right>
+          ) : (this.props.data.reject ? (
+              <Right>
+                <Button transparent >
+                  <Text>Rejected</Text>
+                </Button>
+              </Right>
+          ) : (
+            <View>
+              <Left>
+                <Button transparent
+                  onPress={()=> this.props.reject(this.props.data.userId, this.props.data.askingPrice, this.props.data.time, this.props.data.date) }
+                >
+                  <Text>Reject</Text>
+                </Button>
+            </Left>
+            <Right>
+              <Button transparent 
+                onPress={()=> this.props.accept(this.props.data.userId, this.props.data.askingPrice, this.props.data.time, this.props.data.date ) }
+              >
+                <Text>Accept</Text>
+              </Button>
+            </Right>
+          </View>
+          )
+          )}
+        </CardItem>
+    </Card>
+    )
+  }
+}

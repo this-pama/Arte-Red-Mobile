@@ -28,7 +28,7 @@ class DrawerScreen extends Component {
     const logout = (
       <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#990000" }}>
+              <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="log-out" />
               </Button>
             </Left>
@@ -89,6 +89,22 @@ class DrawerScreen extends Component {
               <Icon active name="arrow-forward" />
             </Right>
           </ListItem>
+    )
+
+    const myNegotiations = (
+      <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "red" }}>
+                <Icon active name="notifications" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={()=> this.props.navigation.navigate('MyNegotiation')}>My Negotiations</Text>
+            </Body>
+            <Right>
+              <Icon active name="arrow-forward" />
+            </Right>
+      </ListItem>
     )
 
     const network = (
@@ -154,9 +170,10 @@ class DrawerScreen extends Component {
           </ListItem>
           { this.props.userId  && this.props.userId.length > 0 ? wallet : null }
           { this.props.userId  && this.props.userId.length > 0 ? network : null }
+          { this.props.userId  && this.props.userId.length > 0 ? myNegotiations : null }
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "red" }}>
+              <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="md-cog" />
               </Button>
             </Left>

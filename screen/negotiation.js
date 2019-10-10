@@ -418,13 +418,23 @@ class NegotiationScreen extends Component {
       </Form>
     )
     
-    const history = this.state.negotiationData.history.map( (data, index) =>(
-      <NegotiationHistory data= {data} index={index} 
-        accept={this.accept}
-        reject={this.reject}
-        currency= {this.state.artwork.currency}
-      />
-    ))
+    const history = this.state.negotiationData.history.map( (data, index) =>{
+      if(this.state.negotiationData.length = 0){
+        return (
+          <Body>
+            <Text>There is currently no negotiation request for this artwork.</Text>
+          </Body>
+        )
+      }else{
+        (
+          <NegotiationHistory data= {data} index={index} 
+            accept={this.accept}
+            reject={this.reject}
+            currency= {this.state.artwork.currency}
+          />
+        )
+      }
+    })
 
     const buyerHistory = this.state.negotiationData.history.map( (data, index) =>{
       if(data.userId = this.props.userId){

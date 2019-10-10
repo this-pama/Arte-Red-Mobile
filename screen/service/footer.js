@@ -77,12 +77,12 @@ class FooterTabs extends Component {
       </Button>
     )
 
-    const network = (
+    const auction = (
       <Button vertical 
         active= { !this.props.activeNetwork ? false : true }
-        onPress={()=> this.props.navigation.navigate("Network")}>
-          <Icon name="people" />
-          <Text>Network</Text>
+        onPress={()=> this.props.navigation.navigate("Auction")}>
+          <Icon name="md-briefcase" />
+          <Text>Auction</Text>
       </Button>
     )
 
@@ -158,7 +158,7 @@ class FooterTabs extends Component {
               <Icon active name="eye"  />
               <Text>Exhibition</Text>
             </Button>
-            { this.props.userId && this.props.userId.length > 0 ? network : loginMenu  }
+            { this.props.userId && this.props.userId.length > 0 ? auction : loginMenu  }
             
           </FooterTab>
         </Footer>

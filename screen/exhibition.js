@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, List, ListItem, Left, Body, Right,
-  Card, CardItem, Toast, Text, Button, Icon, Title, Segment } from 'native-base';
+  Card, CardItem, Toast, Text, Button, Icon, Title, Segment, Spinner } from 'native-base';
 import FooterTabs from "./service/footer"
 import { Image } from 'react-native'
 import { ScrollView, RefreshControl } from 'react-native';
@@ -219,7 +219,11 @@ mapAllExhibition = async ()=>{
             />
           }
         >
-        {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : <Body><Text>No Exhibition to show</Text></Body> }
+        {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : (
+          <Body>
+            <Spinner color="red"  small />
+          </Body>
+        ) }
         </Content>
         <FooterTabs 
           activeExhibition= { true }

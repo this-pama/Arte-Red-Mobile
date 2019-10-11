@@ -80,7 +80,7 @@ class AuctionScreen extends Component {
         })
       }
       else  {
-        console.warn("Can't get negotiation data")  
+        console.warn("Can not get negotiation data")  
         this.setState({
           fetch: true
         })

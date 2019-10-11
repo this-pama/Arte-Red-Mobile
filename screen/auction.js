@@ -17,6 +17,7 @@ import {BackHandler, RefreshControl } from "react-native"
 import {
   Notifications,
 } from 'expo';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import SubmitAuctionScreen from './service/submitAuction'
 
 class AuctionScreen extends Component {
@@ -174,7 +175,12 @@ _onRefresh = () => {
             <Text>Submit Request</Text>
           </Button>
         </Segment>
-        <Content style={{padding: 10 }}
+        <KeyboardAwareScrollView
+          extraScrollHeight={100}
+          enableOnAndroid={true} 
+          keyboardShouldPersistTaps='handled'
+        >
+        <Content 
             refreshControl={
                 <RefreshControl
                 refreshing={this.state.refreshing}
@@ -187,8 +193,10 @@ _onRefresh = () => {
                     <Spinner color='red' />
                 </Body>
             ) : null }
-            {this.state.activeSubmit ? <SubmitAuctionScreen /> : negotiationHistory}
+            {this.state.activeSubmit ? <SubmitAuctionScreen 
+              userId = {this.props.userId} /> : negotiationHistory}
         </Content>
+        </KeyboardAwareScrollView>
     </Container>
     );
   }

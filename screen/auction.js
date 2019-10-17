@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Header, Content, Button, ListItem, Text, Icon, 
     Title, Left, Body, Right, Form, Picker, Item, Toast, Footer, 
     View, FooterTab, Label, Spinner, Input, Segment,
-  Card, CardItem } from 'native-base';
+  Card, CardItem, Accordion } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SliderBox } from 'react-native-image-slider-box';
 import { apiUrl } from './service/env';
@@ -19,6 +19,7 @@ import {
 } from 'expo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import SubmitAuctionScreen from './service/submitAuction'
+import CountDown from 'react-native-countdown-component';
 
 class AuctionScreen extends Component {
 
@@ -28,18 +29,22 @@ class AuctionScreen extends Component {
       errMessage:"",
       fetch: false,
       notification: {},
+      allnegotiationData: {},
       negotiationData: [],
+      closedNegotiationData: [],
       requestedData: [],
       receivedData: [],
       activeOngoing: true,
       activeClosed: false,
       activeSubmit: false,
       refreshing: false,
+      totalDuration: '',
+      bidValue: '',
     }
   }
 
   async componentDidMount() {
-    this.getNegotiationDetails()
+    this.getAuctionDetails()
     // handle hardware back button press
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       this.props.navigation.navigate("Home")
@@ -58,8 +63,8 @@ class AuctionScreen extends Component {
     this.setState({notification: notification});
   };
 
-  getNegotiationDetails= async ()=>{
-    var url = apiUrl + "negotiation/myNegotiation/" + this.props.userId;
+  getAuctionDetails= async ()=>{
+    var url = apiUrl + "auction";
     var result = await fetch(url, {
       method: 'GET',
       headers: { 
@@ -70,12 +75,13 @@ class AuctionScreen extends Component {
     var response = await result
 
       var res = await response.json();
-      if (res._id) {
+      // console.warn(res)
+      if (res.ongoing.length >= 0 ) {
         console.warn(res)
         this.setState({
-          negotiationData : res.requested,
-          requestedData: res.requested,
-          receivedData: res.received,
+          allnegotiationData : res,
+          negotiationData : res.ongoing || [],
+          closedNegotiationData: res.closed,
           fetch: true
         })
       }
@@ -90,40 +96,191 @@ class AuctionScreen extends Component {
 
 _onRefresh = () => {
     this.setState({refreshing: true});
-    this.getNegotiationDetails().then(() => {
+    this.getAuctionDetails().then(() => {
       this.setState({refreshing: false});
     })
 }
 
+handleBidValue = bidValue => {
+  if (+bidValue){
+      this.setState({
+          bidValue
+      })
+  }
+}
+
+submitBid= async (id)=>{
+
+  var url = apiUrl + "auction/bid/" + id;
+  var result = await fetch(url, {
+    method: 'PUT',
+    headers: { 
+      'content-type': 'application/json',
+      // "Authorization": `Bearer ${this.props.jwt}`
+     },
+     body: JSON.stringify({
+        userId: this.props.userId,
+        bidPrice: this.state.bidValue,
+        email: this.props.profile.email,
+    })
+  })
+  var response = await result
+
+    var res = await response.json();
+    if (res.ongoing.length >= 0 ) {
+      console.warn(res)
+      this.setState({
+        allnegotiationData : res,
+        negotiationData : res.ongoing || [],
+        closedNegotiationData: res.closed || [],
+      })
+    }
+    else  {
+      console.warn("Can not bid")  
+      return    
+    }
+}
+
   render() {
-    const negotiationHistory = this.state.negotiationData.map( (data, index) =>{
+
+    const negotiationHistory = this.state.negotiationData.map( (data, index) =>
       (
         <Card key={index} >
         <CardItem>
           <Left>
             <Body>
               <Text>{data.title}</Text>
+              <Text>{data.artistName}</Text>
             </Body>
           </Left>
           <Right>
-            <Text>{data.currency}</Text>   
+            <Text> {data.currency} {data.askingPrice}</Text> 
+            <Text>{data.size}</Text>  
           </Right>
         </CardItem>
           <SliderBox
-                images={data.imageUrl}
-                sliderBoxHeight={200}
-                onCurrentImagePressed={async index =>
-                    {
-                      this.props.navigation.navigate("Negotiation", { artworkId: data.artworkId, negotiationId: data.negotiationId})
-                    } 
-                }
-                dotColor="red"
-                inactiveDotColor="#90A4AE"
+            images={data.imageUrl}
+            sliderBoxHeight={250}
+            onCurrentImagePressed={async index =>
+                {
+                  this.props.navigation.navigate("", { artworkId: data.artworkId, negotiationId: data.negotiationId})
+                } 
+            }
+            dotColor="red"
+            inactiveDotColor="#90A4AE"
           />      
-        <CardItem >
-        </CardItem>
+        
+        <Accordion
+            dataArray={[{title: "Auction Description", content: data.description }]}
+            headerStyle={{ backgroundColor: "#f2f2f2" }}
+            contentStyle={{ backgroundColor: "#fff" }}
+          />
+        <CardItem>
+            {/* <View> */}
+              <Body>
+                <Timer data= {data} />
+              </Body>
+            {/* </View> */}
+            <Right>
+              <Text>{data.organizerName}</Text>
+            </Right>
+          </CardItem>
+        <CardItem>
+                <Text>{data.currency}</Text>
+              <Picker
+                  mode="dropdown"
+                  iosIcon={<Icon name="arrow-down" />}
+                  style={{ width: undefined }}
+                  placeholderStyle={{ color: "#bfc6ea" }}
+                  placeholderIconColor="#007aff"
+                  selectedValue={this.state.bidValue}
+                  onValueChange={ this.handleBidValue }
+              >
+                  
+                  {/* <Picker.Item label={`${data.askingPrice }`}
+                     value={`${data.askingPrice}`}
+                   /> */}
+                  <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 0.3))}`}
+                     value={`${Math.floor(data.askingPrice + (data.askingPrice * 0.3))}`}
+                   />
+                  <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 0.5))}`}
+                     value={`${Math.floor(data.askingPrice + (data.askingPrice * 0.5))}`}
+                   />
+                   <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 0.7))}`}
+                     value={`${Math.floor(data.askingPrice + (data.askingPrice * 0.7))}`}
+                   />
+                   <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice ))}`}
+                     value={`${Math.floor(data.askingPrice + (data.askingPrice))}`}
+                   />
+                   <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 1.5))}`}
+                     value={`${Math.floor(data.askingPrice + (data.askingPrice * 1.5))}`}
+                   />
+              </Picker>
+              {/* </Body> */}
+              <Right>
+                <Button transparent
+                  onPress={()=>{
+                    if(this.state.bidValue < data.askingPrice){
+                      alert('You can not bid below the asking price')
+                      return
+                    }
+                    else{
+                      this.submitBid(data._id)
+                    }
+                  }}
+                >
+                  <Text>Bid</Text>
+                </Button>
+              </Right>
+          </CardItem>
+          
       </Card>
-        )})
+        ))
+
+    const closedAuction = this.state.closedNegotiationData.map( (data, index) =>
+      (
+        <Card key={index} >
+        <CardItem>
+          <Left>
+            <Body>
+              <Text>{data.title}</Text>
+              <Text>{data.artistName}</Text>
+            </Body>
+          </Left>
+          <Right>
+            <Text> {data.currency} {data.askingPrice}</Text> 
+            <Text>{data.size}</Text>  
+          </Right>
+        </CardItem>
+          <SliderBox
+            images={data.imageUrl}
+            sliderBoxHeight={250}
+            onCurrentImagePressed={async index =>
+                {
+                  this.props.navigation.navigate("", { artworkId: data.artworkId, negotiationId: data.negotiationId})
+                } 
+            }
+            dotColor="red"
+            inactiveDotColor="#90A4AE"
+          />      
+        
+        <Accordion
+            dataArray={[{title: "Auction Description", content: data.description }]}
+            headerStyle={{ backgroundColor: "#f2f2f2" }}
+            contentStyle={{ backgroundColor: "#fff" }}
+          />
+        <CardItem>
+          <Left>
+            <Button transparent>
+              <Text>Closed</Text>
+            </Button>
+          </Left>
+          <Right>
+            <Text>{data.organizerName}</Text>
+          </Right>
+        </CardItem>        
+      </Card>
+        ))
 
     return (
       <Container>
@@ -144,7 +301,8 @@ _onRefresh = () => {
                     activeOngoing: true,
                     activeClosed: false,
                     activeSubmit: false,
-                    negotiationData: this.state.requestedData
+                    negotiationData: this.state.allnegotiationData.ongoing || [],
+                    closedNegotiationData: []
                 })
             }}
           >
@@ -152,11 +310,13 @@ _onRefresh = () => {
           </Button>
           <Button active={ this.state.activeClosed}
             onPress={()=>{
+              console.warn(this.state.closedNegotiationData)
                 this.setState({
                     activeOngoing: false,
                     activeClosed: true,
                     activeSubmit: false,
-                    negotiationData: this.state.receivedData
+                    negotiationData: [],
+                    closedNegotiationData: this.state.allnegotiationData.closed
                 })
             }}
           >
@@ -168,7 +328,8 @@ _onRefresh = () => {
                     activeOngoing: false,
                     activeClosed: false,
                     activeSubmit: true,
-                    negotiationData: this.state.receivedData
+                    negotiationData: [],
+                    closedNegotiationData: []
                 })
             }}
           >
@@ -183,8 +344,8 @@ _onRefresh = () => {
         <Content 
             refreshControl={
                 <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this._onRefresh}
+                  refreshing={this.state.refreshing}
+                  onRefresh={this._onRefresh}
                 />
             }
         >
@@ -194,7 +355,7 @@ _onRefresh = () => {
                 </Body>
             ) : null }
             {this.state.activeSubmit ? <SubmitAuctionScreen 
-              userId = {this.props.userId} /> : negotiationHistory}
+              userId = {this.props.userId} /> : ( this.state.activeClosed ? closedAuction : negotiationHistory)}
         </Content>
         </KeyboardAwareScrollView>
     </Container>
@@ -212,3 +373,45 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
    moreArtworkDetailsAction, getUserProfileAction })(AuctionScreen)
 
 
+// create a timer component
+class Timer extends React.Component{
+  constructor(props) {
+    super(props);
+    //initialize the counter duration
+    this.state = {
+      totalDuration: 0,
+      expire: ''
+    };
+  }
+
+  componentDidMount(){
+    var expirydate = new Date(this.props.data.createdAt).getTime() + (this.props.data.duration * 60 * 60 * 1000 )
+    var distance = expirydate - new Date().getTime()
+      // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    // convert to seconds
+    var d = days * 60 * 60 * 24 + hours * 60 * 60 + minutes * 60 + seconds;
+    this.setState({ totalDuration: d });
+    
+  }
+
+  render(){
+    
+    return(
+      <CountDown
+        until={this.state.totalDuration}
+        // onPress={()=> alert(this.state.totalDuration)}
+        // showSeparator= {true }
+        // separatorStyle ={{color: 'blue'}}
+        onFinish={()=> this.setState({ expire: "EXPIRED"})}
+        digitStyle={{backgroundColor: '#FFF'}}
+        digitTxtStyle={{color: 'blue'}}
+        size={20}
+      />
+    )
+  }
+  
+}

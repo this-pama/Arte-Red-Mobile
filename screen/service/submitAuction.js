@@ -398,11 +398,7 @@ export default class SubmitAuctionScreen extends Component {
         />
       )
     return (
-      <KeyboardAwareScrollView
-          extraScrollHeight={100}
-          enableOnAndroid={true} 
-          keyboardShouldPersistTaps='handled'
-        >
+      
               <Content>
                 <Item>
                   <Text note style={{ color: "red"}}>{this.props.errMessage} </Text>
@@ -503,7 +499,7 @@ export default class SubmitAuctionScreen extends Component {
                     }
                 </Button>
               </Content>
-        </KeyboardAwareScrollView>
+        
     );
   }
 }

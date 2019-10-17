@@ -268,7 +268,7 @@ submitBid= async (id)=>{
             dataArray={[{title: "Auction Description", content: data.description }]}
             headerStyle={{ backgroundColor: "#f2f2f2" }}
             contentStyle={{ backgroundColor: "#fff" }}
-          />
+        />
         <CardItem>
           <Left>
             <Button transparent>

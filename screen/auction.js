@@ -310,13 +310,13 @@ submitBid= async (id)=>{
           </Button>
           <Button active={ this.state.activeClosed}
             onPress={()=>{
-              console.warn(this.state.closedNegotiationData)
+              // console.warn(this.state.closedNegotiationData)
                 this.setState({
                     activeOngoing: false,
                     activeClosed: true,
                     activeSubmit: false,
                     negotiationData: [],
-                    closedNegotiationData: this.state.allnegotiationData.closed
+                    closedNegotiationData: this.state.allnegotiationData.closed || []
                 })
             }}
           >

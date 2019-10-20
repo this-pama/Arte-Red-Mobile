@@ -107,6 +107,22 @@ class DrawerScreen extends Component {
       </ListItem>
     )
 
+    const myAuctions = (
+      <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "#990000" }}>
+                <Icon active name="md-briefcase" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={()=> this.props.navigation.navigate('MyAuction')}>My Auction</Text>
+            </Body>
+            <Right>
+              <Icon active name="arrow-forward" />
+            </Right>
+      </ListItem>
+    )
+
     const network = (
       <ListItem icon>
             <Left>
@@ -171,9 +187,10 @@ class DrawerScreen extends Component {
           { this.props.userId  && this.props.userId.length > 0 ? wallet : null }
           { this.props.userId  && this.props.userId.length > 0 ? network : null }
           { this.props.userId  && this.props.userId.length > 0 ? myNegotiations : null }
+          { this.props.userId  && this.props.userId.length > 0 ? myAuctions : null }
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#990000" }}>
+              <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="md-cog" />
               </Button>
             </Left>

@@ -131,8 +131,8 @@ submitBid= async (id)=>{
       console.warn(res)
       this.setState({
         allnegotiationData : res,
-        negotiationData : res.ongoing || [],
-        closedNegotiationData: res.closed || [],
+        negotiationData : res.ongoing.reverse() || [],
+        closedNegotiationData: res.closed.reverse() || [],
       })
     }
     else  {
@@ -182,7 +182,20 @@ submitBid= async (id)=>{
               </Body>
             {/* </View> */}
             <Right>
+              <Text>Orgainizer</Text>
               <Text>{data.organizerName}</Text>
+            </Right>
+          </CardItem>
+          <CardItem>
+            <Left>
+              <Button transparent>
+                <Text>Highest Bidder</Text>
+              </Button>
+            </Left>
+            <Right>
+              <Button transparent>
+                <Text>{ this.props.userId === data.bidding[data.bidding.length -1 ].userId ? "You" : 'Anonymous Bidder' }</Text>
+              </Button>
             </Right>
           </CardItem>
         <CardItem>
@@ -301,7 +314,7 @@ submitBid= async (id)=>{
                     activeOngoing: true,
                     activeClosed: false,
                     activeSubmit: false,
-                    negotiationData: this.state.allnegotiationData.ongoing || [],
+                    negotiationData: this.state.allnegotiationData.ongoing.reverse() || [],
                     closedNegotiationData: []
                 })
             }}
@@ -316,7 +329,7 @@ submitBid= async (id)=>{
                     activeClosed: true,
                     activeSubmit: false,
                     negotiationData: [],
-                    closedNegotiationData: this.state.allnegotiationData.closed || []
+                    closedNegotiationData: this.state.allnegotiationData.closed.reverse() || []
                 })
             }}
           >

@@ -128,11 +128,16 @@ submitBid= async (id)=>{
 
     var res = await response.json();
     if (res.ongoing.length >= 0 ) {
-      console.warn(res)
+      let negoReverse = res.ongoing.reverse()
+      let closedReverse = res.closed.reverse()
+      let allReverse = {
+        ongoing: negoReverse,
+        closed: closedReverse
+      }
       this.setState({
-        allnegotiationData : res,
-        negotiationData : res.ongoing.reverse() || [],
-        closedNegotiationData: res.closed.reverse() || [],
+        allnegotiationData : allReverse,
+        negotiationData : negoReverse|| [],
+        closedNegotiationData: closedReverse || [],
       })
     }
     else  {
@@ -310,11 +315,13 @@ submitBid= async (id)=>{
         <Segment style={{  backgroundColor: "#cc0000"}}>
           <Button first active={ this.state.activeOngoing}  
             onPress={()=>{
+              // let negoReverse = this.state.allnegotiationData.ongoing.reverse()
+              // let closedReverse = res.closed.reverse()
                 this.setState({
                     activeOngoing: true,
                     activeClosed: false,
                     activeSubmit: false,
-                    negotiationData: this.state.allnegotiationData.ongoing.reverse() || [],
+                    negotiationData: this.state.allnegotiationData.ongoing || [],
                     closedNegotiationData: []
                 })
             }}
@@ -323,13 +330,14 @@ submitBid= async (id)=>{
           </Button>
           <Button active={ this.state.activeClosed}
             onPress={()=>{
-              // console.warn(this.state.closedNegotiationData)
+              // let negoReverse = this.state.allnegotiationData.ongoing.reverse()
+              // let closedReverse = this.state.allnegotiationData.closed.reverse() 
                 this.setState({
                     activeOngoing: false,
                     activeClosed: true,
                     activeSubmit: false,
                     negotiationData: [],
-                    closedNegotiationData: this.state.allnegotiationData.closed.reverse() || []
+                    closedNegotiationData: this.state.allnegotiationData.closed || []
                 })
             }}
           >

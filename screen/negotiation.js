@@ -23,7 +23,9 @@ class NegotiationScreen extends Component {
   constructor(props){
     super(props);
     this.state={
-      artwork: {},
+      artwork: {
+        price: 0
+      },
       errMessage:"",
       negotiationValue: 0,
       negotiating: false,

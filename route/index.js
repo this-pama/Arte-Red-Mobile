@@ -39,6 +39,7 @@ import SearchIcon from "../screen/service/search"
 import NegotiationScreen from "../screen/negotiation"
 import MyNegotiationScreen from '../screen/myNegotiations'
 import AuctionScreen from '../screen/auction'
+import MyAuction from '../screen/myAuction'
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -129,6 +130,7 @@ const switchNavigator = createSwitchNavigator({
   Negotiation: NegotiationScreen,
   MyNegotiation: MyNegotiationScreen,
   Auction: AuctionScreen,
+  MyAuction: MyAuction,
   App: StackNavigator,
 },
 {

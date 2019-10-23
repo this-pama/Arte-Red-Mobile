@@ -155,7 +155,7 @@ class FooterTabs extends Component {
             <Button vertical
               active= { !this.props.activeExhibition ? false : true }
              onPress={()=> this.props.navigation.navigate("Exhibition")} >
-              <Icon active name="eye"  />
+              <Icon active name="md-photos"  />
               <Text>Exhibition</Text>
             </Button>
             { this.props.userId && this.props.userId.length > 0 ? auction : loginMenu  }

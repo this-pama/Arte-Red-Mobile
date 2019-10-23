@@ -240,11 +240,11 @@ export default class ForgetPasswordScreen extends Component {
                 </Item>
                 <Item floatingLabel>
                     <Label>New Password</Label>
-                    <Input onChangeText= { this.handlePassword } value={this.state.password}  autoCapitalize='none'/>
+                    <Input secureTextEntry onChangeText= { this.handlePassword } value={this.state.password}  autoCapitalize='none'/>
                 </Item>
                 <Item floatingLabel>
                     <Label>Confirm Password</Label>
-                    <Input onChangeText= { this.handleConfirmPassword } value={this.state.confirmPassword}  autoCapitalize='none'/>
+                    <Input secureTextEntry onChangeText= { this.handleConfirmPassword } value={this.state.confirmPassword}  autoCapitalize='none'/>
                 </Item>
             </Form>
             

@@ -55,11 +55,12 @@ export default class LoginScreen extends Component {
           <Form>
             <Item floatingLabel>
               <Label>Email</Label>
-              <Input onChangeText= { this.props.handleEmail } value={this.props.email}  autoCapitalize='none'/>
+              <Input autoCompleteType='email' onChangeText= { this.props.handleEmail } value={this.props.email}  autoCapitalize='none'/>
             </Item>
             <Item floatingLabel last>
               <Label>Password</Label>
-              <Input onChangeText= { this.props.handlePassword } value={this.props.password } autoCapitalize='none' />
+              <Input onChangeText= { this.props.handlePassword } value={this.props.password } autoCapitalize='none'
+              autoCompleteType='password' secureTextEntry={true}/>
             </Item>
           </Form>
           <Item >

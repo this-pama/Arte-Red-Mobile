@@ -142,7 +142,12 @@ class ChangePasswordScreen extends Component {
             confirmPassword: '',
             errMessage: "Password Successfully changed",
             spin: false
-          });
+          })
+
+            this.props.loginAction({})
+            this.props.getUserIdAction({})
+            this.props.getUserProfileAction({})
+            this.props.navigation.navigate("Landing")
         }
         else if(res.message) {
             this.setState({
@@ -192,11 +197,11 @@ class ChangePasswordScreen extends Component {
             </Item>
             <Item floatingLabel>
               <Label>New Password</Label>
-              <Input onChangeText= { this.handlePassword } value={this.state.password}  autoCapitalize='none'/>
+              <Input secureTextEntry onChangeText= { this.handlePassword } value={this.state.password}  autoCapitalize='none'/>
             </Item>
             <Item floatingLabel>
               <Label>Confirm Password</Label>
-              <Input onChangeText= { this.handleConfirmPassword } value={this.state.confirmPassword}  autoCapitalize='none'/>
+              <Input secureTextEntry onChangeText= { this.handleConfirmPassword } value={this.state.confirmPassword}  autoCapitalize='none'/>
             </Item>
           </Form>
         

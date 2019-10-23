@@ -48,7 +48,9 @@ class NegotiationScreen extends Component {
 
   async componentDidMount() {
     this.setState({
-      artwork: {}
+      artwork: {
+        price: 0
+      }
     })
 
     var url = apiUrl + "artwork/" + this.props.navigation.getParam("artworkId", null );
@@ -133,7 +135,11 @@ class NegotiationScreen extends Component {
       else  {
         console.warn("Can't get negotiation data")  
         this.setState({
-          fetch: true
+          fetch: true,
+          negotiationData: {
+            data: [],
+            history: []
+          }
         })
         return    
       }
@@ -141,7 +147,11 @@ class NegotiationScreen extends Component {
   } else{
     console.warn("no id")
     this.setState({
-      fetch: true
+      fetch: true,
+      negotiationData: {
+        data: [],
+        history: []
+      }
     })
     return
   }
@@ -303,6 +313,7 @@ class NegotiationScreen extends Component {
         this.sendNotification(userMessage, sponsorMessage, 
           userId, this.props.profile.email
           )
+          console.warn(this.state.negotiationData.history)
       }
 
       else  {
@@ -361,6 +372,7 @@ class NegotiationScreen extends Component {
   render() {
     
     const negotiate= (
+      <View>
       <Form >
           <Item >
               <Label>{ this.state.artwork.currency }</Label>
@@ -418,30 +430,33 @@ class NegotiationScreen extends Component {
             </Button>
           </View>   
       </Form>
+      {/* <View>
+        {buyerHistory}
+      </View> */}
+      </View>
     )
     
-    const history = this.state.negotiationData.history.map( (data, index) =>{
-      if(this.state.negotiationData.length = 0){
-        return (
-          <Body>
-            <Text>There is currently no negotiation request for this artwork.</Text>
-          </Body>
-        )
-      }else{
+    const history = this.state.negotiationData.history.length <=0 ?(
+      <View style={{ paddingTop: 30 }}>
+        <Body>
+          <Text>There is currently no negotiation request for this artwork.</Text>
+        </Body>
+      </View>
+    ) : 
+    this.state.negotiationData.history.map( (data, index) =>
         (
           <NegotiationHistory data= {data} index={index} 
             accept={this.accept}
             reject={this.reject}
             currency= {this.state.artwork.currency}
           />
-        )
-      }
-    })
+        ) 
+    )
 
-    const buyerHistory = this.state.negotiationData.history.map( (data, index) =>{
-      if(data.userId = this.props.userId){
-        return(
-          <View style={{ paddingBottom: 25}}>
+    const buyerHistory = this.state.negotiationData.history.map( (data, index) =>
+      data.userId = this.props.userId
+        ? (
+          <View style={{ paddingBottom: 25, paddingTop: 15}}>
           <Card key={index} >
               <CardItem>
                 <Left>
@@ -483,9 +498,8 @@ class NegotiationScreen extends Component {
           </Card>
           </View>
         )
-      }
-      else{ return null }
-      })
+      : null 
+      )
 
     return (
       <Container>
@@ -595,7 +609,7 @@ class NegotiationHistory extends React.Component{
                 </Button>
               </Right>
           ) : (
-            <View>
+            <Item>
               <Left>
                 <Button transparent
                   onPress={()=> this.props.reject(this.props.data.userId, this.props.data.askingPrice, this.props.data.time, this.props.data.date) }
@@ -610,7 +624,7 @@ class NegotiationHistory extends React.Component{
                 <Text>Accept</Text>
               </Button>
             </Right>
-          </View>
+          </Item>
           )
           )}
         </CardItem>

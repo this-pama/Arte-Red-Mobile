@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, Form, Item, Input, Label, Button, Text, Header,
-Left, Icon, Body, Right, Title, Spinner  } from 'native-base';
+Left, Icon, Body, Right, Title, Spinner, Footer, FooterTab  } from 'native-base';
 import {View, TouchableHighlight, BackHandler } from 'react-native'
 import PropType from "prop-types"
 import {NavigationActions} from 'react-navigation';
@@ -32,7 +32,7 @@ export default class LoginScreen extends Component {
     const spinner = <Spinner color='white' />
     const signin = <Text> Sign In </Text>
     return (
-      <Container style={{backgroundColor: "#e6e6e6",}}>
+      <Container >
         <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }} >
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate('Landing') }>
@@ -61,8 +61,16 @@ export default class LoginScreen extends Component {
               <Label>Password</Label>
               <Input onChangeText= { this.props.handlePassword } value={this.props.password } autoCapitalize='none' />
             </Item>
-            
           </Form>
+          <Item >
+            <Right>
+              <Button transparent
+                onPress={()=> this.props.navigation.navigate('ForgetPassword')}
+              >
+                <Text> Forget Password</Text>
+              </Button>
+            </Right>
+          </Item>
           <View style={{ paddingTop: 40}}>
             <Button  block danger 
               disabled= { this.props.disable }
@@ -70,13 +78,32 @@ export default class LoginScreen extends Component {
             >
               { this.props.spin ? spinner : signin }
             </Button>
-            <TouchableHighlight 
+            {/* <TouchableHighlight 
                 onPress={()=> this.props.navigation.navigate('SignUp') }
                 style={{ paddingTop: 20, justifyContent: 'center', alignItems: 'center' }}>
                 <Text>Don't have an account? Register here.</Text>
-            </TouchableHighlight>
+            </TouchableHighlight> */}
           </View>         
         </Content>
+
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Landing")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical
+              onPress={()=> this.props.navigation.navigate("SignUp")} >
+              <Icon active name="log-in"  />
+              <Text>Register</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
+
       </Container>
     );
   }

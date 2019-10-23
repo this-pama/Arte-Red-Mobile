@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, Form, Item, Input, Label, Button, Text, Header,
-Left, Icon, Body, Right, Title, Spinner  } from 'native-base';
+Left, Icon, Body, Right, Title, Spinner, Footer, FooterTab  } from 'native-base';
 import {View, TouchableHighlight, TouchableOpacity } from 'react-native'
 import PropType from "prop-types"
 import {NavigationActions} from 'react-navigation';
@@ -33,7 +33,7 @@ export default class SignUpScreen extends Component {
     const spinner = <Spinner color='white' />
     const signup = <Text> Register </Text>
     return (
-      <Container style={{backgroundColor: "#e6e6e6",}}>
+      <Container >
         <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }} >
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate('Landing') }>
@@ -80,13 +80,30 @@ export default class SignUpScreen extends Component {
             >
               { this.props.spin ? spinner : signup }
             </Button>
-            <TouchableOpacity
+            {/* <TouchableOpacity
                 onPress={()=> this.props.navigation.navigate('Login') }
                 style={{ paddingTop: 20, justifyContent: 'center', alignItems: 'center' }}>
                 <Text>Already Registered. Sign In!</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>         
         </Content>
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Landing")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical
+              onPress={()=> this.props.navigation.navigate("Login")} >
+              <Icon active name="log-in"  />
+              <Text>Sign in</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }

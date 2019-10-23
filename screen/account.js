@@ -2,13 +2,23 @@ import React, { Component } from 'react';
 import { Container, Header, Content, Button, ListItem, Text, Icon, 
     Title, Left, Body, Right, Toast, ActionSheet } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { apiUrl } from './service/env'
-import {BackHandler} from "react-native"
+import { apiUrl } from './service/env';
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import { getUserProfileAction } from "../redux/userProfileAction"
+import { buyArtworkAction } from "../redux/buyAction"
+import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
+import {connect} from 'react-redux'
+import { like } from "../controller/api"
+import {BackHandler, RefreshControl } from "react-native"
+import {
+  Notifications,
+} from 'expo';
+
 
 var BUTTONS = ["Delete", "Close"];
 var CANCEL_INDEX = 1;
-
-export default class AccountScreen extends Component {
+ class AccountScreen extends Component {
   constructor(props){
     super(props);
     this.state={
@@ -71,35 +81,6 @@ export default class AccountScreen extends Component {
           </Right>
         </Header>
         <Content style={{padding: 10 }}>
-          {/* <ListItem icon style={{ paddingTop: 30, paddingBottom: 50  }}>
-            <Left>
-              <Button style={{ backgroundColor: "red" }}>
-                <Icon active name="swap" />
-              </Button>
-            </Left>
-            <Body>
-                <TouchableOpacity 
-                    onPress={()=>{
-                        if(process.env.NODE_ENV == "development"){
-                            this.props.navigation.navigate("")
-                        }
-                        else if(!this.props.userId){
-                            Toast.show({
-                                text: "You need to sign in to update profile",
-                                buttonText: "Okay",
-                                duration: 3000,
-                                type: 'danger'
-                              })
-                        }
-                        else{
-                            this.props.navigation.navigate("")
-                        }
-                    }}
-                >
-                    <Text>Change Email</Text>
-                </TouchableOpacity>
-            </Body>
-          </ListItem> */}
           <ListItem icon style={{ paddingTop: 20, paddingBottom: 50 }}>
             <Left>
               <Button style={{ backgroundColor: "#990000" }}>
@@ -109,20 +90,7 @@ export default class AccountScreen extends Component {
             <Body>
                 <TouchableOpacity 
                     onPress={()=>{
-                        if(process.env.NODE_ENV == "development"){
-                            this.props.navigation.navigate("")
-                        }
-                        else if(!this.props.userId){
-                            Toast.show({
-                                text: "You need to sign in to see Account",
-                                buttonText: "Okay",
-                                duration: 3000,
-                                type: 'danger'
-                              })
-                        }
-                        else{
-                            this.props.navigation.navigate("")
-                        }
+                       this.props.navigation.navigate("ChangePassword")
                     }}
                 >
                     <Text>Change Password</Text>
@@ -200,3 +168,12 @@ export default class AccountScreen extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  jwt: state.login.jwt,
+  userId: state.getUserId.userId,
+  profile: state.userProfile
+})
+
+export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtworkAction,
+  moreArtworkDetailsAction, getUserProfileAction })(AccountScreen)

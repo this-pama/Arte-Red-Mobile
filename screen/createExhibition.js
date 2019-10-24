@@ -114,7 +114,9 @@ export default class CreateExhibitionScreen extends Component {
                         <Input onChangeText= { this.props.handleTime } value={this.props.time} keyboardType='numeric'  />
                         {/* </Left> */}
                         <Right>
-                          <Button transparent>
+                          <Button transparent
+                          onPress={ this.props.handleSwitch}
+                          >
                             <Text>AM</Text>
                             <Switch value={this.props.switch} />
                             <Text>PM</Text>
@@ -189,6 +191,7 @@ CreateExhibitionScreen.propTypes={
   handleDate: PropTypes.func.isRequired,
   handleEmail: PropTypes.func.isRequired,
   handleTime: PropTypes.func.isRequired,
+  handleSwitch: PropTypes.func.isRequired,
   create: PropTypes.func.isRequired,
   disable : PropTypes.bool.isRequired,
   switch : PropTypes.bool.isRequired,

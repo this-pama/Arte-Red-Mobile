@@ -42,6 +42,9 @@ import AuctionScreen from '../screen/auction'
 import MyAuction from '../screen/myAuction'
 import ForgetPasswordScreen from '../screen/forgetPassword'
 import ChangePasswordScreen from '../screen/changePassword'
+import MyExhibition from '../screen/myExbition'
+import ExhibitionAttendeeScreen from '../screen/exhibitionAttendee'
+import EditExhibitionScreen from '../screen/editExhibition'
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -135,6 +138,9 @@ const switchNavigator = createSwitchNavigator({
   MyAuction: MyAuction,
   ForgetPassword : ForgetPasswordScreen,
   ChangePassword : ChangePasswordScreen,
+  MyExhibition: MyExhibition,
+  ExhibitionAttendee: ExhibitionAttendeeScreen,
+  EditExhibition : EditExhibitionScreen,
   App: StackNavigator,
 },
 {

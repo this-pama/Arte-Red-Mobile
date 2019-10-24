@@ -123,6 +123,22 @@ class DrawerScreen extends Component {
       </ListItem>
     )
 
+    const myExhibition = (
+      <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "red" }}>
+                <Icon active name="md-photos" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={()=> this.props.navigation.navigate('MyExhibition')}>My Exhibition</Text>
+            </Body>
+            <Right>
+              <Icon active name="arrow-forward" />
+            </Right>
+      </ListItem>
+    )
+
     const network = (
       <ListItem icon>
             <Left>
@@ -188,9 +204,10 @@ class DrawerScreen extends Component {
           { this.props.userId  && this.props.userId.length > 0 ? network : null }
           { this.props.userId  && this.props.userId.length > 0 ? myNegotiations : null }
           { this.props.userId  && this.props.userId.length > 0 ? myAuctions : null }
+          { this.props.userId  && this.props.userId.length > 0 ? myExhibition : null }
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "red" }}>
+              <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="md-cog" />
               </Button>
             </Left>

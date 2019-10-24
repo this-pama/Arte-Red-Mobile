@@ -42,6 +42,8 @@ class RegisterExhibitionScreen extends Component {
         
         this.setState({ spin : true })
           var url = apiUrl + "exhibition/register/" + this.props.navigation.getParam("id", null);
+          let time = new Date().toLocaleTimeString()
+          let date = new Date().toLocaleDateString()
           var result = await fetch(url, {
             method: 'POST',
             headers: { 
@@ -52,8 +54,8 @@ class RegisterExhibitionScreen extends Component {
                 name: this.state.fullName, 
                 email: this.state.email,
                 numberOfTicket: this.state.number,
-                time: new Date().toLocaleTimeString(),
-                date: new Date().toLocaleDateString(),
+                time,
+                date,
                 userId: this.props.userId
             })
           });

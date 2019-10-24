@@ -135,6 +135,7 @@ class ExpandExhibitionScreen extends Component {
                 <Body>
                     <Text note >{this.state.exhibition.organizerName}</Text>
                   <Text note>{this.state.exhibition.date}</Text>
+                  <Text note>{this.state.exhibition.time ? ( this.state.exhibition.time > 12 ? `${this.state.exhibition.time -12} 'PM'` :`${this.state.exhibition.time} 'AM'` ): null}</Text>
                 </Body>
               </Right>
             </CardItem>
@@ -152,6 +153,16 @@ class ExpandExhibitionScreen extends Component {
                 </Text>
             </CardItem>
             <View style={{ paddingTop: 30 }} >
+            { new Date(this.state.exhibition.date) < new Date() ? (
+                <Button block danger >
+                  <Text>Closed</Text>
+                </Button>
+              ) : ( 
+                this.state.exhibition.capacity >= this.state.exhibition.registrationCount ? (
+                <Button block danger >
+                  <Text>Sold Out</Text>
+                </Button>
+              ) :(
                 <Button block danger
                   onPress={()=>{
                     if(!this.props.userId){
@@ -169,7 +180,8 @@ class ExpandExhibitionScreen extends Component {
                     }
                   }} >
                   <Text>{this.state.register}</Text>
-                </Button>
+                </Button>)
+              )}
             </View>
           </Card>
         </Content>

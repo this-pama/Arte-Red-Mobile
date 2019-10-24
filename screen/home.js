@@ -323,6 +323,14 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
                 sliderBoxHeight={200}
                 onCurrentImagePressed={async index =>
                     {
+                      if(!this.props.userId){
+                        return Toast.show({
+                          text: "You need to sign in",
+                          buttonText: "Okay",
+                          duration: 3000,
+                          type: 'danger'
+                        })
+                      }
                       await this.props.moreArtworkDetailsAction({artworkId : artwork._id })
                       this.props.navigation.navigate("Detail", { routeName: "Home"})
                     } 

@@ -74,6 +74,7 @@ class ExhibitionScreen extends Component {
     }
     else{
       var res = await response.json();
+      console.warn(res)
       if (res[0]._id) {
         // console.warn(res[0])
         let reverseResp = res.reverse()
@@ -145,10 +146,21 @@ mapAllExhibition = async ()=>{
                 <Button transparent textStyle={{color: '#87838B'}}>
                   <Icon name="time" />
                   <Text>{exhibition.date}</Text>
+                  <Text>{exhibition.time ? ( exhibition.time > 12 ? `${exhibition.time -12} 'PM'` :`${exhibition.time} 'AM'` ): null}</Text>
                 </Button>
               </Body>
               <Right>
-                <Button transparent textStyle={{color: '#87838B'}}
+              { new Date(exhibition.date) < new Date() ? (
+                <Button transparent >
+                  <Text>Closed</Text>
+                </Button>
+              ) : ( 
+                exhibition.capacity >= exhibition.registrationCount ? (
+                <Button transparent >
+                  <Text>Sold Out</Text>
+                </Button>
+              ) : 
+                (<Button transparent textStyle={{color: '#87838B'}}
                   onPress={()=> {
                     if(!this.props.userId){
                        return  Toast.show({
@@ -166,7 +178,9 @@ mapAllExhibition = async ()=>{
                   }}
                 >
                   <Text>Register</Text>
-                </Button>
+                </Button>)
+              )
+              }
               </Right>
             </CardItem>
         </Card>

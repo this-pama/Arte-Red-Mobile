@@ -420,7 +420,7 @@ class Timer extends React.Component{
   }
 
   render(){
-    
+   
     return(
       <CountDown
         until={this.state.totalDuration}

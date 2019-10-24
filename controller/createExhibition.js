@@ -20,6 +20,8 @@ class Exhibition extends Component{
             long: "",
             country: "",
             capacity: 0,
+            time: 0,
+            switch: false,
             date: new Date(),  
             errMessage: "",
             disable: true,
@@ -178,6 +180,30 @@ class Exhibition extends Component{
         }
       };
 
+      handleTime = time => {
+        let hour
+        if(this.state.switch){
+          hour = 12
+        }
+        else{
+          hour = 0
+        }
+        if (time.length > 0 && +time > 0) {
+          let dayTime = time + hour
+          this.setState(
+            {
+              time : dayTime
+            },
+            this.validateForm
+          );
+        } else {
+          this.setState({
+              time: 0,
+            errMessage: 'Please specify time'
+          });
+        }
+      };
+
     handleName = name => {
         if (name.length > 0) {
           this.setState(
@@ -193,6 +219,19 @@ class Exhibition extends Component{
           });
         }
       };
+    
+      handleSwitch= ()=>{
+        if(this.state.switch){
+          this.setState({
+            switch: false
+          })
+        }
+        else{
+          this.setState({
+            switch: true
+          })
+        }
+      }
 
       validateForm = () => {
         let testEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -258,6 +297,7 @@ class Exhibition extends Component{
               longDescription: this.state.long,
               country: this.state.country,
               capacity: this.state.quantity,
+              time: this.state.time,
               organizerName: this.state.name,
               date: this.state.date,
               email: this.state.email,
@@ -346,9 +386,13 @@ class Exhibition extends Component{
             handleName ={this.handleName}
             handleDate ={this.handleDate}
             handleEmail ={this.handleEmail}
+            handleTime={this.handleTime}
+            handleSwitch={this.handleSwitch}
             create ={this.postImageToCloud}
             disable ={this.state.disable}
             spin ={this.state.spin}
+            switch={ this.state.switch}
+            time={this.state.time}
             errMessage ={this.state.errMessage}
             navigation= {this.props.navigation}
             pickImage= {this.pickImage}

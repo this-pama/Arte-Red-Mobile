@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Left, Body, Right, Form, Item, Label,
- Text, Button, Icon, Title, Segment, Input, Textarea, Spinner, DatePicker } from 'native-base';
+ Text, Button, Icon, Title, Segment, Input, Textarea, Spinner, DatePicker, Switch } from 'native-base';
 import FooterTabs from "./service/footer"
 import { Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -108,6 +108,19 @@ export default class CreateExhibitionScreen extends Component {
                           disabled={false}
                           />
                     </Item>
+                    <Item >
+                        <Label>Time</Label>
+                        {/* <Left> */}
+                        <Input onChangeText= { this.props.handleTime } value={this.props.time} keyboardType='numeric'  />
+                        {/* </Left> */}
+                        <Right>
+                          <Button transparent>
+                            <Text>AM</Text>
+                            <Switch value={this.props.switch} />
+                            <Text>PM</Text>
+                          </Button>
+                        </Right>
+                    </Item>
                     <Item stackedLabel>
                         <Label>Short Description</Label>
                         <Input onChangeText= { this.props.handleShort } value={this.props.short} autoCapitalize='words'  />
@@ -163,6 +176,7 @@ CreateExhibitionScreen.propTypes={
   long: PropTypes.string.isRequired,
   country: PropTypes.string.isRequired,
   capacity: PropTypes.number.isRequired,
+  time: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
   handleTitle: PropTypes.func.isRequired,
@@ -174,8 +188,10 @@ CreateExhibitionScreen.propTypes={
   handleName: PropTypes.func.isRequired,
   handleDate: PropTypes.func.isRequired,
   handleEmail: PropTypes.func.isRequired,
+  handleTime: PropTypes.func.isRequired,
   create: PropTypes.func.isRequired,
   disable : PropTypes.bool.isRequired,
+  switch : PropTypes.bool.isRequired,
   spin : PropTypes.bool.isRequired,
   errMessage: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,

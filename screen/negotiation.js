@@ -335,10 +335,10 @@ class NegotiationScreen extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        askingPrice,
-        userId,
-        date,
-        time
+        askingPrice: askingPrice,
+        userId: userId,
+        date: date,
+        time: time
       }),
     });
 
@@ -436,14 +436,7 @@ class NegotiationScreen extends Component {
       </View>
     )
     
-    const history = this.state.negotiationData.history.length <=0 ?(
-      <View style={{ paddingTop: 30 }}>
-        <Body>
-          <Text>There is currently no negotiation request for this artwork.</Text>
-        </Body>
-      </View>
-    ) : 
-    this.state.negotiationData.history.map( (data, index) =>
+    const history = this.state.negotiationData.history.map( (data, index) =>
         (
           <NegotiationHistory data= {data} index={index} 
             accept={this.accept}
@@ -454,7 +447,7 @@ class NegotiationScreen extends Component {
     )
 
     const buyerHistory = this.state.negotiationData.history.map( (data, index) =>
-      data.userId = this.props.userId
+      data.userId === this.props.userId
         ? (
           <View style={{ paddingBottom: 25, paddingTop: 15}}>
           <Card key={index} >
@@ -576,7 +569,15 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
 
 
 class NegotiationHistory extends React.Component{
+  constructor(props){
+    super(props);
+    this.state={
+      spin: false,
+      spin2: false
+    }
+  }
   render(){
+    const spinner = <Spinner color='red' />
     return(
       <Card key={this.props.index} >
         <CardItem>
@@ -612,16 +613,24 @@ class NegotiationHistory extends React.Component{
             <Item>
               <Left>
                 <Button transparent
-                  onPress={()=> this.props.reject(this.props.data.userId, this.props.data.askingPrice, this.props.data.time, this.props.data.date) }
+                  onPress={()=>{ 
+                    this.setState({
+                      spin2: true
+                    })
+                    this.props.reject(this.props.data.userId, this.props.data.askingPrice, this.props.data.time, this.props.data.date) }}
                 >
-                  <Text>Reject</Text>
+                  { this.state.spin2 ? spinner : <Text>Reject</Text> }
                 </Button>
             </Left>
             <Right>
               <Button transparent 
-                onPress={()=> this.props.accept(this.props.data.userId, this.props.data.askingPrice, this.props.data.time, this.props.data.date ) }
-              >
-                <Text>Accept</Text>
+                onPress={()=> {
+                  this.setState({
+                    spin: true
+                  })
+                  this.props.accept(this.props.data.userId, this.props.data.askingPrice, this.props.data.time, this.props.data.date ) }
+                }>
+                { this.state.spin ? spinner : <Text>Accept</Text> }
               </Button>
             </Right>
           </Item>

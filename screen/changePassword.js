@@ -193,7 +193,7 @@ class ChangePasswordScreen extends Component {
           <Form>
             <Item floatingLabel>
               <Label>Old Password</Label>
-              <Input onChangeText= { this.handleOldPassword } value={this.state.oldPassword}  autoCapitalize='none'/>
+              <Input secureTextEntry onChangeText= { this.handleOldPassword } value={this.state.oldPassword}  autoCapitalize='none'/>
             </Item>
             <Item floatingLabel>
               <Label>New Password</Label>
@@ -218,13 +218,12 @@ class ChangePasswordScreen extends Component {
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
             <Button vertical 
             onPress={()=> this.props.navigation.navigate("Setting")}
-            active= { !this.props.activeMe ? false : true }>
+           >
               <Icon name="cog" />
               <Text>Setting</Text>
             </Button>
         
             <Button vertical
-              active= { !this.props.activeExhibition ? false : true }
              onPress={()=> this.props.navigation.navigate("Home")} >
               <Icon active name="home"  />
               <Text>Home</Text>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Left, Body, Right, Form, Item, Label,
- Text, Button, Icon, Title, Segment, Input, Textarea, Spinner, DatePicker, Picker } from 'native-base';
+ Text, Button, Icon, Title, Segment, Input, Textarea, Spinner, DatePicker, Picker,
+Card, CardItem, } from 'native-base';
 import { Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import PropTypes from 'prop-types'
@@ -33,7 +34,9 @@ export default class SubmitAuctionScreen extends Component {
       image: "",
       imageUrl: "",
       base64: "",
-      spin: false
+      spin: false,
+      isVerified: false,
+      errMessage: '',
     }
   }
 
@@ -201,7 +204,7 @@ export default class SubmitAuctionScreen extends Component {
         {
           verificationCode
         },
-        this.validateForm
+        this.validateForm2
       );
     } else {
       this.setState({
@@ -390,6 +393,75 @@ export default class SubmitAuctionScreen extends Component {
   };
 
 
+  validateForm2 = () => {
+    if (
+      this.state.verificationCode.length > 0
+    ) {
+      this.setState({
+        disable: false,
+        errMessage: ''
+      });
+    } else {
+      this.setState({
+        disable: true
+      });
+    }
+  };
+
+
+  verify = async ()=>{
+    this.setState({ spin: true })
+
+    var url = apiUrl + "auction/verify/" + this.state.verificationCode;
+      var result = await fetch(url, {
+        method: 'GET',
+        headers: { 
+          'content-type': 'application/json',
+          "Authorization": `Bearer ${this.props.jwt}`
+         }
+      });
+      var response = await result;
+      if(response.status !== 200 ){
+        console.warn("fetching response failed")
+        this.setState({
+          errMessage: 'There seems to be an error!',
+          spin: false,
+          isVerified: false
+        })
+        
+        return
+      }
+      else{
+        var res = await response.json();
+        if (res[0]._id) {
+          // console.warn(res)
+          this.setState({
+            title: res[0].title,
+            price: res[0].price,
+            size: res[0].size,
+            description: res[0].description,
+            country: res[0].country,
+            artistName: res[0].artistName,
+            year: res[0].year,
+            category: res[0].category,
+            image: res[0].imageUrl,
+            spin: false,
+            isVerified: true
+          })
+        }
+
+        else  {
+          console.warn("No Verified Artwork found!")
+          this.setState({
+            errMessage: "No Verified Artwork found!",
+            spin: false,
+            isVerified: false
+          })
+          
+        }
+      }
+
+  }
 
   render() {
       const imagePlaceholder =(
@@ -397,32 +469,73 @@ export default class SubmitAuctionScreen extends Component {
             style={{height: 300, width: null, flex: 1}}
         />
       )
+
+      const verification = (
+            <Content style={{ paddingTop: 25 }}>
+              <Item>
+                <Right>
+                  <TouchableOpacity>
+                    <Text style={{ color:'blue', paddingRight: 10, paddingBottom: 10 }}>Get a Verification Code</Text>
+                  </TouchableOpacity>
+                </Right>
+                </Item>
+                <Form>
+                    <Item stackedLabel>
+                        <Label>Auction Verification Code</Label>
+                        <Input onChangeText= {this.verificationCode} value={this.state.verificationCode}  autoCapitalize='words'/>
+                    </Item>
+                    <Button block bordered danger
+                      disabled={this.state.disable}
+                      onPress={this.verify}
+                    >
+                        {
+                          this.state.spin ? <Spinner color="red" /> 
+                        : <Text> Next </Text>
+                        }
+                </Button>
+                </Form>
+            </Content>
+      )
+
     return (
-      
+      <KeyboardAwareScrollView
+        extraScrollHeight={100}
+        enableOnAndroid={true} 
+        keyboardShouldPersistTaps='handled'
+      >
               <Content>
                 <Item>
-                  <Text note style={{ color: "red"}}>{this.props.errMessage} </Text>
-                  <Right>
+                  <Body>
+                  <Text  style={{ color: "red", paddingBottom: 10, paddingTop: 10 }}>{this.state.errMessage} </Text>
+                  </Body>
+                  {/* <Right>
                     <Button transparent
                         onPress={this.pickImage }
                     >  
                       <Icon name="camera" active />
                         <Text> Upload Image </Text>
                     </Button>
-                  </Right>
+                  </Right> */}
                 </Item>
-                {this.state.image  ? imagePlaceholder : null }
+                {/* {this.state.image  ? imagePlaceholder : null } */}
                 
-                <Right>
+                {/* <Right>
                   <TouchableOpacity>
                     <Text style={{ color:'blue' }}>Process a Verification Code</Text>
                   </TouchableOpacity>
-                </Right>
-                <Form>
-                    <Item stackedLabel>
+                </Right> */}
+                { !this.state.isVerified ? verification : 
+                (<View>
+                  <Card style={{flex: 0}}>
+                    <CardItem cardBody>
+                      <Image source={{ uri: this.state.image } } style={{height: 300, width: null, flex: 1}}/>
+                    </CardItem>
+                  </Card>
+                  <Form>
+                    {/* <Item stackedLabel>
                         <Label>Auction Verification Code</Label>
                         <Input onChangeText= {this.verificationCode} value={this.state.verificationCode}  autoCapitalize='words'/>
-                    </Item>
+                    </Item> */}
                     
                     <Item stackedLabel>
                         <Label>Title</Label>
@@ -498,8 +611,10 @@ export default class SubmitAuctionScreen extends Component {
                     : <Text> Submit Auction Request </Text>
                     }
                 </Button>
+                </View>)
+                }
               </Content>
-        
+        </KeyboardAwareScrollView>
     );
   }
 }

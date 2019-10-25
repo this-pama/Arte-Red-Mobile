@@ -116,7 +116,8 @@ class EditExhibitionScreen extends Component {
       };
 
       handleDate = (newDate) => {
-        this.setState({ date: newDate.toString().substr(4, 12) });
+        this.setState({ date: newDate.toString().substr(4, 12) },
+        this.validateForm );
       }
 
 
@@ -257,14 +258,14 @@ class EditExhibitionScreen extends Component {
       };
     
       handleSwitch= ()=>{
-        if(this.state.switch){
+        if(!this.state.switch){
           this.setState({
-            switch: false
-          })
+            switch: true
+          }, this.validateForm )
         }
         else{
           this.setState({
-            switch: true
+            switch: false
           })
         }
       }
@@ -296,6 +297,7 @@ class EditExhibitionScreen extends Component {
 
       create = async () => {
         // console.warn(base64)
+        this.setState({ spin: true })
           var url = apiUrl + "exhibition/" + this.props.navigation.getParam("id", null );
           var result = await fetch(url, {
             method: 'PUT',
@@ -393,11 +395,11 @@ class EditExhibitionScreen extends Component {
           <Form>
                     <Item stackedLabel>
                         <Label>Title</Label>
-                        <Input onChangeText= {()=>this.handleTitle  } value={this.state.title}  autoCapitalize='words'/>
+                        <Input onChangeText= { this.handleTitle  } value={this.state.title}  autoCapitalize='words'/>
                     </Item>
                     <Item stackedLabel>
                         <Label>Address</Label>
-                        <Input onChangeText= {()=> this.handleAddress } value={this.state.address}  autoCapitalize='words'/>
+                        <Input onChangeText= { this.handleAddress } value={this.state.address}  autoCapitalize='words'/>
                     </Item>
                     <Item >
                     <DatePicker
@@ -412,49 +414,49 @@ class EditExhibitionScreen extends Component {
                           placeHolderText="Select date"
                           textStyle={{ color: "green" }}
                           placeHolderTextStyle={{ color: "#000000" }}
-                          onDateChange={()=>this.handleDate}
+                          onDateChange={this.handleDate}
                           disabled={false}
                           />
                     </Item>
                     <Item >
                         <Label>Time</Label>
                         {/* <Left> */}
-                        <Input onChangeText= {()=> this.handleTime } value={this.state.time} keyboardType='numeric'  />
+                        <Input onChangeText= { this.handleTime } value={this.state.time} keyboardType='numeric'  />
                         {/* </Left> */}
                         <Right>
                           <Button transparent
-                          onPress={()=> this.handleSwitch}
+                            onPress={ this.handleSwitch}
                           >
                             <Text>AM</Text>
-                            <Switch value={this.state.switch} />
+                            <Switch value={this.state.switch} onPress={this.handleSwitch}/>
                             <Text>PM</Text>
                           </Button>
                         </Right>
                     </Item>
                     <Item stackedLabel>
                         <Label>Short Description</Label>
-                        <Input onChangeText= {()=> this.handleShort } value={this.state.short} autoCapitalize='words'  />
+                        <Input onChangeText= { this.handleShort } value={this.state.short} autoCapitalize='words'  />
                     </Item>
                       <Textarea rowSpan={5} bordered 
                         placeholder="Write a full description about about the exhibition."
                         value={this.state.long}
-                        onChangeText={()=>this.handleLong}
+                        onChangeText={ this.handleLong}
                       />
                     <Item stackedLabel>
                         <Label>Country</Label>
-                        <Input onChangeText= {()=>this.handleCountry} value={this.state.country }  autoCapitalize='words'/>
+                        <Input onChangeText= { this.handleCountry} value={this.state.country }  autoCapitalize='words'/>
                     </Item>
                     <Item stackedLabel>
                         <Label>Exhibition Capacity</Label>
-                        <Input onChangeText= {()=>this.handleCapacity} value={this.state.capacity }  keyboardType="numeric"/>
+                        <Input onChangeText= { this.handleCapacity} value={this.state.capacity }  keyboardType="numeric"/>
                     </Item>
                     <Item stackedLabel>
                         <Label>Organizer Name</Label>
-                        <Input onChangeText= {()=>this.handleName } value={this.state.name }  autoCapitalize='words'/>
+                        <Input onChangeText= { this.handleName } value={this.state.name }  autoCapitalize='words'/>
                     </Item>
                     <Item stackedLabel>
                         <Label>Organizer Email</Label>
-                        <Input onChangeText= {()=>this.handleEmail } value={this.state.email }  autoCapitalize='words'/>
+                        <Input onChangeText= { this.handleEmail } value={this.state.email }  autoCapitalize='words'/>
                     </Item>
                     
                 </Form>

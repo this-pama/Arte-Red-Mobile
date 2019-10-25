@@ -138,6 +138,21 @@ class DrawerScreen extends Component {
             </Right>
       </ListItem>
     )
+    const community = (
+      <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "red" }}>
+                <Icon active name="people" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={()=> this.props.navigation.navigate('')}>Community</Text>
+            </Body>
+            <Right>
+              <Icon active name="arrow-forward" />
+            </Right>
+      </ListItem>
+    )
 
     const network = (
       <ListItem icon>
@@ -218,6 +233,7 @@ class DrawerScreen extends Component {
               <Icon active name="arrow-forward" />
             </Right>
           </ListItem>
+          {community}
           { this.props.userId  && this.props.userId.length > 0 ? logout: login }
           
     </Container>    

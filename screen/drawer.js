@@ -146,7 +146,7 @@ class DrawerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={()=> this.props.navigation.navigate('')}>Community</Text>
+              <Text onPress={()=> this.props.navigation.navigate('Community')}>Community</Text>
             </Body>
             <Right>
               <Icon active name="arrow-forward" />

@@ -375,7 +375,7 @@ submitBid= async (id)=>{
                     <Spinner color='red' />
                 </Body>
             ) : null }
-            {this.state.activeSubmit ? <SubmitAuctionScreen 
+            {this.state.activeSubmit ? <SubmitAuctionScreen navigation={this.props.navigation}
               userId = {this.props.userId} /> : ( this.state.activeClosed ? closedAuction : negotiationHistory)}
         </Content>
         </KeyboardAwareScrollView>

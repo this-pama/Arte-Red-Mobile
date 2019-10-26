@@ -12,6 +12,7 @@ import {connect} from 'react-redux'
 import { Permissions } from 'expo';
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
+import { SliderBox } from 'react-native-image-slider-box';
 
 export default class SubmitAuctionScreen extends Component {
   constructor(props){
@@ -433,7 +434,8 @@ export default class SubmitAuctionScreen extends Component {
       }
       else{
         var res = await response.json();
-        if (res[0]._id) {
+        console.warn(res)
+        if ( res.length > 0 ) {
           // console.warn(res)
           this.setState({
             title: res[0].title,
@@ -464,7 +466,7 @@ export default class SubmitAuctionScreen extends Component {
   }
 
   render() {
-      const imagePlaceholder =(
+      const imagePlaceholder = (
         <Image source={{uri: this.state.image }}
             style={{height: 300, width: null, flex: 1}}
         />
@@ -474,7 +476,9 @@ export default class SubmitAuctionScreen extends Component {
             <Content style={{ paddingTop: 25 }}>
               <Item>
                 <Right>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={()=> this.props.navigation.navigate('Community') }
+                  >
                     <Text style={{ color:'blue', paddingRight: 10, paddingBottom: 10 }}>Get a Verification Code</Text>
                   </TouchableOpacity>
                 </Right>
@@ -484,15 +488,15 @@ export default class SubmitAuctionScreen extends Component {
                         <Label>Auction Verification Code</Label>
                         <Input onChangeText= {this.verificationCode} value={this.state.verificationCode}  autoCapitalize='words'/>
                     </Item>
-                    <Button block bordered danger
+                    <Button block danger
                       disabled={this.state.disable}
                       onPress={this.verify}
                     >
-                        {
-                          this.state.spin ? <Spinner color="red" /> 
-                        : <Text> Next </Text>
-                        }
-                </Button>
+                            {
+                              this.state.spin ? <Spinner color="white" /> 
+                            : <Text> Next </Text>
+                            }
+                    </Button>
                 </Form>
             </Content>
       )
@@ -526,11 +530,17 @@ export default class SubmitAuctionScreen extends Component {
                 </Right> */}
                 { !this.state.isVerified ? verification : 
                 (<View>
-                  <Card style={{flex: 0}}>
+                  {/* <Card style={{flex: 0}}>
                     <CardItem cardBody>
                       <Image source={{ uri: this.state.image } } style={{height: 300, width: null, flex: 1}}/>
                     </CardItem>
-                  </Card>
+                  </Card> */}
+                  <SliderBox
+                        images={this.state.imageUrl}
+                        sliderBoxHeight={200}
+                        dotColor="red"
+                        inactiveDotColor="#90A4AE"
+                  />
                   <Form>
                     {/* <Item stackedLabel>
                         <Label>Auction Verification Code</Label>

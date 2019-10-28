@@ -142,7 +142,7 @@ _onRefresh = () => {
             </Left>
             <Right>
               <Button transparent>
-                <Text>{ data.sold  ? "Sold" : 'Not Yet Sold' }</Text>
+                <Text>{ !data.approved ? "Awaiting Approval" : ( data.sold  ? "Sold" : 'Not Yet Sold') }</Text>
               </Button>
             </Right>
           </CardItem>         
@@ -231,7 +231,7 @@ class Timer extends React.Component{
     }
   
     componentDidMount(){
-      var expirydate = new Date(this.props.data.createdAt).getTime() + (this.props.data.duration * 60 * 60 * 1000 )
+      var expirydate = new Date(this.props.data.approvedDate).getTime() + (this.props.data.duration * 60 * 60 * 1000 )
       var distance = expirydate - new Date().getTime()
         // Time calculations for days, hours, minutes and seconds
       var days = Math.floor(distance / (1000 * 60 * 60 * 24));

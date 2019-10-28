@@ -2,8 +2,25 @@ import React from "react"
 import { Content, Container, Button, ListItem, Body, Icon, Left, Text } from "native-base"
 import { ImageBackground, Image } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { apiUrl } from './service/env';
+import { loginAction } from "../redux/loginAction"
+import { getUserIdAction } from "../redux/getUserId"
+import { getUserProfileAction } from "../redux/userProfileAction"
+import { buyArtworkAction } from "../redux/buyAction"
+import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
+import {connect} from 'react-redux'
 
-export default class LandingScreen extends React.Component{
+class LandingScreen extends React.Component{
+
+    componentDidMount(){
+        // console.warn(this.props.jwt)
+        if(this.props.jwt ){
+            this.props.navigation.navigate('Home')
+        }
+        else{
+            return 
+        }
+    }
     render(){
         return (
             <Container >
@@ -46,3 +63,12 @@ export default class LandingScreen extends React.Component{
         )
     }
 }
+
+const mapStateToProps = state => ({
+    jwt: state.login.jwt,
+    userId: state.getUserId.userId,
+    profile: state.userProfile
+  })
+  
+  export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtworkAction,
+     moreArtworkDetailsAction, getUserProfileAction })(LandingScreen)

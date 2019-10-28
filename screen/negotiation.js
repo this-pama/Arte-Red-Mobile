@@ -73,7 +73,7 @@ class NegotiationScreen extends Component {
     else{
       var res = await response.json();
       if (res._id) {
-        // console.warn(res)
+        console.warn(res)
         this.setState({
           artwork: res,
           currency: res.currency,
@@ -520,17 +520,40 @@ class NegotiationScreen extends Component {
               <Text note style={{paddingLeft: 20 }}>
                 {`${this.state.artwork.currency}  ${this.state.artwork.price}`}
               </Text>
-              {/* show list of available negotiation prices to buyer if artwork is negotiable */}
-              {this.state.negotiating ? (
+
+              {/* check if artwork is negotiable and render appropriately */}
+              { this.state.artwork.isNegotiable ? (
                 <View>
-                  <Text style={{paddingLeft: 20, paddingTop: 25 }}>Asking Price</Text>
-                  <Text note style={{paddingLeft: 20 }}>{this.state.artwork.currency}  {this.state.negotiationValue}</Text>
+                   
+                   <View>
+                   {this.state.negotiating ? (
+                      <View>
+                        <Text style={{paddingLeft: 20, paddingTop: 25 }}>Asking Price</Text>
+                        <Text note style={{paddingLeft: 20 }}>{this.state.artwork.currency}  {this.state.negotiationValue}</Text>
+                      </View>
+                    ): null }
+                    </View>
+                    {/* show history of negotiation to seller */}
+                    <View>
+                    { this.state.artwork.userId === this.props.userId ? history : negotiate }
+                    {/* show history of negotiated values and reply to buyer    */}
+                    </View>
+                    <View>
+                    {buyerHistory}
+                    </View>
                 </View>
-              ): null }
-              {/* show history of negotiation to seller */}
-              { this.state.artwork.userId === this.props.userId ? history : negotiate }
-              {/* show history of negotiated values and reply to buyer    */}
-              {buyerHistory}
+              ) : (
+                 this.state.artwork.userId === this.props.userId ? 
+                  (<Body>
+                    <Text style={{ paddingTop: 20 }}>You don't have any negotiation request because the artwork is not negotiable.</Text>
+                  </Body>)
+                    :
+                (<Body>
+                  <Text style={{ paddingTop: 20 }}>Artwork is not negotiable. Kindly proceed to payment.</Text>
+                </Body>)
+                
+              ) }
+             
           </Content>
         
         { this.state.artwork.userId != this.props.userId ? (
@@ -539,7 +562,7 @@ class NegotiationScreen extends Component {
             <Button vertical
             onPress={()=> this.props.navigation.navigate("Home")}
             >
-              <Icon name="arrow-back" />
+              <Icon name="home" />
               <Text>Home</Text>
             </Button>
             <Button horizontal
@@ -547,7 +570,7 @@ class NegotiationScreen extends Component {
              { routeName: "Negotiation",
                 artworkId: this.state.artwork._id})
                 } >
-              <Icon name="arrow-forward"  />
+              <Icon name="card"  />
               <Text>Pay</Text>
             </Button>
           </FooterTab>

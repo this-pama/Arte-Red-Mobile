@@ -320,7 +320,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
         (
           <SliderBox
                 images={artwork.imageURL}
-                sliderBoxHeight={200}
+                sliderBoxHeight={350}
                 onCurrentImagePressed={async index =>
                     {
                       if(!this.props.userId){

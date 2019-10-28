@@ -116,6 +116,10 @@ class CommunityScreen extends Component {
           </Right>
         </Header>
         <Content>
+            <Body>
+                <Text style={{padding: 20 }}>You can process verification or authorization from partners close to you.</Text>
+                <Text note>Select your location to see list of partners</Text>
+            </Body>
         </Content>
       </Container>
     );

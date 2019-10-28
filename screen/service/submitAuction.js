@@ -438,11 +438,12 @@ export default class SubmitAuctionScreen extends Component {
         if ( res.length > 0 ) {
           // console.warn(res)
           this.setState({
-            title: res[0].title,
+            artworkName: res[0].title,
             price: res[0].price,
             size: res[0].size,
             description: res[0].description,
             country: res[0].country,
+            duration: res[0].duration,
             artistName: res[0].artistName,
             year: res[0].year,
             category: res[0].category,
@@ -536,7 +537,7 @@ export default class SubmitAuctionScreen extends Component {
                     </CardItem>
                   </Card> */}
                   <SliderBox
-                        images={this.state.imageUrl}
+                        images={this.state.image}
                         sliderBoxHeight={200}
                         dotColor="red"
                         inactiveDotColor="#90A4AE"

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, List, ListItem, Left, Body, Right,
-  Card, CardItem, Toast, Text, Button, Icon, Title, Segment, Spinner } from 'native-base';
+  Card, CardItem, Toast, Text, Button, Icon, Title, Segment, Spinner,
+  Accordion, } from 'native-base';
 import FooterTabs from "./service/footer"
 import { Image } from 'react-native'
 import { ScrollView, RefreshControl } from 'react-native';
@@ -127,7 +128,7 @@ mapAllExhibition = async ()=>{
               </Right>
             </CardItem>
             <CardItem cardBody>
-              <Image source={{ uri: exhibition.imageUrl} } style={{height: 200, width: null, flex: 1}}/>
+              <Image source={{ uri: exhibition.imageUrl} } style={{height: 350, width: null, flex: 1}}/>
             </CardItem>
             <CardItem >
                 <Text note>
@@ -135,6 +136,11 @@ mapAllExhibition = async ()=>{
                 </Text>
                 
             </CardItem>
+            <Accordion
+              dataArray={[{title: "About Exhibition", content: exhibition.longDescription }]}
+              headerStyle={{ backgroundColor: "#fff" }}
+              contentStyle={{ backgroundColor: "#fff" }}
+          />
             <CardItem>
               <Left>
                   <Button transparent textStyle={{color: '#87838B'}}>

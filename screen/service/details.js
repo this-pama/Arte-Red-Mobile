@@ -196,10 +196,10 @@ class ArtworkDetailScreen extends Component {
                 </Body>
               </Right>
             </CardItem>
-            <CardItem>
+            {/* <CardItem> */}
               <SliderBox
                 images={this.state.artwork.imageURL}
-                sliderBoxHeight={300}
+                sliderBoxHeight={400}
                 onCurrentImagePressed={index =>
                     console.warn(`image ${index} pressed`)
                 }
@@ -207,7 +207,7 @@ class ArtworkDetailScreen extends Component {
                 inactiveDotColor="#90A4AE"
               />
               {/* <Image source={{uri : this.state.artwork.imageURL }} style={{height: 300, width: null, flex: 1}} /> */}
-            </CardItem>
+            {/* </CardItem> */}
             <CardItem>
               <Body>
                 <Text icon style={{ paddingTop: 20}}>

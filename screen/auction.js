@@ -40,6 +40,7 @@ class AuctionScreen extends Component {
       refreshing: false,
       totalDuration: '',
       bidValue: '',
+      fetchSubmitBid: false,
     }
   }
 
@@ -82,6 +83,7 @@ class AuctionScreen extends Component {
           allnegotiationData : res,
           negotiationData : res.ongoing || [],
           closedNegotiationData: res.closed,
+          // bidValue: res.askingPrice,
           fetch: true
         })
       }
@@ -111,6 +113,12 @@ handleBidValue = bidValue => {
 
 submitBid= async (id)=>{
 
+  if(!(+this.state.bidValue)){
+    return alert("Select a bidding value")
+  }
+
+  this.setState({ fetchSubmitBid : true })
+
   var url = apiUrl + "auction/bid/" + id;
   var result = await fetch(url, {
     method: 'PUT',
@@ -127,21 +135,20 @@ submitBid= async (id)=>{
   var response = await result
 
     var res = await response.json();
+    console.warn(res)
     if (res.ongoing.length >= 0 ) {
-      let negoReverse = res.ongoing.reverse()
-      let closedReverse = res.closed.reverse()
-      let allReverse = {
-        ongoing: negoReverse,
-        closed: closedReverse
-      }
+      console.warn(res)
       this.setState({
-        allnegotiationData : allReverse,
-        negotiationData : negoReverse|| [],
-        closedNegotiationData: closedReverse || [],
+        allnegotiationData : res,
+        negotiationData : res.ongoing || [],
+        closedNegotiationData: res.closed ,
+        bidValue: res.askingPrice,
+        fetchSubmitBid: false
       })
     }
     else  {
-      console.warn("Can not bid")  
+      console.warn("Can not bid") 
+      this.setState({ fetchSubmitBid : false }) 
       return    
     }
 }
@@ -165,7 +172,7 @@ submitBid= async (id)=>{
         </CardItem>
           <SliderBox
             images={data.imageUrl}
-            sliderBoxHeight={250}
+            sliderBoxHeight={350}
             onCurrentImagePressed={async index =>
                 {
                   this.props.navigation.navigate("", { artworkId: data.artworkId, negotiationId: data.negotiationId})
@@ -176,8 +183,8 @@ submitBid= async (id)=>{
           />      
         
         <Accordion
-            dataArray={[{title: "Auction Description", content: data.description }]}
-            headerStyle={{ backgroundColor: "#f2f2f2" }}
+            dataArray={[{title: `About ${data.title}`, content: data.description }]}
+            headerStyle={{ backgroundColor: "#fff" }}
             contentStyle={{ backgroundColor: "#fff" }}
           />
         <CardItem>
@@ -215,9 +222,9 @@ submitBid= async (id)=>{
                   onValueChange={ this.handleBidValue }
               >
                   
-                  {/* <Picker.Item label={`${data.askingPrice }`}
-                     value={`${data.askingPrice}`}
-                   /> */}
+                  <Picker.Item label='Select bidding price'
+                     value='Select bidding price'
+                   />
                   <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 0.3))}`}
                      value={`${Math.floor(data.askingPrice + (data.askingPrice * 0.3))}`}
                    />
@@ -238,16 +245,17 @@ submitBid= async (id)=>{
               <Right>
                 <Button transparent
                   onPress={()=>{
-                    if(this.state.bidValue < data.askingPrice){
-                      alert('You can not bid below the asking price')
+                    if(this.state.bidValue <= data.askingPrice){
+                      alert('You have to bid higher than the current bidder')
                       return
                     }
                     else{
+                      
                       this.submitBid(data._id)
                     }
                   }}
                 >
-                  <Text>Bid</Text>
+                  { this.fetchSubmitBid ? <Spinner color='red' /> : <Text>Bid</Text> }
                 </Button>
               </Right>
           </CardItem>
@@ -272,7 +280,7 @@ submitBid= async (id)=>{
         </CardItem>
           <SliderBox
             images={data.imageUrl}
-            sliderBoxHeight={250}
+            sliderBoxHeight={350}
             onCurrentImagePressed={async index =>
                 {
                   this.props.navigation.navigate("", { artworkId: data.artworkId, negotiationId: data.negotiationId})
@@ -283,8 +291,8 @@ submitBid= async (id)=>{
           />      
         
         <Accordion
-            dataArray={[{title: "Auction Description", content: data.description }]}
-            headerStyle={{ backgroundColor: "#f2f2f2" }}
+            dataArray={[{title: `About ${data.title}`, content: data.description }]}
+            headerStyle={{ backgroundColor: "#fff" }}
             contentStyle={{ backgroundColor: "#fff" }}
         />
         <CardItem>
@@ -406,7 +414,7 @@ class Timer extends React.Component{
   }
 
   componentDidMount(){
-    var expirydate = new Date(this.props.data.createdAt).getTime() + (this.props.data.duration * 60 * 60 * 1000 )
+    var expirydate = new Date(this.props.data.approvedDate).getTime() + (this.props.data.duration * 60 * 60 * 1000 )
     var distance = expirydate - new Date().getTime()
       // Time calculations for days, hours, minutes and seconds
     var days = Math.floor(distance / (1000 * 60 * 60 * 24));

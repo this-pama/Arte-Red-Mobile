@@ -16,6 +16,7 @@ import NetworkScreen from './screen/network';
 import LandingScreen from './screen/landing';
 import ChatScreen from "./screen/service/sendMessage"
 import { registerForPushNotificationsAsync } from "./controller/api"
+import CommunityScreen from './screen/community'
 
 export default class App extends React.Component {
   constructor(props) {

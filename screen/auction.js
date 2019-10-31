@@ -96,6 +96,8 @@ class AuctionScreen extends Component {
       }
 }
 
+
+
 _onRefresh = () => {
     this.setState({refreshing: true});
     this.getAuctionDetails().then(() => {
@@ -153,9 +155,32 @@ submitBid= async (id)=>{
     }
 }
 
+
+auctionTimerIsFinished= async ( auctionId )=>{
+  var url = apiUrl + "auction/finish/" + auctionId;
+  var result = await fetch(url, {
+    method: 'GET',
+    headers: { 
+      'content-type': 'application/json',
+      // "Authorization": `Bearer ${this.props.jwt}`
+     }
+  })
+  var response = await result
+
+    var res = await response.json();
+    console.warn('finished timmer', res)
+    if (res.ongoing  && res.success ) {
+      this.getAuctionDetails()
+    }
+    else  { 
+      return    
+    }
+}
+
+
   render() {
 
-    const negotiationHistory = this.state.negotiationData.map( (data, index) =>
+    const onGoing = this.state.negotiationData.map( (data, index) =>
       (
         <Card key={index} >
         <CardItem>
@@ -190,7 +215,7 @@ submitBid= async (id)=>{
         <CardItem>
             {/* <View> */}
               <Body>
-                <Timer data= {data} />
+                <Timer data= {data} auctionTimerIsFinished= { this.auctionTimerIsFinished(data._id) } />
               </Body>
             {/* </View> */}
             <Right>
@@ -384,7 +409,7 @@ submitBid= async (id)=>{
                 </Body>
             ) : null }
             {this.state.activeSubmit ? <SubmitAuctionScreen navigation={this.props.navigation}
-              userId = {this.props.userId} /> : ( this.state.activeClosed ? closedAuction : negotiationHistory)}
+              userId = {this.props.userId} /> : ( this.state.activeClosed ? closedAuction : onGoing )}
         </Content>
         </KeyboardAwareScrollView>
     </Container>
@@ -435,7 +460,7 @@ class Timer extends React.Component{
         // onPress={()=> alert(this.state.totalDuration)}
         // showSeparator= {true }
         // separatorStyle ={{color: 'blue'}}
-        onFinish={()=> this.setState({ expire: "EXPIRED"})}
+        onFinish={()=> this.props.auctionTimerIsFinished }
         digitStyle={{backgroundColor: '#FFF'}}
         digitTxtStyle={{color: 'blue'}}
         size={20}

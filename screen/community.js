@@ -181,7 +181,7 @@ evaluateStateList =()=>{
               <Body>
                   <Text style={{padding: 20 }}>You can process verification or authorization from partners close to you.</Text>
                   {/* <TouchableOpacity>
-                    <Text style={{ color: 'blue' }}> Join the community</Text>
+                    <Text> You can also Join the Community</Text>
                   </TouchableOpacity> */}
                   <Text note>Select your location to see list of partners</Text>
               </Body>
@@ -240,11 +240,11 @@ evaluateStateList =()=>{
                     </Left>
                     <Body>
                       <Text>{name.companyName}</Text>
-                      <Text note>{name.email}</Text>
-                      <Text note>{name.phone}</Text>
+                      <Text note>{name.phone}, {name.email}</Text>
+                      {/* <Text note>{name.phone}</Text> */}
                       <Text note>{name.address}</Text>
-                      <Text note>{name.state}</Text>
-                      <Text note>{name.country}</Text>
+                      <Text note>{name.state}, {name.country}</Text>
+                      {/* <Text note>{name.country}</Text> */}
                     </Body>
                   </ListItem>
                 </TouchableOpacity>

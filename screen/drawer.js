@@ -28,7 +28,7 @@ class DrawerScreen extends Component {
     const logout = (
       <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "red" }}>
+              <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="log-out" />
               </Button>
             </Left>

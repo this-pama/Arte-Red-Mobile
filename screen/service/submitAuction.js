@@ -71,31 +71,32 @@ export default class SubmitAuctionScreen extends Component {
      }
   }
 
-  postImageToCloud = ()=> {
-    this.setState({ spin : true })
-      let base64Img = `data:image/jpg;base64,${this.state.base64}`
-         let data = {
-           "file": base64Img,
-           "upload_preset": "artered",
-         }
+  // postImageToCloud = ()=> {
+  //   this.setState({ spin : true })
+  //     let base64Img = `data:image/jpg;base64,${this.state.base64}`
+  //        let data = {
+  //          "file": base64Img,
+  //          "upload_preset": "artered",
+  //        }
  
-         fetch(cloudinaryUrl, {
-           body: JSON.stringify(data),
-           headers: {
-             'content-type': 'application/json'
-           },
-           method: 'POST',
-         })
-         .then(async r => {
-             let data = await r.json()
-             this.setState({ imageUrl : data.secure_url })
-             this.create(data.secure_url)
-           })
-         .catch(err=>console.log(err))
-  }
+  //        fetch(cloudinaryUrl, {
+  //          body: JSON.stringify(data),
+  //          headers: {
+  //            'content-type': 'application/json'
+  //          },
+  //          method: 'POST',
+  //        })
+  //        .then(async r => {
+  //            let data = await r.json()
+  //            this.setState({ imageUrl : data.secure_url })
+  //            this.create(data.secure_url)
+  //          })
+  //        .catch(err=>console.log(err))
+  // }
 
-  create = async (base64) => {
+  create = async () => {
     // console.warn(base64)
+    this.setState({ spin : true })
       var url = apiUrl + "auction/" + this.props.userId;
       var result = await fetch(url, {
         method: 'POST',
@@ -117,7 +118,7 @@ export default class SubmitAuctionScreen extends Component {
           year: this.state.year,
           size: this.state.size,
           currency: this.state.currency,
-          imageUrl: base64,
+          imageUrl: this.state.image,
           userId: this.props.userId,
           spin: false
         })
@@ -615,7 +616,7 @@ export default class SubmitAuctionScreen extends Component {
                 
                 <Button block danger
                   disabled={this.state.disable}
-                  onPress={this.postImageToCloud}
+                  onPress={this.create}
                 >
                     {
                       this.state.spin ? <Spinner color="white" /> 

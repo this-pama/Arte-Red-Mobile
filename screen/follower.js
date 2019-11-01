@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, Button, Icon, Title, Segment } from 'native-base';
+import { Container, Header, Content, List, ListItem, Left, Body, Right,
+   Thumbnail, Text, Button, Icon, Title, Segment,
+  Footer, FooterTab } from 'native-base';
 import FooterTabs from "./service/footer"
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {connect} from 'react-redux'
@@ -114,7 +116,7 @@ class FollowerScreen extends Component {
   render() {
     return (
       <Container>
-        <Header hasSegment style={{ backgroundColor: "#990000"}}>
+        <Header hasSegment style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }} >
           <Left>
             <Button transparent onPress={()=> this.props.navigation.goBack()}>
               <Icon name="arrow-back" />
@@ -143,10 +145,23 @@ class FollowerScreen extends Component {
         <Content padder>
         {this.state.follow && this.state.follow.length > 0 ? this.state.follow: <Text>You currently have no follower.</Text> }
         </Content>
-        <FooterTabs 
-          activeNetwork= { true }
-          navigation={this.props.navigation}
-        />
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical 
+              onPress={()=> this.props.navigation.navigate("Activities")} >
+              <Icon name="pulse" />
+              <Text>Activities</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }

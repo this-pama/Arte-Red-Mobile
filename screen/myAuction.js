@@ -42,7 +42,7 @@ class MyAuction extends Component {
     this.getWonAuction()
     // handle hardware back button press
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      this.props.navigation.navigate("Home")
+      this.props.navigation.navigate("Activities")
       return true;
     });
 
@@ -260,7 +260,7 @@ _onRefresh = () => {
       <Container>
         <Header hasSegment style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
           <Left>
-            <Button transparent onPress={()=> this.props.navigation.navigate("Home")}>
+            <Button transparent onPress={()=> this.props.navigation.navigate("Activities")}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
@@ -309,6 +309,23 @@ _onRefresh = () => {
             ) : null }
             { this.state.submittedAuctionIsActive ? myAuction : (this.state.wonAuctionIsActive ? wonAuction : <Text>No Auction Data</Text>)}
         </Content>
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical 
+              onPress={()=> this.props.navigation.navigate("Activities")} >
+              <Icon name="pulse" />
+              <Text>Activities</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
     </Container>
     );
   }

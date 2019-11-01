@@ -184,6 +184,39 @@ class DrawerScreen extends Component {
             </Right>
           </ListItem>
     )
+
+    const activities = (
+      <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "red" }}>
+                <Icon active name="pulse" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={()=>{
+                if(process.env.NODE_ENV === 'development'){
+                  this.props.navigation.navigate('Activities')
+                }
+                else if(this.props.userId  && this.props.userId.length > 0 ){
+                  this.props.navigation.navigate('Activities')
+                }
+                else{
+                  Toast.show({
+                    text: "You need to sign in to access your Activities",
+                    buttonText: "Okay",
+                    duration: 3000,
+                    type: 'danger'
+                  })
+                }
+              }}>Activities</Text>
+            </Body>
+            <Right>
+              <Icon active name="arrow-forward" />
+            </Right>
+          </ListItem>
+    )
+
+
     return (
           <Container>
 
@@ -193,8 +226,8 @@ class DrawerScreen extends Component {
                 < Icon name='md-person' />
                 <Body>
                   <Text>Welcome</Text>
-                  <Text note>{ this.props.firstName && this.props.firstName.length > 0
-                  ? this.props.firstName : null }</Text>
+                  <Text note>{ this.props.profile.firstName && this.props.profile.firstName.length > 0
+                  ? `${this.props.profile.firstName} ${this.props.profile.lastName}` : null }</Text>
                 </Body>
               </Left>
             </CardItem>
@@ -215,11 +248,11 @@ class DrawerScreen extends Component {
               <Icon active name="arrow-forward" />
             </Right>
           </ListItem>
-          { this.props.userId  && this.props.userId.length > 0 ? wallet : null }
-          { this.props.userId  && this.props.userId.length > 0 ? network : null }
-          { this.props.userId  && this.props.userId.length > 0 ? myNegotiations : null }
+          {/* { this.props.userId  && this.props.userId.length > 0 ? wallet : null } */}
+          { this.props.userId  && this.props.userId.length > 0 ? activities : null }
+          {/* { this.props.userId  && this.props.userId.length > 0 ? myNegotiations : null }
           { this.props.userId  && this.props.userId.length > 0 ? myAuctions : null }
-          { this.props.userId  && this.props.userId.length > 0 ? myExhibition : null }
+          { this.props.userId  && this.props.userId.length > 0 ? myExhibition : null } */}
           <ListItem icon>
             <Left>
               <Button style={{ backgroundColor: "#990000" }}>

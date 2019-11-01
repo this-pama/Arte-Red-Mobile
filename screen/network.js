@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Header, Left, Body, Right, Button, Icon, Title, 
-  Segment, Content, Text, Card, Thumbnail, CardItem  } from 'native-base';
+  Segment, Content, Text, Card, Thumbnail, CardItem, Footer, FooterTab  } from 'native-base';
 import {TouchableOpacity} from "react-native-gesture-handler"
 import { Image } from "react-native"
 import { ScrollView, RefreshControl } from 'react-native';
@@ -134,7 +134,7 @@ class NetworkScreen extends Component {
   
     return (
       <Container>
-        <Header hasSegment style={{ backgroundColor: "#990000"}}>
+        <Header hasSegment style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
           <Left>
             <Button transparent onPress={()=> this.props.navigation.goBack()}>
               <Icon name="arrow-back" />
@@ -171,10 +171,23 @@ class NetworkScreen extends Component {
           {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : <Text>You currently have no posts.</Text> }
         </Content>
 
-        <FooterTabs 
-          activeNetwork= { true }
-          navigation={this.props.navigation}
-        />
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical 
+              onPress={()=> this.props.navigation.navigate("Activities")} >
+              <Icon name="pulse" />
+              <Text>Activities</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }

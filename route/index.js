@@ -46,6 +46,7 @@ import MyExhibition from '../screen/myExbition'
 import ExhibitionAttendeeScreen from '../screen/exhibitionAttendee'
 import EditExhibitionScreen from '../screen/editExhibition'
 import Community from '../screen/community'
+import Activities from '../screen/activity'
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -53,9 +54,6 @@ const DrawerNavigator = createDrawerNavigator(
         screen: DrawerScreen
       },
       Home: HomeScreen,
-      Network: NetworkScreen,
-      Follower: FollowerScreen,
-      Following: FolloweringScreen,
       Post: PostScreen,
       Wallet: WalletScreen,
       Bank: BankScreen,
@@ -142,7 +140,11 @@ const switchNavigator = createSwitchNavigator({
   MyExhibition: MyExhibition,
   ExhibitionAttendee: ExhibitionAttendeeScreen,
   EditExhibition : EditExhibitionScreen,
+  Network: NetworkScreen,
+  Follower: FollowerScreen,
+  Following: FolloweringScreen,
   Community,
+  Activities,
   App: StackNavigator,
 },
 {

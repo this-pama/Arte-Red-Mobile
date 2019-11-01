@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image, Modal, View } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, 
-  Toast, Textarea, Spinner } from 'native-base';
+  Toast, Textarea, Spinner, Segment, ActionSheet, } from 'native-base';
   import { ScrollView, RefreshControl } from 'react-native';
 import FooterScreen from './service/footer'
 import { Permissions } from 'expo';
@@ -19,12 +19,21 @@ import { like, unLike, rating, registerForPushNotificationsAsync } from "../cont
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import Lightbox from "react-native-lightbox"
 import { SliderBox } from 'react-native-image-slider-box';
-import {BackHandler} from "react-native"
+import {BackHandler } from "react-native"
+
+var BUTTONS = ["0 - 1M", "1M - 5M", "5M - 10M", "10M above", "Exit"];
+// var DESTRUCTIVE_INDEX = 3;
+var CANCEL_INDEX = 4;
+
+var CAT_BUTTONS = ["Painting", "Sculpture", "Drawing", "Textile", "Collage", "Prints", "Photography", "Art Installation","Others", "Exit"];
+var CAT_CANCEL_INDEX = 9;
+
 
 class HomeScreen extends Component {
   constructor(props){
     super(props);
     this.state={
+      modalVisible: false,
       like: 0,
       comment: 0,
       feed: [],
@@ -32,6 +41,7 @@ class HomeScreen extends Component {
       fetch: false,
       refreshing: false,
       image: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png",
+      showAll: true,
     }
   }
   
@@ -175,11 +185,57 @@ class HomeScreen extends Component {
     this.setState({ allArtwork : allArtwork, fetch: true })
   }
 
-
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
+}
   
   render() {
         return (
       <Container>
+        <Segment style={{  backgroundColor: "#990000"}}>
+          <Button first active={ this.state.showAll}  
+          >
+            <Text style={{ paddingLeft: 50, paddingRight: 50 }}>All</Text>
+          </Button>
+          <Button active={ this.state.activeClosed}
+            onPress={() =>
+              // this.setModalVisible(true)
+              ActionSheet.show(
+                {
+                  options: CAT_BUTTONS,
+                  cancelButtonIndex: CAT_CANCEL_INDEX,
+                  // destructiveButtonIndex: DESTRUCTIVE_INDEX,
+                  title: "Sort by Category"
+                },
+                buttonIndex => {
+                  this.setState({ clicked: BUTTONS[buttonIndex] });
+                }
+              )
+            }
+          >
+            <Text style={{ paddingLeft: 50, paddingRight: 50 }} >Category</Text>
+          </Button>
+          {/* <Button active={ this.state.activeSubmit}
+          onPress={() =>
+            ActionSheet.show(
+              {
+                options: BUTTONS,
+                cancelButtonIndex: CANCEL_INDEX,
+                // destructiveButtonIndex: DESTRUCTIVE_INDEX,
+                title: "Sort by Price"
+              },
+              buttonIndex => {
+                this.setState({ clicked: BUTTONS[buttonIndex] });
+              }
+            )}
+          >
+            <Text>Price</Text>
+          </Button>
+          <Button first active={ this.state.activeOngoing}  
+          >
+            <Text>Showcase</Text>
+          </Button> */}
+        </Segment>
         <Content 
           refreshControl={
             <RefreshControl
@@ -199,6 +255,39 @@ class HomeScreen extends Component {
             navigation={this.props.navigation}
             activeMe = { true } 
         />
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          presentationStyle= 'overFullScreen'
+          // onRequestClose={() => {
+          //   Alert.alert('Modal has been closed.');
+          // }}
+          style={{ backgroundColor : "#990000" }}
+          >
+          <View style={{ marginTop: 22, padding: 20,  }} >
+          <Button bordered danger
+                onPress={() => {
+                    this.setModalVisible(!this.state.modalVisible);
+                }}
+            >
+                <Text >Close</Text>
+            </Button>
+
+            <View>
+              <Text>Hello World!</Text>
+
+              <TouchableOpacity
+                onPress={() => {
+                  this.setModalVisible(!this.state.modalVisible);
+                }}>
+                <Text>Hide Modal</Text>
+              </TouchableOpacity>
+            </View>
+            
+          </View>
+        </Modal>
 
       </Container>
     )

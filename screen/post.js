@@ -100,9 +100,14 @@ export default class PostScreen extends Component {
                   onValueChange={ this.props.handleCategory }
               >
                   <Picker.Item label="Pick a Category" value="Category" />
-                  <Picker.Item label="Paint" value="Paint" />
+                  <Picker.Item label="Painting" value="Paint" />
                   <Picker.Item label="Scupture" value="Scupture" />
+                  <Picker.Item label="Drawing" value="Drawing" />
+                  <Picker.Item label="Textile" value="Textile" />
+                  <Picker.Item label="Collage" value="Collage" />
+                  <Picker.Item label="Prints" value="Prints" />
                   <Picker.Item label="Photography" value="Photography" />
+                  <Picker.Item label="Art Installation" value="Art Installation" />
                   <Picker.Item label="Others" value="Others" />
               </Picker>
           </Item>

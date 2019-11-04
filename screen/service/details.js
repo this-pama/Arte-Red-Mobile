@@ -128,35 +128,7 @@ class ArtworkDetailScreen extends Component {
             <Text>Quantity: {!this.state.artwork.numberAvailable ? "0" : this.state.artwork.numberAvailable }</Text>
           </Button>
       )
-
-    if(!(this.state.fetch)){
-      return(
-        <Container>
-        <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
-          <Left>
-            <Button transparent onPress={()=> {
-            this.props.navigation.navigate(routeName)}}>
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Artwork</Title>
-          </Body>
-          <Right>
-            <Button transparent>
-              <Icon name="open" />
-            </Button>
-          </Right>
-        </Header>
-        <Content>
-          <Body>
-            <Spinner color="red" />
-          </Body>
-        </Content>  
-        </Container>
-      )
-    }
-    else{
+      
     return (
       <Container>
         <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
@@ -176,6 +148,11 @@ class ArtworkDetailScreen extends Component {
           </Right>
         </Header>
         <Content>
+          { this.state.fetch ? (
+            <Body>
+            <Spinner color="red" />
+          </Body>
+          ) : null }
           <Card key={this.state.artworkId}>
           <CardItem>
               <Left>
@@ -232,7 +209,7 @@ class ArtworkDetailScreen extends Component {
           </Card>
         </Content>
       </Container>
-    );}
+    )
   }
 }
 

@@ -179,10 +179,10 @@ evaluateStateList =()=>{
         </Header>
         <Content>
               <Body>
-                  <Text style={{padding: 20 }}>You can process verification or authorization from partners close to you.</Text>
-                  {/* <TouchableOpacity>
-                    <Text> You can also Join the Community</Text>
-                  </TouchableOpacity> */}
+                  <Text style={{padding: 10 }}>You can process verification or authorization from partners close to you.</Text>
+                  <TouchableOpacity style={{ paddingBottom: 10}}>
+                    <Text style={{ color: 'blue'}}> Join the Community.</Text>
+                  </TouchableOpacity>
                   <Text note>Select your location to see list of partners</Text>
               </Body>
             <Item>

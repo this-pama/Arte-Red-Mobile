@@ -33,10 +33,10 @@ class DrawerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={()=>{
-                this.props.loginAction({})
-                this.props.getUserIdAction({})
-                this.props.getUserProfileAction({})
+              <Text onPress={async ()=>{
+                await this.props.loginAction({})
+               await  this.props.getUserIdAction({})
+                await this.props.getUserProfileAction({})
                 this.props.navigation.navigate("Landing")
               }}>Logout</Text>
             </Body>

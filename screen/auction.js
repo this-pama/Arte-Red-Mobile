@@ -41,6 +41,7 @@ class AuctionScreen extends Component {
       totalDuration: '',
       bidValue: '',
       fetchSubmitBid: false,
+      walletCurrentBalance: 0,
     }
   }
 
@@ -65,7 +66,7 @@ class AuctionScreen extends Component {
   };
 
   getAuctionDetails= async ()=>{
-    var url = apiUrl + "auction";
+    var url = apiUrl + "auction/" + this.props.userId;
     var result = await fetch(url, {
       method: 'GET',
       headers: { 
@@ -73,6 +74,7 @@ class AuctionScreen extends Component {
         // "Authorization": `Bearer ${this.props.jwt}`
        }
     })
+    
     var response = await result
 
       var res = await response.json();
@@ -83,6 +85,7 @@ class AuctionScreen extends Component {
           allnegotiationData : res,
           negotiationData : res.ongoing || [],
           closedNegotiationData: res.closed,
+          walletCurrentBalance: res.currentBalance,
           // bidValue: res.askingPrice,
           fetch: true
         })
@@ -114,6 +117,9 @@ handleBidValue = bidValue => {
 }
 
 submitBid= async (id)=>{
+  if(this.state.bidValue > this.state.walletCurrentBalance){
+    return alert('You do not have enough fund in your wallet. Please fund your wallet.')
+  }
 
   if(!(+this.state.bidValue)){
     return alert("Select a bidding value")
@@ -139,12 +145,13 @@ submitBid= async (id)=>{
     var res = await response.json();
     console.warn(res)
     if (res.ongoing.length >= 0 ) {
-      console.warn(res)
+      // console.warn(res)
       this.setState({
         allnegotiationData : res,
         negotiationData : res.ongoing || [],
         closedNegotiationData: res.closed ,
         bidValue: res.askingPrice,
+        walletCurrentBalance: res.currentBalance,
         fetchSubmitBid: false
       })
     }
@@ -250,14 +257,20 @@ auctionTimerIsFinished= async ( auctionId )=>{
                   <Picker.Item label='Select bidding price'
                      value='Select bidding price'
                    />
+                   <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 0.15))}`}
+                     value={`${Math.floor(data.askingPrice + (data.askingPrice * 0.15))}`}
+                     />
                   <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 0.3))}`}
                      value={`${Math.floor(data.askingPrice + (data.askingPrice * 0.3))}`}
                    />
-                  <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 0.5))}`}
-                     value={`${Math.floor(data.askingPrice + (data.askingPrice * 0.5))}`}
+                   <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 0.45))}`}
+                     value={`${Math.floor(data.askingPrice + (data.askingPrice * 0.45))}`}
                    />
-                   <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 0.7))}`}
-                     value={`${Math.floor(data.askingPrice + (data.askingPrice * 0.7))}`}
+                  <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 0.6))}`}
+                     value={`${Math.floor(data.askingPrice + (data.askingPrice * 0.6))}`}
+                   />
+                   <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice * 0.75))}`}
+                     value={`${Math.floor(data.askingPrice + (data.askingPrice * 0.75))}`}
                    />
                    <Picker.Item label={`${Math.floor(data.askingPrice + (data.askingPrice ))}`}
                      value={`${Math.floor(data.askingPrice + (data.askingPrice))}`}

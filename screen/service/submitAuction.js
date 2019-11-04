@@ -217,7 +217,7 @@ export default class SubmitAuctionScreen extends Component {
   }
 
   category = category => {
-    if (category.length > 0) {
+    if (category) {
       this.setState(
         {
           category
@@ -377,7 +377,7 @@ export default class SubmitAuctionScreen extends Component {
       this.state.artistName.length > 0 &&
       this.state.artworkName.length > 0 &&
       this.state.price  &&
-      this.state.category.length > 0 &&
+      this.state.category &&
       this.state.country.length > 0 &&
       this.state.description.length > 0 &&
       this.state.verificationCode.length > 0 &&
@@ -557,10 +557,33 @@ export default class SubmitAuctionScreen extends Component {
                         <Label>Artist Name</Label>
                         <Input onChangeText= {this.artistName  } value={this.state.artistName}  autoCapitalize='words'/>
                     </Item>
-                    <Item stackedLabel>
+                    {/* <Item stackedLabel>
                         <Label>Category/Type of Artwork</Label>
                         <Input onChangeText= { this.category } value={this.state.category}  autoCapitalize='words'/>
-                    </Item>
+                    </Item> */}
+                    <Item picker>
+                      <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name="arrow-down" />}
+                          style={{ width: undefined }}
+                          placeholder="Category"
+                          placeholderStyle={{ color: "#bfc6ea" }}
+                          placeholderIconColor="#007aff"
+                          selectedValue={this.state.category}
+                          onValueChange={ this.category }
+                      >
+                          <Picker.Item label="Pick a Category" value="Category" />
+                          <Picker.Item label="Painting" value="Paint" />
+                          <Picker.Item label="Scupture" value="Scupture" />
+                          <Picker.Item label="Drawing" value="Drawing" />
+                          <Picker.Item label="Textile" value="Textile" />
+                          <Picker.Item label="Collage" value="Collage" />
+                          <Picker.Item label="Prints" value="Prints" />
+                          <Picker.Item label="Photography" value="Photography" />
+                          <Picker.Item label="Art Installation" value="Art Installation" />
+                          <Picker.Item label="Others" value="Others" />
+                      </Picker>
+                  </Item>
                     <Item stackedLabel>
                         <Label>Year</Label>
                         <Input onChangeText= { this.year } value={this.state.year}  autoCapitalize='words'/>

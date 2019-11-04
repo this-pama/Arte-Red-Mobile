@@ -140,6 +140,24 @@ auctionTimerIsFinished= async ( auctionId )=>{
     }
 }
 
+claimAuction= async (auctionId) =>{
+  var url = apiUrl + "auction/finish/claim/" + auctionId;
+  var result = await fetch(url, {
+    method: 'GET',
+    headers: { 
+      'content-type': 'application/json',
+      // "Authorization": `Bearer ${this.props.jwt}`
+     }
+  })
+  var response = await result
+  var res = await response.json()
+  if(res.success || !res.success){
+    this.getmyAuction()
+    this.getWonAuction()
+  }
+  
+}
+
 
 _onRefresh = () => {
     this.setState({refreshing: true});
@@ -237,9 +255,9 @@ _onRefresh = () => {
       
       <Accordion
           dataArray={[{title: "Auction Description", content: data.description }]}
-          headerStyle={{ backgroundColor: "#f2f2f2" }}
+          headerStyle={{ backgroundColor: "#fff" }}
           contentStyle={{ backgroundColor: "#fff" }}
-        />
+      />
         <CardItem>
           <Left>
             <Button transparent>
@@ -247,11 +265,37 @@ _onRefresh = () => {
             </Button>
           </Left>
           <Right>
-            <Button transparent>
-              <Text>{ ((new Date(data.approvedDate).getTime() + (data.duration * 60 * 60 * 1000 )) <= new Date().getTime()) ? "WON" :  'Auction is Ongoing' }</Text>
-            </Button>
+             { data.winner === this.props.userId && !data.sold ? (
+               <Content>
+                 <Button transparent
+                  onPress={()=> this.claimAuction(data._id) }
+                 >
+                  <Text>Claim the Auction</Text>
+                </Button>
+                <ClaimTimer data= {data}  claimAuction= {this.claimAuction(data._id)} />
+               </Content>
+               
+             ): (
+              data.winner == this.props.userId && data.sold ? (
+                <Button transparent>
+                  <Text>Won & Claimed</Text>
+                </Button>
+              ) : (
+                <Button transparent>
+                  <Text>{  ((new Date(data.approvedDate).getTime() + (data.duration * 60 * 60 * 1000 )) > new Date().getTime()) ? 'Auction is Ongoing' : 'Claim Denied' }</Text>
+                </Button>
+              )
+             ) }
+            
           </Right>
-        </CardItem>         
+        </CardItem>
+        <CardItem>
+          <Left>
+            <Button transparent>
+               <Text>{ data.sold && data.winner == this.props.userId ? 'Track Artwork' : null }</Text>
+            </Button>
+          </Left>
+        </CardItem>        
     </Card>
       ))
 
@@ -386,6 +430,56 @@ class Timer extends React.Component{
           // showSeparator= {true }
           // separatorStyle ={{color: 'blue'}}
           onFinish={()=> this.props.auctionTimerIsFinished }
+          digitStyle={{backgroundColor: '#FFF'}}
+          digitTxtStyle={{color: 'blue'}}
+          size={20}
+        />
+      )
+    }
+    
+  }
+
+
+  //claim expiration Timer
+  class ClaimTimer extends React.Component{
+    constructor(props) {
+      super(props);
+      //initialize the counter duration
+      this.state = {
+        totalDuration: 0,
+        expire: ''
+      };
+    }
+  
+    componentDidMount(){
+      let paymentExpiration, expirydate
+      if(this.props.data.paymentExpiration == NaN || this.props.data.paymentExpiration == undefined || this.props.data.paymentExpiration == null){
+        paymentExpiration = new Date().getTime() 
+      }
+      else{ paymentExpiration = this.props.data.paymentExpiration }
+
+      var distance = this.props.data.paymentExpiration - new Date().getTime()
+        // Time calculations for days, hours, minutes and seconds
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      // convert to seconds
+      var d = days * 60 * 60 * 24 + hours * 60 * 60 + minutes * 60 + seconds;
+      this.setState({ totalDuration: d });
+      
+    }
+  
+
+    render(){
+      
+      return(
+        <CountDown
+          until={this.state.totalDuration}
+          onPress={this.props.claimAuction}
+          // showSeparator= {true }
+          // separatorStyle ={{color: 'blue'}}
+          onFinish={this.props.claimAuction }
           digitStyle={{backgroundColor: '#FFF'}}
           digitTxtStyle={{color: 'blue'}}
           size={20}

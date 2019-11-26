@@ -23,6 +23,7 @@
     "react-native-image-gallery": "^2.1.5",
     "react-native-image-slider-box": "^1.0.5",
     "react-native-lightbox": "^0.8.0",
+    "react-native-modals": "^0.19.9",
     "react-native-ratings": "^6.4.0",
     "react-native-rave": "^2.0.0",
     "react-native-reanimated": "~1.1.0",

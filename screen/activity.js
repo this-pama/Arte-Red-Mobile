@@ -38,7 +38,7 @@ class ActivityScreen extends Component {
           </Body>
         </Header>
         <Content style={{padding: 10 }}>
-        <ListItem icon style={{ paddingTop: 20, paddingBottom: 50 }}>
+        <ListItem icon style={{ paddingTop: 20, paddingBottom: 40 }}>
             <Left>
               <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="notifications" />
@@ -48,7 +48,7 @@ class ActivityScreen extends Component {
               <Text onPress={()=> this.props.navigation.navigate('MyNegotiation')}>My Negotiations</Text>
             </Body>
       </ListItem>
-      <ListItem icon style={{ paddingTop: 20, paddingBottom: 50 }}>
+      <ListItem icon style={{ paddingTop: 20, paddingBottom: 40 }}>
             <Left>
               <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="md-briefcase" />
@@ -58,7 +58,7 @@ class ActivityScreen extends Component {
               <Text onPress={()=> this.props.navigation.navigate('MyAuction')}>My Auction</Text>
             </Body>
       </ListItem>
-      <ListItem icon style={{ paddingTop: 20, paddingBottom: 50 }}>
+      <ListItem icon style={{ paddingTop: 20, paddingBottom: 40 }}>
             <Left>
               <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="md-photos" />
@@ -68,7 +68,7 @@ class ActivityScreen extends Component {
               <Text onPress={()=> this.props.navigation.navigate('MyExhibition')}>My Exhibition</Text>
             </Body>
       </ListItem>
-      <ListItem icon style={{ paddingTop: 20, paddingBottom: 50 }}>
+      <ListItem icon style={{ paddingTop: 20, paddingBottom: 40 }}>
             <Left>
               <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="md-people" />

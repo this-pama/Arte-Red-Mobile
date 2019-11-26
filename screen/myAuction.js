@@ -14,10 +14,9 @@ import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
 import {connect} from 'react-redux'
 import { like } from "../controller/api"
 import {BackHandler, RefreshControl } from "react-native"
-import {
-  Notifications,
-} from 'expo';
+import { Notifications } from 'expo';
 import CountDown from 'react-native-countdown-component';
+import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTitle, } from 'react-native-modals';
 
 class MyAuction extends Component {
 
@@ -34,6 +33,11 @@ class MyAuction extends Component {
       refreshing: false,
       allWonAuction: [],
       wonAuction: [],
+      trackData: [],
+      getCertificate: false,
+      visible: false,
+      fetchTrack: false,
+
     }
   }
 
@@ -158,6 +162,33 @@ claimAuction= async (auctionId) =>{
   
 }
 
+trackAuction= async (auctionId) =>{
+  this.setState({ fetchTrack: true })
+  var url = apiUrl + "track/trackAuction/" + auctionId;
+  var result = await fetch(url, {
+    method: 'GET',
+    headers: { 
+      'content-type': 'application/json',
+      "Authorization": `Bearer ${this.props.jwt}`
+     }
+  })
+  var response = await result
+  var res = await response.json()
+  // console.warn(res.message[0].data)
+  if(res.success ){
+    await this.setState({
+      trackData : res.message[0].data,
+      visible: true,
+      fetchTrack: false
+    })
+    await console.warn(this.state.trackData)
+  }
+  else{
+    this.setState({ fetchTrack: false, trackData: [] })
+  }
+  
+}
+
 
 _onRefresh = () => {
     this.setState({refreshing: true});
@@ -197,7 +228,7 @@ _onRefresh = () => {
         
         <Accordion
             dataArray={[{title: "Auction Description", content: data.description }]}
-            headerStyle={{ backgroundColor: "#f2f2f2" }}
+            headerStyle={{ backgroundColor: "#fff" }}
             contentStyle={{ backgroundColor: "#fff" }}
           />
         <CardItem>
@@ -291,13 +322,38 @@ _onRefresh = () => {
         </CardItem>
         <CardItem>
           <Left>
-            <Button transparent>
-               <Text>{ data.sold && data.winner == this.props.userId ? 'Track Artwork' : null }</Text>
+            <Button transparent
+              onPress={()=>{
+                this.trackAuction(data._id)
+                }}
+            >
+              {this.state.fetchTrack ? <Spinner color= 'blue' /> : <Text>{ data.sold && data.winner == this.props.userId ? 'Track Artwork' : null }</Text> }
             </Button>
           </Left>
+          <Right>
+            <Button transparent
+              onPress={ ()=> this.setState({ getCertificate : true })}
+            >
+              { this.state.getCertificate ? ( <Spinner color='blue' /> ) : <Text>Get Certificate</Text> }
+            </Button>
+          </Right>
         </CardItem>        
     </Card>
       ))
+
+
+     trackView = this.state.trackData.map( (data, index) =>
+      (
+        <ListItem key= {index }>
+          <Body>
+            <Text>{index + 1}.  {data.description}</Text>
+            <Text note>       {data.location}</Text>
+          </Body>
+          <Right>
+            <Text note> {new Date(data.Date).toLocaleDateString() } </Text>
+          </Right>
+        </ListItem>
+        ))
 
 
     return (
@@ -352,6 +408,38 @@ _onRefresh = () => {
                 </Body>
             ) : null }
             { this.state.submittedAuctionIsActive ? myAuction : (this.state.wonAuctionIsActive ? wonAuction : <Text>No Auction Data</Text>)}
+          
+            <View>
+              <Modal
+                visible={this.state.visible}
+                modalTitle={<ModalTitle title="Track History" />}
+                modalAnimation={new SlideAnimation({
+                  slideFrom: 'bottom',
+                })}
+                onTouchOutside={() => {
+                  this.setState({ visible: false });
+                }}
+                width
+                footer={
+                  <ModalFooter>
+                    {/* <ModalButton
+                      text="Reject"
+                      onPress={() => this.setState({ visible: false })}
+                    /> */}
+                    <ModalButton
+                      text="OK"
+                      onPress={() => this.setState({ visible: false })}
+                    />
+                  </ModalFooter>
+                }
+              >
+                <ModalContent >
+                  <View>
+                    { trackView }
+                  </View>
+                </ModalContent>
+              </Modal>
+            </View>
         </Content>
         <Footer >
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>

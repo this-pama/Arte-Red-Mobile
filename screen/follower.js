@@ -41,15 +41,14 @@ class FollowerScreen extends Component {
     this.backHandler.remove();
   }
 
+
   getPost= async ()=>{
     if(!this.props.userId || this.props.userId.length <= 0  || !this.props.jwt 
       || this.props.jwt.length <=0 ){
       return
     }
 
-    let hold = 10 * this.state.count
-    for(let i= 0; i < hold; i++){
-      var url = apiUrl + "user/" + this.props.profile.follower[i];
+      var url = apiUrl + "artwork/myfollower/" + this.props.userId;
       var result = await fetch(url, {
         method: 'GET',
         headers: { 
@@ -59,33 +58,29 @@ class FollowerScreen extends Component {
       });
       var response = await result;
       if(response.status !== 200 ){
-        console.warn("fetching follower failed response")
+        // console.warn("fetching artworks failed response")
+        this.setState({
+          follower: []
+        })
         return
       }
       else{
         var res = await response.json();
-        if (res._id) {
+        if (res.success) {
           this.setState({
-            follower: [ ... this.state.follower, res]
+            follower: [ ... res.message]
           })
         }
 
         else  {
-          console.warn("Can't get follower")
+          // console.warn("Can't get artwork")
+          this.setState({
+            follower: []
+          })
           
         }
-      }
-
-      if(i == hold-1 && this.state.followerId.length > hold){
-        this.mapAllPost()
-        this.setState({ count: this.state.count++ })
-      }
-      else{ this.mapAllPost() }
-      
-
-    }
-  
-    
+       this.mapAllPost() 
+    }    
   }
 
 
@@ -143,7 +138,7 @@ class FollowerScreen extends Component {
           </Button>
         </Segment>
         <Content padder>
-        {this.state.follow && this.state.follow.length > 0 ? this.state.follow: <Text>You currently have no follower.</Text> }
+        {this.state.follow && this.state.follow.length > 0 ? this.state.follow: (<Body><Text>You currently have no follower.</Text></Body>) }
         </Content>
         <Footer >
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>

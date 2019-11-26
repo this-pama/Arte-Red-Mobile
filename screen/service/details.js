@@ -47,7 +47,8 @@ class ArtworkDetailScreen extends Component {
     if(response.status !== 200 ){
       console.warn("fetching artworks failed response")
       this.setState({
-        artwork: {}
+        artwork: {},
+        fetch: true,
       })
       
       return
@@ -64,7 +65,8 @@ class ArtworkDetailScreen extends Component {
       else  {
         console.warn("Can't get artwork")
         this.setState({
-          artwork: {}
+          artwork: {},
+          fetch: true
         })
         
       }
@@ -148,7 +150,7 @@ class ArtworkDetailScreen extends Component {
           </Right>
         </Header>
         <Content>
-          { this.state.fetch ? (
+          { !this.state.fetch ? (
             <Body>
             <Spinner color="red" />
           </Body>
@@ -173,18 +175,29 @@ class ArtworkDetailScreen extends Component {
                 </Body>
               </Right>
             </CardItem>
-            {/* <CardItem> */}
-              <SliderBox
-                images={this.state.artwork.imageURL}
-                sliderBoxHeight={400}
-                onCurrentImagePressed={index =>
-                    console.warn(`image ${index} pressed`)
+              {typeof(this.state.artwork.imageURL) == 'object' ?
+                (
+                  <SliderBox
+                    images={this.state.artwork.imageURL}
+                    sliderBoxHeight={400}
+                    onCurrentImagePressed={index =>
+                        console.warn(`image ${index} pressed`)
+                    }
+                    dotColor="red"
+                    inactiveDotColor="#90A4AE"
+                  />
+                )
+                : 
+                (
+                  <Lightbox>
+                    <Image 
+                      source={{ uri: this.state.artwork.imageURL } } 
+                      style={{height: 200, width: null, flex: 1}}
+                      resizeMode="contain"
+                    />
+                  </Lightbox>
+                )
                 }
-                dotColor="red"
-                inactiveDotColor="#90A4AE"
-              />
-              {/* <Image source={{uri : this.state.artwork.imageURL }} style={{height: 300, width: null, flex: 1}} /> */}
-            {/* </CardItem> */}
             <CardItem>
               <Body>
                 <Text icon style={{ paddingTop: 20}}>

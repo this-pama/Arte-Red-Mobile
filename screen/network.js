@@ -25,7 +25,6 @@ class NetworkScreen extends Component {
       post: [],
       artworkId: [],
       allArtwork: [],
-      count: 1,
       refreshing: false,
     }
   }
@@ -63,9 +62,7 @@ class NetworkScreen extends Component {
       return
     }
 
-    let hold = 10 * this.state.count
-    for(let i= 0; i < hold; i++){
-      var url = apiUrl + "artwork/" + this.props.profile.artwork[i];
+      var url = apiUrl + "artwork/myartwork/" + this.props.userId;
       var result = await fetch(url, {
         method: 'GET',
         headers: { 
@@ -83,9 +80,9 @@ class NetworkScreen extends Component {
       }
       else{
         var res = await response.json();
-        if (res._id) {
+        if (res.success) {
           this.setState({
-            post: [ ... this.state.post, res]
+            post: [ ... res.message]
           })
         }
 
@@ -96,13 +93,7 @@ class NetworkScreen extends Component {
           })
           
         }
-      }
-
-      if(i == hold-1 && this.state.artworkId.length > hold){
-        this.mapAllPost()
-        this.setState({ count: this.state.count++ })
-      }
-      else{ this.mapAllPost() }
+       this.mapAllPost() 
       
 
     }
@@ -168,7 +159,7 @@ class NetworkScreen extends Component {
             />
           }
         >
-          {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : <Text>You currently have no posts.</Text> }
+          {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : (<Body><Text>You currently have no posts.</Text></Body>) }
         </Content>
 
         <Footer >
@@ -264,7 +255,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,
                 </Body>
               </Left>
               <Right>
-                <Button transparent onPress={async () => {
+                {/* <Button transparent onPress={async () => {
                   if(!this.props.userId){
                     return Toast.show({
                       text: "You need to sign in",
@@ -277,7 +268,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,
                   this.props.navigation.navigate("Detail", { routeName: "Home"})} 
                 }>
                     <Text>More</Text>
-                </Button>
+                </Button> */}
                 <TouchableOpacity 
                   onPress={()=> {
                     if(!this.props.userId){
@@ -299,9 +290,11 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,
             (
               <SliderBox
                     images={artwork.imageURL}
-                    sliderBoxHeight={200}
-                    onCurrentImagePressed={index =>
-                        console.warn(`image ${index} pressed`)
+                    sliderBoxHeight={350}
+                    onCurrentImagePressed={async index =>{
+                      await this.props.moreArtworkDetailsAction({artworkId : artwork._id })
+                      this.props.navigation.navigate("Detail", { routeName: "Home"})
+                      }
                     }
                     dotColor="red"
                     inactiveDotColor="#90A4AE"
@@ -312,7 +305,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,
               <Lightbox>
                 <Image 
                   source={{ uri: artwork.imageURL } } 
-                  style={{height: 200, width: null, flex: 1}}
+                  style={{height: 350, width: null, flex: 1}}
                   resizeMode="contain"
                 />
               </Lightbox>

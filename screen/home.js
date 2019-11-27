@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Image, Modal, View } from 'react-native';
+import { Image, View } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, 
-  Toast, Textarea, Spinner, Segment, ActionSheet, } from 'native-base';
+  Toast, Textarea, Spinner, Segment, ActionSheet, ListItem } from 'native-base';
   import { ScrollView, RefreshControl } from 'react-native';
 import FooterScreen from './service/footer'
 import { Permissions } from 'expo';
@@ -20,7 +20,9 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 import Lightbox from "react-native-lightbox"
 import { SliderBox } from 'react-native-image-slider-box';
 import {BackHandler } from "react-native"
-
+import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTitle, } from 'react-native-modals';
+const KEYS_TO_FILTERS = ['category'];
+import SearchInput, { createFilter } from 'react-native-search-filter';
 var BUTTONS = ["0 - 1M", "1M - 5M", "5M - 10M", "10M above", "Exit"];
 // var DESTRUCTIVE_INDEX = 3;
 var CANCEL_INDEX = 4;
@@ -42,6 +44,9 @@ class HomeScreen extends Component {
       refreshing: false,
       image: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png",
       showAll: true,
+      visible: false,
+      category: '',
+      showCategory: false
     }
   }
   
@@ -57,7 +62,6 @@ class HomeScreen extends Component {
       this.props.navigation.navigate("Landing")
       return true;
     });
-
 
     //send device expo token to server
     if(this.props.userId){
@@ -119,12 +123,8 @@ class HomeScreen extends Component {
     }
   }
 
-
-
   getFeed= async ()=>{
-
       var url = apiUrl + "artwork" ;
-
       if( "jwt" in this.props.jwt  || !this.props.jwt
         || !this.props.userId
         ){
@@ -168,7 +168,8 @@ class HomeScreen extends Component {
   }
 
   mapAllFeed = async ()=>{
-    var allArtwork = await this.state.feed.map(artwork => 
+    const sortedArtwork = this.state.feed.filter(createFilter(this.state.category, KEYS_TO_FILTERS))
+    var allArtwork = await sortedArtwork.map(artwork => 
       <MapArtwork 
         key={artwork._id} 
         artwork= {artwork} 
@@ -185,56 +186,143 @@ class HomeScreen extends Component {
     this.setState({ allArtwork : allArtwork, fetch: true })
   }
 
-  setModalVisible = (visible) => {
-    this.setState({ modalVisible: visible });
-}
+  // setModalVisible = (visible) => {
+  //   this.setState({ modalVisible: visible });
+  // }
+
+  sortView = ()=>{
+    this.setState({ visible : true })
+  }
+
+  sortParameter= async category =>{
+    await this.setState({ category, showAll: false, showCategory: true, visible: false })
+    this.mapAllFeed()
+  }
   
   render() {
+
+    sortView = 
+      (
+      <View >
+        <CardItem>
+          <Left>
+            <Body>
+            <Button transparent
+              onPress={()=> this.sortParameter('Painting')} 
+            >
+                <Text>Painting</Text>
+              </Button>
+            </Body>
+          </Left>
+          <Right>
+          <Body>
+              <Button transparent
+              onPress={()=> this.sortParameter('Sculpture')} 
+              >
+                <Text>Sculpture</Text>
+              </Button> 
+              </Body>
+          </Right>
+        </CardItem>
+        <CardItem>
+          <Left>
+            <Body>
+            <Button transparent
+            onPress={()=> this.sortParameter('Drawing')} 
+            >
+                <Text>Drawing</Text>
+              </Button>
+            </Body>
+          </Left>
+          <Right>
+          <Body>
+              <Button transparent 
+              onPress={()=> this.sortParameter('Textile')} 
+              >
+                <Text>Textile</Text>
+              </Button> 
+              </Body>
+          </Right>
+        </CardItem>
+        <CardItem>
+          <Left>
+            <Body>
+            <Button transparent 
+            onPress={()=> this.sortParameter('Collage')} 
+            >
+                <Text>Collage</Text>
+              </Button>
+            </Body>
+          </Left>
+          <Right>
+          <Body>
+              <Button transparent
+              onPress={()=> this.sortParameter('Prints')} 
+              >
+                <Text>Prints</Text>
+              </Button> 
+              </Body>
+          </Right>
+        </CardItem>
+        <CardItem>
+          <Left>
+            <Body>
+            <Button transparent 
+            onPress={()=> this.sortParameter('Photography')} 
+            >
+                <Text>Photography</Text>
+              </Button>
+            </Body>
+          </Left>
+          <Right>
+          <Body>
+            <Button transparent 
+            onPress={()=> this.sortParameter('Art Installation')} 
+            >
+              <Text>Art Installation</Text>
+            </Button> 
+          </Body>
+          </Right>
+        </CardItem>
+        <CardItem>
+          <Left>
+            <Body>
+            </Body>
+          </Left>
+          <Body>
+            <Button transparent 
+            onPress={()=> this.sortParameter('Other')} 
+            >
+              <Text>Others</Text>
+            </Button> 
+          </Body>
+          <Right>
+          <Body>
+          </Body>
+          </Right>
+        </CardItem>
+        </View>
+        )
+
         return (
       <Container>
         <Segment style={{  backgroundColor: "#990000"}}>
           <Button first active={ this.state.showAll}  
+            onPress={async ()=> {     
+              this.sortParameter('')
+              await this.setState({ showAll : true, showCategory: false,})
+            }}
           >
             <Text style={{ paddingLeft: 50, paddingRight: 50 }}>All</Text>
           </Button>
-          <Button active={ this.state.activeClosed}
-            onPress={() =>
-              // this.setModalVisible(true)
-              ActionSheet.show(
-                {
-                  options: CAT_BUTTONS,
-                  cancelButtonIndex: CAT_CANCEL_INDEX,
-                  // destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                  title: "Sort by Category"
-                },
-                buttonIndex => {
-                  this.setState({ clicked: BUTTONS[buttonIndex] });
-                }
-              )
-            }
+          <Button active={ this.state.showCategory}
+            onPress={ async () =>{
+              this.sortView()
+              // await this.setState({ showCategory: true })
+            }}
           >
             <Text style={{ paddingLeft: 50, paddingRight: 50 }} >Category</Text>
           </Button>
-          {/* <Button active={ this.state.activeSubmit}
-          onPress={() =>
-            ActionSheet.show(
-              {
-                options: BUTTONS,
-                cancelButtonIndex: CANCEL_INDEX,
-                // destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                title: "Sort by Price"
-              },
-              buttonIndex => {
-                this.setState({ clicked: BUTTONS[buttonIndex] });
-              }
-            )}
-          >
-            <Text>Price</Text>
-          </Button>
-          <Button first active={ this.state.activeOngoing}  
-          >
-            <Text>Showcase</Text>
-          </Button> */}
         </Segment>
         <Content 
           refreshControl={
@@ -256,38 +344,31 @@ class HomeScreen extends Component {
             activeMe = { true } 
         />
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-          presentationStyle= 'overFullScreen'
-          // onRequestClose={() => {
-          //   Alert.alert('Modal has been closed.');
-          // }}
-          style={{ backgroundColor : "#990000" }}
-          >
-          <View style={{ marginTop: 22, padding: 20,  }} >
-          <Button bordered danger
-                onPress={() => {
-                    this.setModalVisible(!this.state.modalVisible);
+            <Modal
+                visible={this.state.visible}
+                modalTitle={<ModalTitle title="Sort by Category" />}
+                modalAnimation={new SlideAnimation({
+                  slideFrom: 'bottom',
+                })}
+                onTouchOutside={() => {
+                  this.setState({ visible: false });
                 }}
-            >
-                <Text >Close</Text>
-            </Button>
-
-            <View>
-              <Text>Hello World!</Text>
-
-              <TouchableOpacity
-                onPress={() => {
-                  this.setModalVisible(!this.state.modalVisible);
-                }}>
-                <Text>Hide Modal</Text>
-              </TouchableOpacity>
-            </View>
-            
-          </View>
-        </Modal>
+                width
+                footer={
+                  <ModalFooter>
+                    <ModalButton
+                      text="Exit"
+                      onPress={() => this.setState({ visible: false })}
+                    />
+                  </ModalFooter>
+                }
+              >
+                <ModalContent >
+                  <View>
+                    { sortView }
+                  </View>
+                </ModalContent>
+              </Modal>
 
       </Container>
     )

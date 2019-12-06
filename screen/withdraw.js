@@ -23,7 +23,7 @@ export default class WithdrawScreen extends Component {
   render() {
     return (
       <Container>
-        <Header  style={{ backgroundColor: "#990000"}}>
+        <Header  style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate("Wallet")}>
               <Icon name="arrow-back" />

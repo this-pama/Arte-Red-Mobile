@@ -18,6 +18,7 @@ import ChatScreen from "./screen/service/sendMessage"
 import { registerForPushNotificationsAsync } from "./controller/api"
 import CommunityScreen from './screen/community'
 import MyAuction from './screen/myAuction'
+import BankController from './controller/bank'
 
 export default class App extends React.Component {
   constructor(props) {

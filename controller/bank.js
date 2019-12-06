@@ -15,12 +15,24 @@ import {connect} from 'react-redux'
             lastName: "",
             accountNumber: "",
             bankName: "",
+            bankCode: "",
             errMessage: "",
             spin: false,
-            disable: true
+            disable: true,
+            bankList: {},
+            bank: [],
+            country : '',
+            showCountry: true,
+            showBankList: false,
+            showDetails: false,
+            ready: false,
+
         }
     }
 
+    componentDidMount(){
+      this.getBankList()
+    }
 
     addBank = async () => {
       this.setState({ spin : true })
@@ -79,6 +91,85 @@ import {connect} from 'react-redux'
         
     };
     
+    getBankList = async () =>{
+      var url = apiUrl + "bank/banklist";
+        var result = await fetch(url, {
+          method: 'GET',
+          headers: { 
+            'content-type': 'application/json',
+            // "Authorization": `Bearer ${this.props.jwt}`
+           }
+        });
+        var response = await result.json();
+        // console.warn("response", response)
+        if(response.success ){
+          // console.warn(response.message)
+          this.setState({ bankList : response.message})
+        }
+        else{
+          console.warn('no bank lst')
+          this.setState({ bankList : {}})
+        }
+    }
+
+    selectCountry = country => {
+      if (country.length > 0 && country != "Select Country") {
+        this.setState(
+          {
+            country,
+            showCountry: false,
+            showBankList: true
+          },
+          this.validateForm
+        );
+        
+        let bank = this.state.bankList[country].map(ele=> ele.Name)
+        this.setState({ bank })
+
+      } else {
+        this.setState({
+          country: '',
+          errMessage: 'Country cannot be empty'
+        });
+      }
+    };
+
+    selectBank = bankName => {
+      if (bankName.length > 0 && bankName != "Select A Bank") {
+        this.setState(
+          {
+            bankName,
+            showCountry: false,
+            showBankList: false,
+            showDetails: true
+          },
+          this.validateForm
+        );
+        
+        let bankEle = this.state.bankList[this.state.country].find(ele =>{ return ele.Name == bankName })
+        let bankCode = bankEle.Code
+        console.warn('bank code', bankCode)
+        console.warn('country', this.state.country)
+        this.setState({ bankCode })
+
+      } else {
+        this.setState({
+          bankName: '',
+          errMessage: 'Bank Name cannot be empty'
+        });
+      }
+    };
+
+    next=()=>{
+      this.setState({
+        ready: true,
+        showBankList: false,
+        showCountry: false,
+        showBankList: false,
+        showDetails: false,
+      }, this.validateForm )
+    }
+
     handleEmail = email => {
         if (email.length > 0) {
           this.setState(
@@ -166,6 +257,8 @@ import {connect} from 'react-redux'
           this.state.firstName.length > 0 &&
           this.state.lastName.length > 0 &&
           this.state.accountNumber.length > 0 &&
+          this.state.country.length > 0 &&
+          this.state.bankName.length > 0 && 
           testEmail.test(this.state.email) 
         ) {
           this.setState({
@@ -197,6 +290,16 @@ import {connect} from 'react-redux'
                 disable= { this.state.disable }
                 spin = { this.state.spin }
                 navigation= {this.props.navigation}
+                bankList = {this.state.bankList}
+                showDetails = { this.state.showDetails}
+                showBankList = { this.state.showBankList}
+                showCountry = { this.state.showCountry }
+                bank = { this.state.bank }
+                selectCountry= {this.selectCountry}
+                selectBank = { this.selectBank }
+                ready= { this.state.ready }
+                next= { this.next }
+                country = { this.state.country }
             />
         )
     }

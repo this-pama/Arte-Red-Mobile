@@ -55,9 +55,6 @@ const DrawerNavigator = createDrawerNavigator(
       },
       Home: HomeScreen,
       Post: PostScreen,
-      Wallet: WalletScreen,
-      Bank: BankScreen,
-      Withdraw: WithdrawScreen,
       Rave: RaveScreen,
     },
     {
@@ -145,6 +142,9 @@ const switchNavigator = createSwitchNavigator({
   Following: FolloweringScreen,
   Community,
   Activities,
+  Wallet: WalletScreen,
+  Bank: BankScreen,
+  Withdraw: WithdrawScreen,
   App: StackNavigator,
 },
 {

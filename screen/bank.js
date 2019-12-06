@@ -28,9 +28,74 @@ export default class BankScreen extends Component {
   render() {
     const add = <Text> Add Bank </Text>
     const spinner = <Spinner color="white" />
+    const country = Object.keys(this.props.bankList)
+    const listCountry = country.map(ele=><Picker.Item label={`${ele}`} value={`${ele}`} />)
+
+    const banks = this.props.bank;
+    const bankList = banks.map(bank => (<Picker.Item label={`${bank}`} value={`${bank}`} /> ))
+
+    const showBankList = (
+      <Item picker>
+          <Picker
+              mode="dropdown"
+              iosIcon={<Icon name="arrow-down" />}
+              style={{ width: undefined }}
+              placeholder="Bank Name"
+              placeholderStyle={{ color: "#bfc6ea" }}
+              placeholderIconColor="#007aff"
+              selectedValue={this.props.bankName}
+              onValueChange={ this.props.selectBank }
+          >
+              <Picker.Item label="Select A Bank" value="Select A Bank" />
+              { bankList }
+          </Picker>
+      </Item>
+    )
+    const details= (
+      <Form>
+          <Item stackedLabel>
+              <Label>First Name</Label>
+              <Input onChangeText= {this.props.handleFirstName  } value={this.props.firstName}  autoCapitalize='words'/>
+          </Item>
+          <Item stackedLabel>
+              <Label>Last Name</Label>
+              <Input onChangeText= { this.props.handleLastName } value={this.props.lastName}  autoCapitalize='words'/>
+          </Item>
+          <Item stackedLabel>
+              <Label>Account Number</Label>
+              <Input onChangeText= { this.props.handleAccountNumber } value={this.props.accountNumber}  keyboardType='numeric' />
+          </Item>
+          <Item stackedLabel>
+              <Label>Email</Label>
+              <Input onChangeText= { this.props.handleEmail} value={this.props.email}   />
+          </Item>
+      </Form>
+    )
+
+    const next =(
+      <View style={{ padding : 10}}>
+        <Button  block danger 
+            disabled={this.props.disable}
+            onPress={this.props.next }
+        >
+            <Text> Next </Text>
+        </Button>
+      </View>
+    )
+
+    const summary = (
+      <View>
+        <Text >Full Name: {this.props.firstName} {this.props.lastName} </Text>
+        <Text> Bank Name: {this.props.bankName} </Text>
+        <Text> Account Number: {this.props.accountNumber}</Text>
+        <Text> Country: {this.props.country} </Text>
+        <Text> Email: {this.props.email} </Text>
+      </View>
+    )
+
     return (
       <Container>
-        <Header  style={{ backgroundColor: "#990000"}}>
+        <Header  style={{  backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate("Wallet")}>
               <Icon name="arrow-back" />
@@ -50,52 +115,48 @@ export default class BankScreen extends Component {
           enableOnAndroid={true} 
           keyboardShouldPersistTaps='handled'
         >
-        <Content style={{ paddingBottom: 20}}>
-                <Form>
-                    <Item stackedLabel>
-                        <Label>First Name</Label>
-                        <Input onChangeText= {this.props.handleFirstName  } value={this.props.firstName}  autoCapitalize='words'/>
-                    </Item>
-                    <Item stackedLabel>
-                        <Label>Last Name</Label>
-                        <Input onChangeText= { this.props.handleLastName } value={this.props.lastName}  autoCapitalize='words'/>
-                    </Item>
-                    <Item stackedLabel>
-                        <Label>Account Number</Label>
-                        <Input onChangeText= { this.props.handleAccountNumber } value={this.props.accountNumber}  keyboardType='numeric' />
-                    </Item>
-                    <Item stackedLabel>
-                        <Label>Email</Label>
-                        <Input onChangeText= { this.props.handleEmail} value={this.props.email}   />
-                    </Item>
-                    <Item picker>
-                        <Picker
-                            mode="dropdown"
-                            iosIcon={<Icon name="arrow-down" />}
-                            style={{ width: undefined }}
-                            placeholder="Bank Name"
-                            placeholderStyle={{ color: "#bfc6ea" }}
-                            placeholderIconColor="#007aff"
-                            selectedValue={this.props.bankName}
-                            onValueChange={ this.props.handlebankName }
-                        >
-                            <Picker.Item label="Bank Name" value="Bank Name" />
-                            <Picker.Item label="GTB" value="GTB" />
-                            <Picker.Item label="Access Bank" value="Access Bank" />
-                            <Picker.Item label="First Bank" value="First Bank" />
-                            <Picker.Item label="Fidelity" value="Fidelity" />
-                        </Picker>
-                    </Item>
-                </Form>
-
-            <View style={{ padding : 10}}>
-              <Button  block danger 
-                  disabled={this.props.disable}
-                  onPress={this.props.addBank }
+        <Content style={{ paddingBottom: 20, padding: 30 }}>
+          <Text note>You can also transfer directly to other banks if your country is not listed here.</Text>
+          <TouchableOpacity>
+            <Text note style={{ color: 'blue'}}> Transfer in other countries</Text>
+          </TouchableOpacity>
+          { this.props.showCountry ? (
+            <Item picker>
+              <Picker
+                  mode="dropdown"
+                  iosIcon={<Icon name="arrow-down" />}
+                  style={{ width: undefined }}
+                  placeholder="Select Country"
+                  placeholderStyle={{ color: "#bfc6ea" }}
+                  placeholderIconColor="#007aff"
+                  selectedValue={this.props.country}
+                  onValueChange={ this.props.selectCountry }
               >
-                  {this.props.spin ? spinner : add }
-              </Button>
-            </View>
+                  <Picker.Item label="Select Country" value="Select Country" />
+                  { listCountry }
+              </Picker>
+          </Item>
+          ) : null }
+          { this.props.showBankList ? showBankList : null }
+
+          {this.props.showDetails ? details : null }
+
+          { this.props.showDetails ? next  : null }
+          
+          { this.props.ready ? summary : null }
+
+
+          { this.props.ready ? (
+            <View style={{ paddingTop : 20}}>
+            <Button  block danger 
+                // disabled={this.props.disable}
+                onPress={this.props.addBank }
+            >
+                {this.props.spin ? spinner : add }
+            </Button>
+          </View>
+          ) : null }
+
         </Content>
         </KeyboardAwareScrollView>
         
@@ -127,5 +188,15 @@ BankScreen.propsType={
   handleAccountNumber: PropTypes.func.isRequired,
   handlebankName: PropTypes.func.isRequired,
   handleEmail: PropTypes.func.isRequired,
-  addBank: PropTypes.func.isRequired
+  addBank: PropTypes.func.isRequired,
+  bankList: PropTypes.object,
+  country: PropTypes.string.isRequired,
+  selectCountry: PropTypes.func.isRequired,
+  showBankList: PropTypes.bool.isRequired,
+  showDetails: PropTypes.bool.isRequired,
+  showCountry: PropTypes.bool.isRequired,
+  ready: PropTypes.bool.isRequired,
+  next: PropTypes.func.isRequired,
+  bank: PropTypes.object.isRequired,
+  selectBank : PropTypes.func.isRequired
 }

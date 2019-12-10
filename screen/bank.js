@@ -9,6 +9,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from "prop-types"
 import { BackHandler} from "react-native"
+import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTitle, } from 'react-native-modals';
 
 export default class BankScreen extends Component {
 
@@ -223,7 +224,7 @@ export default class BankScreen extends Component {
               <Input onChangeText= { this.props.handleSwiftCode} value={this.props.swiftCode}   />
           </Item>
           <Item stackedLabel>
-              <Label>Bank Name</Label>
+              <Label>Beneficiary Address</Label>
               <Input onChangeText= { this.props.handleBeneficiaryAddress} value={this.props.beneficiaryAddress}   />
           </Item>
           <Item stackedLabel>
@@ -289,6 +290,7 @@ export default class BankScreen extends Component {
           <Text> Country: {this.props.country} </Text>
           <Text> Routing Number: {this.props.routingNumber} </Text>
           <Text> Swift Code: {this.props.swiftCode} </Text>
+          <Text> Beneficiary Address: { this.props.beneficiaryAddress } </Text>
           <Text> Beneficiary Country: {this.props.beneficiaryCountry} </Text>
           <Text> Postal Code: {this.props.postalCode} </Text>
           <Text> Street Number: {this.props.streetNumber} </Text>
@@ -423,6 +425,33 @@ export default class BankScreen extends Component {
           
           </FooterTab>
         </Footer>
+
+        {/* modalVisisble */}
+        <Modal
+                visible={this.state.modalVisible}
+                modalTitle={<ModalTitle title="Message" />}
+                modalAnimation={new SlideAnimation({
+                  slideFrom: 'bottom',
+                })}
+                onTouchOutside= { () => {
+                  this.setState({ modalVisible: false });
+                }}
+                width
+                footer={
+                  <ModalFooter>
+                    <ModalButton
+                      text="Exit"
+                      onPress={() => this.setState({ modalVisible: false })}
+                    />
+                  </ModalFooter>
+                }
+              >
+                <ModalContent >
+                  <View style= {{ padding : 12 }}>
+                    <Text >{ this.props.message }</Text>
+                  </View>
+                </ModalContent>
+              </Modal>
       </Container>
     );
   }
@@ -494,5 +523,7 @@ BankScreen.propsType={
   branch: PropTypes.string.isRequired,
   selectBranch: PropTypes.func.isRequired,
   errMessage: PropTypes.string.isRequired,
+  modalVisible: PropTypes.bool.isRequired,
+  message: PropTypes.string.isRequired,
 
 }

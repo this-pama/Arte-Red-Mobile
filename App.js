@@ -19,6 +19,7 @@ import { registerForPushNotificationsAsync } from "./controller/api"
 import CommunityScreen from './screen/community'
 import MyAuction from './screen/myAuction'
 import BankController from './controller/bank'
+import WithdrawScreen from './screen/withdraw'
 
 export default class App extends React.Component {
   constructor(props) {

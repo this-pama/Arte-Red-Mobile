@@ -44,6 +44,8 @@ import {connect} from 'react-redux'
             isGhana: false,
             ghanaBranchCode: '',
             branch: '',
+            message: '',
+            modalVisible: false,
 
         }
     }
@@ -142,13 +144,15 @@ import {connect} from 'react-redux'
         if(!res.success ){
           this.setState({
             spin: false,
-            errMessage: 'Error occured'
+            message: 'Error occured',
+            modalVisible: true
           });
         }
         else{
             this.setState({
               spin: false,
-              errMessage: 'Successfully saved'
+              message: 'Successfully saved',
+              modalVisible: true
             });
             // this.props.addBankAction(res)
         }
@@ -748,6 +752,8 @@ import {connect} from 'react-redux'
                 branchList = { this.state.branchList }
                 selectBranch= { this.selectBranch }
                 errMessage= { this.state.errMessage}
+                message= { this.state.message }
+                modalVisible = { this.selectBank.modalVisible }
             />
         )
     }

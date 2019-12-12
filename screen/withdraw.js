@@ -38,6 +38,7 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
         isWalletFetch: false,
         showTransactionDetails: false,
         processWithdrawal: true,
+        token: '',
     }
 }
 
@@ -116,6 +117,24 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
     }
   };
 
+  handleToken = token => {
+    if (token.length > 0 ) {
+      this.setState(
+        {
+          token,
+          errMessage: ''
+        },
+        this.validateFormAmount
+      );
+    } else {
+      this.setState({
+        token: '',
+        errMessage: 'Token is required'
+      });
+    }
+  };
+
+
   selectCurrency = currency => {
     if (currency == "Other Currency") {
       this.setState(
@@ -182,7 +201,8 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         amount : this.state.amount,
-        currency: this.state.currency
+        currency: this.state.currency,
+        token: this.state.token
       })
     });
     var response = await result;
@@ -367,6 +387,10 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
         </Body>
         <Text>Amount: {this.state.data.currency } {this.state.data.amount } </Text>
         <Text>Service charge: {this.state.data.currency } {this.state.data.fee}</Text>
+        <Item stackedLabel>
+          <Label>Token</Label>
+          <Input onChangeText= {this.handleToken  } value={this.state.token}  keyboardType='default' />
+        </Item>
 
         { this.state.data.amount ? (
             <View style={{ paddingTop: 20 }}>
@@ -374,7 +398,7 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
                   disabled={ this.state.data.amount ? false : true }
                   onPress={ this.processWithdrawal }
               >
-                  { this.state.processWithdrawal ? <Text> Withdraw </Text> : <Spinner color='white' /> }
+                  { this.state.processWithdrawal ? <Text> Cash Out </Text> : <Spinner color='white' /> }
               </Button>
             </View>
             ) : null }

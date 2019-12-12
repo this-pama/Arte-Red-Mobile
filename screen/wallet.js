@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Header, Left, Button,Icon, Body,Title,Right,
-Text, Label, Footer, Content, List, ListItem, Spinner } from 'native-base';
+Text, Label, Footer, FooterTab, Content, List, ListItem, Spinner } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { View } from "react-native"
 import FooterTabs from './wallet/footer';
@@ -96,8 +96,8 @@ class WalletScreen extends Component {
   render() {
 
     const transaction =  this.state.data.transaction ? (
-      this.state.data.transaction.map((elem, index) =>(
-        <ListItem key={index} noIndent style={{ backgroundColor: !elem.debit ? "#e6f7ff"  : '#f2f2f2' }}>
+      this.state.data.transaction.reverse().map((elem, index) =>(
+        <ListItem key={index} noIndent style={{ backgroundColor: !elem.debit ? "#ffffff"  : '#f2f2f2' }}>
         <Left>
           <Text>{elem.currency} {elem.amount}</Text>
           {/* <Text note>{new Date(elem.date).toLocaleDateString()}  {new Date(elem.date).toLocaleTimeString()}</Text> */}
@@ -168,13 +168,28 @@ class WalletScreen extends Component {
               {this.state.history ? <History withdraws={this.state.withdraws} /> : null}
 
           </Content>
-          <FooterTabs 
-              navigation={this.props.navigation}
-              myDetail= { this.myDetails}
-              history={ this.history}
-              activeDetails= { this.state.activeDetails}
-              activeHistory= { this.state.activeHistory}
-          />
+          <Footer >
+            <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+              <Button vertical active
+              // onPress={()=> this.props.navigation.navigate("Home")}
+              >
+                <Icon name="stats" />
+                <Text>Stats</Text>
+              </Button>
+          
+              <Button vertical 
+                onPress={()=> this.props.navigation.navigate("Withdraw")} >
+                <Icon active name="open" />
+              <Text>Withdraw</Text>
+              </Button>
+              <Button vertical 
+                onPress={()=> this.props.navigation.navigate("BankDetails")} >
+                <Icon name="home" />
+                <Text>Bank</Text>
+              </Button>
+            
+            </FooterTab>
+          </Footer>
 
           {/* modalVisisble */}
         <Modal

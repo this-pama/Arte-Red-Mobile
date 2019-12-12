@@ -141,7 +141,7 @@ class DrawerScreen extends Component {
     const community = (
       <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "red" }}>
+              <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="people" />
               </Button>
             </Left>
@@ -188,7 +188,7 @@ class DrawerScreen extends Component {
     const activities = (
       <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "red" }}>
+              <Button style={{ backgroundColor: "#990000" }}>
                 <Icon active name="pulse" />
               </Button>
             </Left>
@@ -248,14 +248,14 @@ class DrawerScreen extends Component {
               <Icon active name="arrow-forward" />
             </Right>
           </ListItem>
-          {/* { this.props.userId  && this.props.userId.length > 0 ? wallet : null } */}
+          { this.props.userId  && this.props.userId.length > 0 ? wallet : null }
           { this.props.userId  && this.props.userId.length > 0 ? activities : null }
           {/* { this.props.userId  && this.props.userId.length > 0 ? myNegotiations : null }
           { this.props.userId  && this.props.userId.length > 0 ? myAuctions : null }
           { this.props.userId  && this.props.userId.length > 0 ? myExhibition : null } */}
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#990000" }}>
+              <Button style={{ backgroundColor: "red" }}>
                 <Icon active name="md-cog" />
               </Button>
             </Left>

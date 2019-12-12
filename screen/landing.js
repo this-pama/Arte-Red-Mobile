@@ -25,7 +25,7 @@ class LandingScreen extends React.Component{
         return (
             <Container >
                 
-                <ImageBackground imageStyle={{resizeMode:"cover"}} source={ require("../assets/bg.jpg")} style={{ flex: 1 }}>
+                <ImageBackground imageStyle={{resizeMode:"cover"}} source={ require("../assets/bg1.jpeg")} style={{ flex: 1 }}>
                 <Content>
                     <Body style={{ paddingTop: 100, paddingBottom: 60 }}>
                         <Image source={ require("../assets/logo.jpg")} 

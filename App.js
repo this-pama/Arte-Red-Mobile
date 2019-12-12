@@ -20,6 +20,7 @@ import CommunityScreen from './screen/community'
 import MyAuction from './screen/myAuction'
 import BankController from './controller/bank'
 import WithdrawScreen from './screen/withdraw'
+import WalletScreen from './screen/wallet'
 
 export default class App extends React.Component {
   constructor(props) {

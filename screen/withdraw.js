@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Left, Button,Icon, Body,Title,Right,
 Text, Label, Footer, FooterTab, Content, List, ListItem, Item, Picker,
-Input, Form,  } from 'native-base';
+Input, Form, Spinner,  } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { View, KeyboardAvoidingView } from "react-native"
 import {BackHandler} from "react-native"
@@ -37,6 +37,7 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
         data: {},
         isWalletFetch: false,
         showTransactionDetails: false,
+        processWithdrawal: true,
     }
 }
 
@@ -174,24 +175,21 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
     })
   }
 
-  getWalletBalance= async ()=>{
-    let data = {
-      amount : this.state.amount,
-      currency: this.state.currency
-    }
+  getWalletBalance = async () =>{
     var url = apiUrl + "wallet/withdraw/initiate/" + this.props.userId;
     var result = await fetch(url, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        amount : this.state.amount,
+        currency: this.state.currency
+      })
     });
     var response = await result;
-    console.warn(data)
-    var res = response.json()
-    console.warn(res)
-    if(!res.success){
+    console.warn(response)
+    if(response.status !== 200 ){
       this.setState({
-        message: 'It seems there is an error',
+        message: 'Error occured while verifying wallet details',
         modalVisible: true,
         isWalletFetch: true,
         showBankDetails: true,
@@ -203,27 +201,89 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
         nextBankDetails: false,
       })
     }
-    else if(res.message.includes('Insufficient')){
-      this.setState({ 
-        message: 'Insufficient fund in wallet',
+    else{
+      var res = await response.json();
+      console.warn(res)
+      if (res.success) {
+        this.setState({
+          data: res.message,
+          isWalletFetch: true,
+        })
+      } 
+      else if(res.message.includes('Insufficient')){
+        this.setState({ 
+          message: 'Insufficient fund in wallet',
+          modalVisible: true,
+          isWalletFetch: true,
+        })
+      }
+      else  {
+        this.setState({
+          message: 'It seems there is an error',
+          modalVisible: true,
+          isWalletFetch: true,
+        })
+      }
+    }
+
+  }
+
+  processWithdrawal= async () =>{
+    this.setState({ processWithdrawal : false })
+    var url = apiUrl + "bank/transfer/saved/bank/" + this.props.userId;
+    var result = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        amount : this.state.amount,
+        currency: this.state.currency
+      })
+    });
+    var response = await result;
+    console.warn(response)
+    if(response.status !== 200 ){
+      this.setState({
+        message: 'Transaction Error occured',
         modalVisible: true,
         isWalletFetch: true,
-      })
-    }
-    else if(res.success ){
-      this.setState({
-        data: res.message,
-        isWalletFetch: true,
+        showBankDetails: true,
+        otherCurrency: false,
+        selectCurrency: false,
+        showAmount: false,
+        nextAmount: false,
+        showBankDetails: false,
+        nextBankDetails: false,
+        processWithdrawal: true
       })
     }
     else{
-      this.setState({
-        message: 'It seems there is an error',
-        modalVisible: true,
-        isWalletFetch: true,
-      })
+      var res = await response.json();
+      console.warn(res)
+      if(res.success) {
+        this.setState({
+          message: "Transaction successful",
+          modalVisible: true,
+          isWalletFetch: true,
+          processWithdrawal: true
+        })
+      } 
+      else if(res.message.includes('Insufficient')){
+        this.setState({ 
+          message: 'Insufficient fund in wallet',
+          modalVisible: true,
+          isWalletFetch: true,
+          processWithdrawal: true
+        })
+      }
+      else  {
+        this.setState({
+          message: 'It seems there is an error',
+          modalVisible: true,
+          isWalletFetch: true,
+          processWithdrawal: true
+        })
+      }
     }
-
   }
 
   validateFormAmount = () => {
@@ -303,10 +363,22 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
     const showTransactionDetails = (
       <View style={{ padding: 20 }}>
         <Body>
-          <Text>Transaction Details</Text>
+          <Text style={{ fontWeight: 'bold', padding: 12 }}>Transaction Details</Text>
         </Body>
-        <Text>Amount: {this.state.data.currency }{this.state.data.amount } </Text>
-        <Text>Service charge: {this.state.data.fee}</Text>
+        <Text>Amount: {this.state.data.currency } {this.state.data.amount } </Text>
+        <Text>Service charge: {this.state.data.currency } {this.state.data.fee}</Text>
+
+        { this.state.data.amount ? (
+            <View style={{ paddingTop: 20 }}>
+              <Button  block danger 
+                  disabled={ this.state.data.amount ? false : true }
+                  onPress={ this.processWithdrawal }
+              >
+                  { this.state.processWithdrawal ? <Text> Withdraw </Text> : <Spinner color='white' /> }
+              </Button>
+            </View>
+            ) : null }
+        
       </View>
     )
 
@@ -319,7 +391,7 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
             </Button>
           </Left>
           <Body>
-            <Title>Withdraw</Title>
+            <Title>Cash Out</Title>
           </Body>
           <Right>
             <Button transparent>
@@ -333,7 +405,7 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
                 { this.state.showAmount ? showAmount : null }
                 { this.state.showBankDetails ? bankDetails : null }
 
-                { this.state.isWalletFetch && this.state.showTransactionDetails ? showTransactionDetails : null}
+                { this.state.showTransactionDetails ? ( this.state.isWalletFetch  ? showTransactionDetails : <Spinner color='red' /> ) : null}
 
             </KeyboardAvoidingView>
 
@@ -352,7 +424,7 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
               <View style={{ padding: 20 }}>
               <Button  block danger 
                   // disabled={ this.state.myBank.accountNumber && this.state.myBank.bankName ? false : true }
-                  onPress={()=> this.nextBankDetails }
+                  onPress={ this.nextBankDetails }
               >
                   <Text> Next </Text>
               </Button>

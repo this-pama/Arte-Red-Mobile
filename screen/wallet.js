@@ -14,6 +14,7 @@ import { getBankDetailsAction } from "../redux/getBankDetails"
 import BankDetail from './wallet/bankDetails';
 import History from "./wallet/history"
 import {BackHandler} from "react-native"
+import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTitle, } from 'react-native-modals';
 
 class WalletScreen extends Component {
   constructor(props){
@@ -27,7 +28,9 @@ class WalletScreen extends Component {
       totalEarning: 0,
       totalWithdraws: 0,
       activeDetails: false,
-      activeHistory: true
+      activeHistory: true,
+      message: '',
+      data: {},
     }
   }
 
@@ -36,42 +39,6 @@ class WalletScreen extends Component {
   }
 
  async componentDidMount(){
-    if(!( "walletId" in this.props.profile)){
-      this.setState({ isFetch: false })
-    }
-    else{
-      const url = apiUrl + "wallet/" + this.props.profile.walletId;
-       var result = await fetch(url,{
-        headers: { 
-          'content-type': 'application/json',
-          "Authorization": `Bearer ${this.props.jwt}`
-         }
-       })
-       
-        if(result.status !== 200){
-          this.setState({ isFetch: true })
-        }
-        else {
-          var resp = await result.json()
-          // console.warn(resp)
-          if(resp._id){
-            this.setState({
-              wallet: resp.wallet,
-              withdrawable: resp.withdrawable,
-              withdraws: resp.withdraws,
-              totalEarning: resp.totalEarning,
-              totalWithdraws: resp.totalWithdraws,
-              isFetch: true,
-              myDetails: false,
-              history: true
-            })
-          }
-          else{
-            alert("No wallet found")
-          }
-        }
-        
-    }
 
     this.fetchBankDetails()
 
@@ -84,7 +51,7 @@ class WalletScreen extends Component {
   }
 
   fetchBankDetails=async ()=>{
-      const url = apiUrl + "wallet/bank/" + this.props.userId;
+      const url = apiUrl + "wallet/mywallet/" + this.props.userId;
        var result = await fetch(url,{
         headers: { 
           'content-type': 'application/json',
@@ -93,16 +60,25 @@ class WalletScreen extends Component {
        })
        
         if(result.status !== 200){
-          alert("Error while checking for registered bank details")
+          this.setState({
+            message: 'Error while checking wallet details',
+            isFetch: true
+          })
         }
         else {
           var resp = await result.json()
           // console.warn(resp)
-          if(resp._id){
-            this.props.getBankDetailsAction(resp)
+          if(resp.success){
+            this.setState({
+              data: resp.message,
+              isFetch: true
+            })
           }
           else{
-            alert("No bank found")
+            this.setState({
+              message: 'Error occurred',
+              isFetch: true
+            })
           }
         }
  
@@ -118,9 +94,27 @@ class WalletScreen extends Component {
 
 
   render() {
+
+    const transaction =  this.state.data.transaction ? (
+      this.state.data.transaction.map((elem, index) =>(
+        <ListItem key={index} noIndent style={{ backgroundColor: !elem.debit ? "#e6f7ff"  : '#f2f2f2' }}>
+        <Left>
+          <Text>{elem.currency} {elem.amount}</Text>
+          {/* <Text note>{new Date(elem.date).toLocaleDateString()}  {new Date(elem.date).toLocaleTimeString()}</Text> */}
+        </Left>
+        {/* <Body></Body> */}
+        <Right>
+          {/* <Text> { elem.success ? "Successful" : "Failed" }</Text> */}
+          <Text note>{new Date(elem.date).toLocaleDateString()}  {new Date(elem.date).toLocaleTimeString()}</Text>
+        </Right>
+      </ListItem>
+      ))
+    ) : null 
+
+
       return (
         <Container>
-          <Header  style={{ backgroundColor: "#990000"}}>
+          <Header  style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
             <Left>
               <Button transparent onPress={()=> this.props.navigation.goBack()}>
                 <Icon name="arrow-back" />
@@ -135,33 +129,39 @@ class WalletScreen extends Component {
               </Button>
             </Right>
           </Header>
+          <Content style={{color: "#000000"}}>
           <Grid>
             <Col style={{ backgroundColor: "#e60000", height: 150}}>
               <Body style={{ color: "#ffffff", justifyContent: "center", alignItems: "center",  alignContent: "center" }}>
                       <Icon name="cash" style={{color: "#ffffff" }} />
                       <Text style={{color: "#ffffff", fontWeight: "bold" }}>Total Earning</Text>
-                      <Text style={{color: "#ffffff" }}>NGN {this.state.totalEarning}</Text>
+                      <Text style={{color: "#ffffff" }}>{this.state.data.currency} {this.state.data.totalEarning}</Text>
               </Body>
             </Col>
             <Col style={{ backgroundColor: "#cc0000", height: 150}}>
               <Body style={{ justifyContent: "center", alignItems: "center",  alignContent: "center", color: "#ffffff" }}>
                       <Icon name="cash" style={{color: "#ffffff" }} />
                       <Text style={{color: "#ffffff", fontWeight: "bold" }}>Balance</Text>
-                      <Text style={{color: "#ffffff" }}>NGN {this.state.wallet}</Text>
+                      <Text style={{color: "#ffffff" }}>{this.state.data.currency} {this.state.data.withdrawable}</Text>
               </Body>
             </Col>
             <Col style={{ backgroundColor: "#e60000", height: 150 }}>
               <Body style={{ justifyContent: "center", alignItems: "center",  alignContent: "center", color: "#ffffff" }} >
                       <Icon  name="cash" style={{color: "#ffffff" }}/>
                       <Text style={{color: "#ffffff", fontWeight: "bold" }} >Ledger Balance</Text>
-                      <Text style={{color: "#ffffff" }} >NGN {this.state.withdrawable}</Text>
+                      <Text style={{color: "#ffffff" }} >{this.state.data.currency} {this.state.data.currentBalance}</Text>
               </Body>
             </Col>
           </Grid>
-          <Content style={{color: "#000000", padding: 10 }}>
-            {!this.state.isFetch ? (<Body>
-                                      <Spinner color="red" />
-                                    </Body>) : null }
+          
+            {!this.state.isFetch ? (<Body><Spinner color="red" /></Body>) : null }
+
+              <View>
+                {/* <Text>History</Text> */}
+                <List>
+                  { transaction }
+                </List>
+              </View>
               
               {this.state.myDetails ? <BankDetail /> : null}
 
@@ -175,6 +175,36 @@ class WalletScreen extends Component {
               activeDetails= { this.state.activeDetails}
               activeHistory= { this.state.activeHistory}
           />
+
+          {/* modalVisisble */}
+        <Modal
+                visible={this.state.modalVisible}
+                modalTitle={<ModalTitle title="Message" />}
+                modalAnimation={new SlideAnimation({
+                  slideFrom: 'bottom',
+                })}
+                onTouchOutside= { () => {
+                  this.setState({ modalVisible: false });
+                }}
+                width
+                footer={
+                  <ModalFooter>
+                    <ModalButton
+                      text="Exit"
+                      onPress={() => this.setState({ modalVisible: false })}
+                    />
+                  </ModalFooter>
+                }
+              >
+                <ModalContent >
+                  <View style= {{ padding : 12 }}>
+                    <Body>
+                      <Text >{ this.state.message }</Text>
+                    </Body>
+                  </View>
+                </ModalContent>
+              </Modal>
+
         </Container>
       )
   }

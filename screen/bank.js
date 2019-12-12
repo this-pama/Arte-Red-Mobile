@@ -428,7 +428,7 @@ export default class BankScreen extends Component {
 
         {/* modalVisisble */}
         <Modal
-                visible={this.state.modalVisible}
+                visible={this.props.modalVisible}
                 modalTitle={<ModalTitle title="Message" />}
                 modalAnimation={new SlideAnimation({
                   slideFrom: 'bottom',

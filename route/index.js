@@ -48,6 +48,7 @@ import EditExhibitionScreen from '../screen/editExhibition'
 import Community from '../screen/community'
 import Activities from '../screen/activity'
 import BankDetails from '../screen/wallet/bankDetails'
+import FundWallet  from '../screen/fundWallet'
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -146,6 +147,7 @@ const switchNavigator = createSwitchNavigator({
   Wallet: WalletScreen,
   Bank: BankScreen,
   BankDetails,
+  FundWallet,
   Withdraw: WithdrawScreen,
   App: StackNavigator,
 },

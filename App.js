@@ -21,6 +21,7 @@ import MyAuction from './screen/myAuction'
 import BankController from './controller/bank'
 import WithdrawScreen from './screen/withdraw'
 import WalletScreen from './screen/wallet'
+import FundWalletScreen from './screen/fundWallet'
 
 export default class App extends React.Component {
   constructor(props) {

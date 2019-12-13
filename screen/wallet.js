@@ -44,7 +44,7 @@ class WalletScreen extends Component {
 
     // handle hardware back button press
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      this.props.navigation.goBack()
+      this.props.navigation.navigate('Home')
       return true
     });
 
@@ -116,7 +116,7 @@ class WalletScreen extends Component {
         <Container>
           <Header  style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
             <Left>
-              <Button transparent onPress={()=> this.props.navigation.goBack()}>
+              <Button transparent onPress={()=> this.props.navigation.navigate('Home')}>
                 <Icon name="arrow-back" />
               </Button>
             </Left>
@@ -176,7 +176,13 @@ class WalletScreen extends Component {
                 <Icon name="stats" />
                 <Text>Stats</Text>
               </Button>
-          
+
+              <Button vertical 
+                onPress={()=> this.props.navigation.navigate("FundWallet")} >
+                <Icon active name="cash" />
+              <Text>Fund</Text>
+              </Button>
+
               <Button vertical 
                 onPress={()=> this.props.navigation.navigate("Withdraw")} >
                 <Icon active name="open" />

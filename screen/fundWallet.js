@@ -426,6 +426,7 @@ initiatePayment= async () =>{
                   showPin: true,
                   showCard: false,
                   showAmount: false,
+                  showAddress: false,
                   errMessage: "Input Card PIN",
                   nextCard: false,
                   authMode: res.data.data.suggested_auth,
@@ -439,6 +440,7 @@ initiatePayment= async () =>{
                 showPin: false,
                 showCard: false,
                 showAmount: false,
+                showAddress: false,
                 errMessage: res.instruction,
                 nextCard: false,
                 otpReference: res.reference,
@@ -497,6 +499,7 @@ initiatePayment= async () =>{
             showCard: false,
             showWebView: false,
             nextCard: false,
+            showAddress: false,
             errMessage: res.instruction
         })
       }

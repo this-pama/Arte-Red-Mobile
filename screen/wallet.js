@@ -40,7 +40,7 @@ class WalletScreen extends Component {
 
  async componentDidMount(){
 
-    this.fetchBankDetails()
+    this.fetchWalletDetails()
 
     // handle hardware back button press
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -50,7 +50,7 @@ class WalletScreen extends Component {
 
   }
 
-  fetchBankDetails=async ()=>{
+  fetchWalletDetails=async ()=>{
       const url = apiUrl + "wallet/mywallet/" + this.props.userId;
        var result = await fetch(url,{
         headers: { 
@@ -99,10 +99,14 @@ class WalletScreen extends Component {
       this.state.data.transaction.reverse().map((elem, index) =>(
         <ListItem key={index} noIndent style={{ backgroundColor: !elem.debit ? "#ffffff"  : '#f2f2f2' }}>
         <Left>
-          <Text>{elem.currency} {elem.amount}</Text>
+            {/* <Button style={{ backgroundColor: "red" }}> */}
+              <Icon name = {elem.debit ? 'arrow-up' : 'arrow-down'}  />
+            {/* </Button> */}
+            <Text>{elem.currency} {elem.amount}</Text>
+          
           {/* <Text note>{new Date(elem.date).toLocaleDateString()}  {new Date(elem.date).toLocaleTimeString()}</Text> */}
         </Left>
-        {/* <Body></Body> */}
+        {/* <Body><Text>{elem.currency} {elem.amount}</Text></Body> */}
         <Right>
           {/* <Text> { elem.success ? "Successful" : "Failed" }</Text> */}
           <Text note>{new Date(elem.date).toLocaleDateString()}  {new Date(elem.date).toLocaleTimeString()}</Text>

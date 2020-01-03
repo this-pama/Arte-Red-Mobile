@@ -131,7 +131,10 @@ export default class BankScreen extends Component {
       </Form>
       <View style={{ padding : 10}}>
       <Button  block danger 
-          // disabled={this.props.disable}
+          disabled={this.props.accountNumber.length <= 0 || this.props.firstName.length <= 0 ||
+            this.props.lastName.length <= 0 || this.props.internationalBankName.length <= 0 ||
+            this.props.email.length <= 0 || this.props.routingNumber.length <= 0 ||
+            this.props.swiftCode.length <= 0 || this.props.beneficiaryAddress.length <= 0 ? true : false }
           onPress={this.props.next }
       >
           <Text> Next </Text>
@@ -183,7 +186,10 @@ export default class BankScreen extends Component {
       </Form>
       <View style={{ padding : 10}}>
         <Button  block danger 
-            // disabled={this.props.disable}
+            disabled={this.props.accountNumber.length <= 0 || this.props.firstName.length <= 0 ||
+              this.props.lastName.length <= 0 || this.props.internationalBankName.length <= 0 ||
+              this.props.email.length <= 0 || this.props.routingNumber.length <= 0 ||
+              this.props.swiftCode.length <= 0 || this.props.beneficiaryAddress.length <= 0 ? true : false }
             onPress={this.props.next }
         >
             <Text> Next </Text>
@@ -225,10 +231,10 @@ export default class BankScreen extends Component {
           </Item>
           <Item stackedLabel>
               <Label>Beneficiary Address</Label>
-              <Input onChangeText= { this.props.handleBeneficiaryAddress} value={this.props.beneficiaryAddress}   />
+              <Input onChangeText= { this.props.handleBeneficiaryAddress } value={this.props.beneficiaryAddress}   />
           </Item>
           <Item stackedLabel>
-              <Label>Beneficiary Country</Label>
+              <Label>Beneficiary Country Code</Label>
               <Input onChangeText= { this.props.handleBeneficiaryCountry} value={this.props.beneficiaryCountry}   />
           </Item>
           <Item stackedLabel>
@@ -250,7 +256,12 @@ export default class BankScreen extends Component {
       </Form>
       <View style={{ padding : 10}}>
       <Button  block danger 
-          // disabled={this.props.disable}
+          disabled={this.props.accountNumber.length <= 0 || this.props.firstName.length <= 0 ||
+            this.props.lastName.length <= 0 || this.props.internationalBankName.length <= 0 ||
+            this.props.email.length <= 0 || this.props.routingNumber.length <= 0 || 
+            this.props.swiftCode.length <= 0 || this.props.beneficiaryAddress.length <= 0 || 
+            this.props.beneficiaryCountry.length <= 0 || this.props.postalCode.length <= 0 ||
+            this.props.streetNumber.length <= 0 || this.props.streetName.length <= 0 || this.props.city.length <= 0 ? true : false}
           onPress={this.props.next }
       >
           <Text> Next </Text>
@@ -262,7 +273,8 @@ export default class BankScreen extends Component {
     const next =(
       <View style={{ padding : 10}}>
         <Button  block danger 
-            // disabled={this.props.disable}
+            disabled={this.props.accountNumber.length <= 0 || this.props.firstName.length <= 0 ||
+              this.props.lastName.length <= 0 || this.props.email.length <= 0  ? true : false}
             onPress={this.props.next }
         >
             <Text> Next </Text>

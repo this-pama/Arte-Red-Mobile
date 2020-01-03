@@ -364,8 +364,6 @@ import {connect} from 'react-redux'
           ghanaBranchCode = branchEle.BranchCode
         }
 
-        console.warn('branch', branch)
-        console.warn('branch code ', ghanaBranchCode )
         this.setState({ ghanaBranchCode })
 
 
@@ -580,7 +578,7 @@ import {connect} from 'react-redux'
         } else {
           this.setState({
             beneficiaryCountry: '',
-            errMessage: 'Country cannot be empty or more than 2 letters'
+            errMessage: 'Country code must be 2 letters'
           });
         }
       };

@@ -445,15 +445,13 @@ export default class BankScreen extends Component {
                 modalAnimation={new SlideAnimation({
                   slideFrom: 'bottom',
                 })}
-                onTouchOutside= { () => {
-                  this.setState({ modalVisible: false });
-                }}
+                onTouchOutside= { this.props.onTouchOutside }
                 width
                 footer={
                   <ModalFooter>
                     <ModalButton
                       text="Exit"
-                      onPress={() => this.setState({ modalVisible: false })}
+                      onPress={this.props.onTouchOutside }
                     />
                   </ModalFooter>
                 }
@@ -537,5 +535,6 @@ BankScreen.propsType={
   errMessage: PropTypes.string.isRequired,
   modalVisible: PropTypes.bool.isRequired,
   message: PropTypes.string.isRequired,
+  onTouchOutside: PropTypes.func.isRequired,
 
 }

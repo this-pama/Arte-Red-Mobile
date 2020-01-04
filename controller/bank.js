@@ -141,6 +141,7 @@ import {connect} from 'react-redux'
         });
         var response = await result;
         var res = await response.json();
+        console.warn(res)
         if(!res.success ){
           this.setState({
             spin: false,
@@ -690,6 +691,10 @@ import {connect} from 'react-redux'
         }
       };
 
+      onTouchOutside=  () => {
+        this.setState({ modalVisible: false });
+      }
+
 
     render(){
         return(
@@ -751,7 +756,8 @@ import {connect} from 'react-redux'
                 selectBranch= { this.selectBranch }
                 errMessage= { this.state.errMessage}
                 message= { this.state.message }
-                modalVisible = { this.selectBank.modalVisible }
+                modalVisible = { this.state.modalVisible }
+                onTouchOutside = { this.onTouchOutside }
             />
         )
     }

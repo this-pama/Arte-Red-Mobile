@@ -20,6 +20,7 @@ class BankDetail extends Component{
     this.state={
         errMessage: '',
         myBank: {},
+        fetchBank: false,
     }
 }
 
@@ -39,7 +40,7 @@ class BankDetail extends Component{
   }
 
   getMyBankDetails= async ()=>{
-    // this.setState({ fetchBank: true })
+    this.setState({ fetchBank: true })
     var url = apiUrl + "wallet/bank/" + this.props.userId;
     var result = await fetch(url, {
       method: 'GET',
@@ -55,11 +56,11 @@ class BankDetail extends Component{
     if(res.success ){
       this.setState({
         myBank: res.message,
-        // fetchBank: false
+        fetchBank: false
       })
     }
     else{
-      this.setState({ myBank: {}})
+      this.setState({ myBank: {}, fetchBank: false})
     }
     
   }
@@ -84,6 +85,8 @@ class BankDetail extends Component{
           </Right>
         </Header>
         <Content style={{ paddingBottom: 20}}>
+          { this.state.fetchBank ? <Spinner color='red' /> : null }
+          
           <Body><Text style={{ color : 'red'}}>{ this.state.errMessage }</Text></Body>
           <List>
             {/* <ListItem >

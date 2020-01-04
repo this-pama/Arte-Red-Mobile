@@ -256,7 +256,8 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         amount : this.state.amount,
-        currency: this.state.currency
+        currency: this.state.currency,
+        token: this.state.token
       })
     });
     var response = await result;

@@ -8,6 +8,7 @@ import { getUserIdAction } from "../../redux/getUserId"
 import { getUserProfileAction } from "../../redux/userProfileAction"
 import { buyArtworkAction } from "../../redux/buyAction"
 import { raveAction } from "../../redux/raveAction"
+import PaymentScreen from '../pay'
 
 class RaveScreen extends React.Component {
   constructor(props) {
@@ -60,21 +61,7 @@ class RaveScreen extends React.Component {
 
   render() {
     return ( 
-      <Rave 
-        amount={this.props.rave.amount}
-        country="NG" 
-        currency="NGN" 
-        email={this.props.rave.email}
-        firstname={this.props.rave.firstName} 
-        lastname={this.props.rave.lastName}
-        publickey = {ravePublicKey}
-        encryptionkey = {raveEncryption}
-        meta={[{ metaname: "color", metavalue: "red" }, { metaname: "storelocation", metavalue: "ikeja" }]}
-        production={false} 
-        onSuccess={res => this.onSuccess(res)} 
-        onFailure={e => this.onFailure(e)}
-        onClose={e => this.onClose(e)}
-      />
+      <PaymentScreen cost= { this.props.rave} />
     );
   }
 }

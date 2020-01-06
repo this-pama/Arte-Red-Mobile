@@ -556,7 +556,7 @@ class NegotiationScreen extends Component {
              
           </Content>
         
-        { this.state.artwork.userId != this.props.userId ? (
+        
         <Footer >
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
             <Button vertical
@@ -565,6 +565,7 @@ class NegotiationScreen extends Component {
               <Icon name="home" />
               <Text>Home</Text>
             </Button>
+            { this.state.artwork.userId != this.props.userId ? (
             <Button horizontal
              onPress={()=> this.props.navigation.navigate("Buy",
              { routeName: "Negotiation",
@@ -573,8 +574,16 @@ class NegotiationScreen extends Component {
               <Icon name="card"  />
               <Text>Pay</Text>
             </Button>
+            ):(
+            <Button vertical
+              onPress={()=> this.props.navigation.navigate('MyNegotiation')}
+            >
+              <Icon name="notifications" />
+              <Text>My Negotiation</Text>
+            </Button>
+            )}
           </FooterTab>
-        </Footer>) : null }
+        </Footer>
         
       </Container>
     );

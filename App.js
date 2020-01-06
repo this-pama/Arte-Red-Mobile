@@ -22,6 +22,7 @@ import BankController from './controller/bank'
 import WithdrawScreen from './screen/withdraw'
 import WalletScreen from './screen/wallet'
 import FundWalletScreen from './screen/fundWallet'
+import PaymentScreen from './screen/pay'
 
 export default class App extends React.Component {
   constructor(props) {

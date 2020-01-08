@@ -46,7 +46,7 @@ class NegotiationScreen extends Component {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount = async () =>{
     this.setState({
       artwork: {
         price: 0

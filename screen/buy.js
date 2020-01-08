@@ -414,6 +414,7 @@ class BuyScreen extends Component {
                   quantity: this.state.quantity,
                   artworkId: this.state.artwork._id,
                   currency: this.state.artwork.currency,
+                  userId: this.props.userId,
                   // firstName: this.state.firstName,
                   // lastName: this.state.lastName,
                   // email: this.state.email
@@ -471,7 +472,7 @@ class BuyScreen extends Component {
         }
       >
         <ModalContent >
-          <View style= {{ padding : 12 }}>
+          <View style= {{ padding : 12, paddingBottom: 30 }}>
             <Body>
               <Text >{ this.state.message }</Text>
             </Body>

@@ -282,11 +282,12 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
       console.warn(res)
       if(res.success) {
         this.setState({
-          message: "Transaction successful",
-          modalVisible: true,
+          // message: "Transaction successful",
+          // modalVisible: true,
           isWalletFetch: true,
           processWithdrawal: true
         })
+        this.props.navigation.navigate("Wallet")
       } 
       else if(res.message.includes('Insufficient')){
         this.setState({ 

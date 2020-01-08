@@ -1,5 +1,5 @@
 import React from 'react';
-import Rave from 'react-native-rave';
+// import Rave from 'react-native-rave';
 import { StyleSheet, Text, View } from 'react-native';
 import { ravePublicKey, raveEncryption, apiUrl } from "./env"
 import {connect} from 'react-redux'
@@ -61,7 +61,7 @@ class RaveScreen extends React.Component {
 
   render() {
     return ( 
-      <PaymentScreen cost= { this.props.rave} />
+      <PaymentScreen cost= { this.props.rave} navigation={ this.props.navigation} />
     );
   }
 }

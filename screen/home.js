@@ -393,7 +393,9 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
        this.state = {
          likeCount :  0,
          color: "blue",
-         unlikeColor: "blue"
+         unlikeColor: "blue",
+         modalVisible: false,
+         message: ''
 
        }
      }
@@ -422,6 +424,14 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
               type: 'danger'
             })
           }
+
+          if(artwork.quantitySold >= artwork.numberAvailable){
+            this.setState({
+              modalVisible: true,
+              message: "Artwork is Sold Out"
+            })
+            return
+          }
           
          await  this.props.buyArtworkAction({id: artwork._id})
           this.props.navigation.navigate("Negotiation", { routeName: "Home",
@@ -429,7 +439,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
         })} 
           }>
             {/* <Icon active name="pricetag" /> */}
-            <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
+            <Text>{artwork.currency} {artwork.price  ? artwork.price : 0 }</Text>
         </Button>
       )
 
@@ -601,7 +611,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
               <Icon active name="chatbubbles" />
               <Text>{ artwork.comment.length <=  0 ? 0 : artwork.comment.length }</Text>
             </Button>
-            
+
           </Body>
           <Right>
           { artwork.forSale ? forSale(artwork) : 
@@ -611,24 +621,48 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
           </Right>
         </CardItem>
         <CardItem >
-        {/* <AirbnbRating
-          count={10}
-          reviews={["Terrible", "Bad", "Fair", "Good", "Amazing", "Awesome",  "Wow", "Incredible", "Unbelievable", "Great"]}
-          defaultRating={ artwork.rating }
-          size={20}
-          reviewSize={ 15 }
-          selectedColor= "red"
-          reviewColor="blue"
-          onFinishRating={rate =>{
-              rating({
-                rating: rate,
-                artworkId: artwork._id,
-                jwt: this.props.jwt.jwt,
-                userId: this.props.userId
-              })
-          }}
-        /> */}
+          <Left></Left>
+          <Body>
+          { artwork.quantitySold > 0 ? (
+            <Button transparent>
+              <Icon style={{ color : "red" }} name="arrow-up"  />
+              <Text> { artwork.quantitySold >= artwork.numberAvailable  ? 'Sold Out' : ( artwork.quantitySold > 0 ? `${artwork.quantitySold} Sold. ${artwork.quantitySold - artwork.numberAvailable} Available` : null )  } </Text>
+            </Button>
+            ) : null 
+          }
+          </Body>
+          <Right></Right>
         </CardItem>
+
+        <Modal
+                visible={this.state.modalVisible}
+                modalTitle={<ModalTitle title="Message" />}
+                modalAnimation={new SlideAnimation({
+                  slideFrom: 'bottom',
+                })}
+                onTouchOutside={() => {
+                  this.setState({ modalVisible: false });
+                }}
+                width
+                footer={
+                  <ModalFooter>
+                    <ModalButton
+                      text="Exit"
+                      onPress={() => this.setState({ modalVisible: false })}
+                    />
+                  </ModalFooter>
+                }
+              >
+                <ModalContent >
+                  <View style={{ padding: 20, paddingBottom: 40 }}>
+                    <Body>
+                      <Text>{ this.state.message }</Text>
+                    </Body>
+                  </View>
+                </ModalContent>
+              </Modal>
+
+
       </Card>
        )
      }

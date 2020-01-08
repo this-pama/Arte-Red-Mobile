@@ -51,6 +51,7 @@ class PaymentScreen extends Component{
         otp: '',
         otpReference: '',
         fetched: true,
+        showSuccess: false,
     }
 }
 
@@ -103,7 +104,7 @@ class PaymentScreen extends Component{
             wallet: {},
             message: "Error occurred while getting your wallet details", 
             modalVisible: true, 
-            })
+          })
         }
     }
     
@@ -186,10 +187,14 @@ class PaymentScreen extends Component{
         // console.warn('response message', res.message)
         if(res.success ){
           this.setState({
-            message: 'Transaction successful',
-            modalVisible: true,
-            showAmount: true,
+            // message: 'Transaction successful',
+            // modalVisible: true,
             showOtp: false,
+          showPin: false,
+          showCard: false,
+          showAmount: false,
+          showAddress: false,
+          showSuccess: true,
             fetched : true,
             errMessage: '',
           })
@@ -257,7 +262,7 @@ class PaymentScreen extends Component{
         errMessage: 'Input Billing Country'
       });
     }
-  };
+  }
 
   handleBillingCity = billingcity => {
     if (billingcity) {
@@ -297,8 +302,8 @@ class PaymentScreen extends Component{
 
 
   validateFormAmount = () => {
-    if( +this.state.amount > 0 && this.state.currency.length > 0 && 
-      this.state.currency.length < 4){
+    if( +this.props.cost.total > 0 && this.props.cost.currency.length > 0 && 
+      this.props.cost.currency.length < 4){
         this.setState({ disable: false, errMessage: ''})
       }
       else{
@@ -330,9 +335,111 @@ class PaymentScreen extends Component{
       }
 }
 
+payWithWallet = async () =>{
+  this.setState({ processWithdrawal : false })
+  var url = apiUrl + "buy/payment/wallet/" + this.props.userId + "/" + this.props.cost.artworkId;
+  this.setState({ fetched : false })
+    // make card request to server
+    var result = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        amount: this.props.cost.total,
+        currency: this.props.cost.currency,
+        quantity : this.props.cost.quantity
+      })
+    });
+    var response = await result;
+    if(response.status !== 200 ){
+      this.setState({
+        message: 'Transaction Error occured',
+        modalVisible: true,
+        fetched : true
+      })
+    }
+    else{
+      var res = await response.json();
+      console.warn(res)
+      if(res.success) {
+        this.setState({
+          showOtp: false,
+          showPin: false,
+          showCard: false,
+          showAmount: false,
+          showAddress: false,
+          showSuccess: true,
+          errMessage: "",
+          nextCard: false,
+          fetched : true
+        })
+      }
+      else if( res.message.includes('above available quantity')){
+        this.setState({
+          showOtp: false,
+          showPin: false,
+          showCard: false,
+          showAmount: true,
+          showAddress: false,
+          showSuccess: false,
+          errMessage: "",
+          nextCard: false,
+          fetched : true,
+          message: res.message,
+          modalVisible: true,
+        })
+      }
+      else if( res.message.includes('Insufficient')){
+        this.setState({
+          showOtp: false,
+          showPin: false,
+          showCard: false,
+          showAmount: true,
+          showAddress: false,
+          showSuccess: false,
+          errMessage: "",
+          nextCard: false,
+          fetched : true,
+          message: res.message,
+          modalVisible: true,
+        })
+      }
+      else if( res.message.includes('less than actual amount')){
+        this.setState({
+          showOtp: false,
+          showPin: false,
+          showCard: false,
+          showAmount: true,
+          showAddress: false,
+          showSuccess: false,
+          errMessage: "",
+          nextCard: false,
+          fetched : true,
+          message: res.message,
+          modalVisible: true,
+        })
+      }
+      else{
+        this.setState({
+          showOtp: false,
+          showPin: false,
+          showCard: false,
+          showAmount: true,
+          showAddress: false,
+          showSuccess: false,
+          errMessage: "",
+          nextCard: false,
+          fetched : true,
+          message: "Transaction failed",
+          modalVisible: true,
+        })
+      }
+    }
+
+}
+
 initiatePayment= async () =>{
     this.setState({ processWithdrawal : false })
-    var url = apiUrl + "wallet/payment/card/" + this.props.userId;
+    var url = apiUrl + "buy/payment/card/" + this.props.userId + "/" + this.props.cost.artworkId;
     const expiry = this.state.expiry.replace('/', '')
     let month = expiry.substring(0, 2);
     let year = expiry.substring(2, this.state.expiry.length - 1);
@@ -341,21 +448,22 @@ initiatePayment= async () =>{
     switch (this.state.authMode) {
       case "PIN":
         data = {
-          amount : this.state.amount,
-          currency: this.state.currency,
+          amount : this.props.cost.total,
+          currency: this.props.cost.currency,
           cardno : this.state.cardno,
           cvv: this.state.cvv,
           expiryMonth : month,
           expiryYear: year,
           pin: this.state.pin,
-          auth: "PIN"
+          auth: "PIN",
+          quantity: this.props.cost.quantity,
         }
         break;
 
       case 'AVS_VBVSECURECODE':
           data = {
-            amount : this.state.amount,
-            currency: this.state.currency,
+            amount : this.props.cost.total,
+            currency: this.props.cost.currency,
             cardno : this.state.cardno,
             cvv: this.state.cvv,
             expiryMonth : month,
@@ -367,14 +475,15 @@ initiatePayment= async () =>{
             billingaddress: this.state.billingaddress,
             billingstate: this.state.billingstate,
             billingcountry: this.state.billingcountry,
+            quantity: this.props.cost.quantity,
           }
         
         break;
 
       case "NOAUTH_INTERNATIONAL":
          data = {
-            amount : this.state.amount,
-            currency: this.state.currency,
+            amount : this.props.cost.total,
+            currency: this.props.cost.currency,
             cardno : this.state.cardno,
             cvv: this.state.cvv,
             expiryMonth : month,
@@ -386,17 +495,19 @@ initiatePayment= async () =>{
             billingaddress: this.state.billingaddress,
             billingstate: this.state.billingstate,
             billingcountry: this.state.billingcountry,
+            quantity: this.props.cost.quantity,
           }
         break;
 
       default: 
       data = {
-        amount : this.state.amount,
-        currency: this.state.currency,
+        amount : this.props.cost.total,
+        currency: this.props.cost.currency,
         cardno : this.state.cardno,
         cvv: this.state.cvv,
         expiryMonth : month,
         expiryYear: year,
+        quantity: this.props.cost.quantity,
       }
     }
 
@@ -426,6 +537,7 @@ initiatePayment= async () =>{
                   showCard: false,
                   showAmount: false,
                   showAddress: false,
+                  showSuccess: false,
                   errMessage: "Input Card PIN",
                   nextCard: false,
                   authMode: res.data.data.suggested_auth,
@@ -440,6 +552,7 @@ initiatePayment= async () =>{
                 showCard: false,
                 showAmount: false,
                 showAddress: false,
+                showSuccess: false,
                 errMessage: res.instruction,
                 nextCard: false,
                 otpReference: res.reference,
@@ -453,6 +566,7 @@ initiatePayment= async () =>{
                 showCard: false,
                 showAmount: false,
                 showAddress: true,
+                showSuccess: false,
                 errMessage: "",
                 nextCard: false,
                 authMode: res.data.data.suggested_auth,
@@ -480,6 +594,7 @@ initiatePayment= async () =>{
                   showOtp: false,
                   showAmount: false,
                   showCard: false,
+                  showSuccess: false,
                   nextCard: false,
                   showWebView: false,
                   showOtp: false,
@@ -489,11 +604,57 @@ initiatePayment= async () =>{
           }
  
       } 
+      else if( res.message.includes('above available quantity')){
+        this.setState({
+          showOtp: false,
+          showPin: false,
+          showCard: false,
+          showAmount: true,
+          showAddress: false,
+          showSuccess: false,
+          errMessage: "",
+          nextCard: false,
+          fetched : true,
+          message: res.message,
+          modalVisible: true,
+        })
+      }
+      else if( res.message.includes('Insufficient')){
+        this.setState({
+          showOtp: false,
+          showPin: false,
+          showCard: false,
+          showAmount: true,
+          showAddress: false,
+          showSuccess: false,
+          errMessage: "",
+          nextCard: false,
+          fetched : true,
+          message: res.message,
+          modalVisible: true,
+        })
+      }
+      else if( res.message.includes('less than actual amount')){
+        this.setState({
+          showOtp: false,
+          showPin: false,
+          showCard: false,
+          showAmount: true,
+          showAddress: false,
+          showSuccess: false,
+          errMessage: "",
+          nextCard: false,
+          fetched : true,
+          message: res.message,
+          modalVisible: true,
+        })
+      }
       else  {
         this.setState({
           message: 'There seems to be an error',
           modalVisible: true,
           showOtp: false,
+          showSuccess: false,
             showAmount: false,
             showCard: false,
             showWebView: false,
@@ -632,6 +793,12 @@ initiatePayment= async () =>{
     </View>
   )
 
+  const showSuccess = (
+    <View style={{ fontSize: 25 }}>
+      <Text>Transaction was successful</Text>
+    </View>
+  )
+
       const run = `
       document.body.style.backgroundColor = 'red';
       true;
@@ -709,7 +876,7 @@ initiatePayment= async () =>{
               <View style={{ paddingTop: 20 }}>
                   <Button  block danger 
                     //   disabled={this.state.disable}
-                    // onPress={ this.initiatePayment }
+                    onPress={ this.initiatePayment }
                 >
                     { this.state.fetched ? <Text> Next </Text> : <Spinner color='white' /> }
                 </Button>
@@ -721,6 +888,8 @@ initiatePayment= async () =>{
           { this.state.showPin ? showPin : null }
 
           { this.state.showAddress ? showAddress : null }
+
+          { this.state.showSuccess ? showSuccess : null }
           
           { this.state.showAmount ? (
             <View>
@@ -737,12 +906,13 @@ initiatePayment= async () =>{
                           
                         })
                       }
-                      else if( this.props.cost.currency != this.state.wallet.currency){
-                        alert('diff currency')
+                      else{
+                        this.payWithWallet()
                       }
                     }}
                   >
                     <Icon active name="cash"  />
+                    { !this.state.fetched ? <Spinner color="whilte" /> : null }
                     <Text>Pay from Wallet</Text>
                   </Button>
                 </View>

@@ -187,13 +187,14 @@ class FundWalletScreen extends Component{
         // console.warn('response message', res.message)
         if(res.success ){
           this.setState({
-            message: 'Transaction successful',
-            modalVisible: true,
+            // message: 'Transaction successful',
+            // modalVisible: true,
             showAmount: true,
             showOtp: false,
             fetched : true,
             errMessage: '',
           })
+          this.props.navigation.navigate("Wallet")
         }
         else{
           this.setState({
@@ -792,7 +793,7 @@ initiatePayment= async () =>{
         }
       >
         <ModalContent >
-          <View style= {{ padding : 12 }}>
+          <View style= {{ padding : 12, paddingBottom: 40 }}>
             <Body>
               <Text >{ this.state.message }</Text>
             </Body>

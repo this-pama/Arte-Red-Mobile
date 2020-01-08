@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, 
-    Toast, Button, Icon, Title, Segment, Spinner } from 'native-base';
+    Toast, Button, Icon, Title, Segment, Spinner, Footer, FooterTab } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {connect} from 'react-redux'
 import { loginAction } from "../../redux/loginAction"
@@ -262,6 +262,23 @@ class ProfileScreen extends Component {
               </ListItem>) }
             </List>
         </Content>
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical 
+              onPress={()=> this.props.navigation.navigate("Network")} >
+              <Icon name="people" />
+              <Text>Network</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
       </Container>
     );}
   }

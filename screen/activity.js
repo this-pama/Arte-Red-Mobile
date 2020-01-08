@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Button, ListItem, Text, Icon, 
-    Title, Left, Body, Right, Toast } from 'native-base';
+    Title, Left, Body, Right, Toast, Footer, FooterTab } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {connect} from 'react-redux'
 import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import { getUserProfileAction } from "../redux/userProfileAction"
 import {Share } from 'react-native';
-import {BackHandler} from "react-native"
+import {BackHandler, View } from "react-native"
 
 class ActivityScreen extends Component {
 
@@ -80,8 +80,38 @@ class ActivityScreen extends Component {
               }}>My Network</Text>
             </Body>
           </ListItem>
+
+          <ListItem icon style={{ paddingTop: 20, paddingBottom: 40 }}>
+            <Left>
+              <Button style={{ backgroundColor: "red" }}>
+                <Icon active name="briefcase" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={()=>{
+                  this.props.navigation.navigate('Sales')
+              }}>My Sales</Text>
+            </Body>
+          </ListItem>
           
         </Content>
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical 
+              onPress={()=> this.props.navigation.navigate("Wallet")} >
+              <Icon name="cash" />
+              <Text>Wallet</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }

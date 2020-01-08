@@ -13,7 +13,7 @@ import { getUserIdAction } from "../redux/getUserId"
 import { getBankDetailsAction } from "../redux/getBankDetails"
 import BankDetail from './wallet/bankDetails';
 import History from "./wallet/history"
-import {BackHandler} from "react-native"
+import {BackHandler, RefreshControl } from "react-native"
 import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTitle, } from 'react-native-modals';
 
 class WalletScreen extends Component {
@@ -31,6 +31,7 @@ class WalletScreen extends Component {
       activeHistory: true,
       message: '',
       data: {},
+      refreshing: false,
     }
   }
 
@@ -93,6 +94,13 @@ class WalletScreen extends Component {
   }
 
 
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.fetchWalletDetails().then(() => {
+      this.setState({refreshing: false});
+    })
+}
+
   render() {
 
     const transaction =  this.state.data.transaction ? (
@@ -133,7 +141,14 @@ class WalletScreen extends Component {
               </Button>
             </Right>
           </Header>
-          <Content style={{color: "#000000"}}>
+          <Content style={{color: "#000000"}}
+          refreshControl={
+            <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+            />
+        }
+        >
           <Grid>
             <Col style={{ backgroundColor: "#e60000", height: 150}}>
               <Body style={{ color: "#ffffff", justifyContent: "center", alignItems: "center",  alignContent: "center" }}>

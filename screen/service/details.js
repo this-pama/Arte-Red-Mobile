@@ -99,7 +99,10 @@ class ArtworkDetailScreen extends Component {
           }
           
         await  this.props.buyArtworkAction({id: artwork._id})
-          this.props.navigation.navigate("Buy", { routeName: "Home"})} 
+        this.props.navigation.navigate("Negotiation", { routeName: "Home",
+          artworkId: artwork._id
+        })
+      } 
           }>
             {/* <Icon active name="pricetag" /> */}
             <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>

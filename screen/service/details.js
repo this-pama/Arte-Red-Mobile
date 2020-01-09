@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Image } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Title, Right, Text, Button, Icon, Left, Body, Spinner } from 'native-base';
+import { Container, Header, Content, Card, CardItem, Title, Right, Text, Button, Icon, Left, Body, Spinner, Footer, FooterTab } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {connect} from 'react-redux'
 import { loginAction } from "../../redux/loginAction"
@@ -13,8 +13,8 @@ import { like, unLike, rating } from "../../controller/api"
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import Lightbox from "react-native-lightbox"
 import { SliderBox } from 'react-native-image-slider-box';
-import {BackHandler} from "react-native"
-
+import {BackHandler, View } from "react-native"
+import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTitle, } from 'react-native-modals';
 
 
 class ArtworkDetailScreen extends Component {
@@ -23,7 +23,9 @@ class ArtworkDetailScreen extends Component {
     this.state={
       artwork: {},
       artworkId: "",
-      fetch: false
+      fetch: false,
+      modalVisible: false,
+      message: ''
     }
   }
 
@@ -97,6 +99,14 @@ class ArtworkDetailScreen extends Component {
               type: 'danger'
             })
           }
+
+          if(artwork.quantitySold >= artwork.numberAvailable){
+            this.setState({
+              modalVisible: true,
+              message: "Artwork is Sold Out"
+            })
+            return
+          }
           
         await  this.props.buyArtworkAction({id: artwork._id})
         this.props.navigation.navigate("Negotiation", { routeName: "Home",
@@ -105,7 +115,7 @@ class ArtworkDetailScreen extends Component {
       } 
           }>
             {/* <Icon active name="pricetag" /> */}
-            <Text>NGN {artwork.price  ? artwork.price : 0 }</Text>
+            <Text>{ artwork.currency } {artwork.price  ? artwork.price : 0 }</Text>
         </Button>
       </Body>
     )
@@ -125,9 +135,16 @@ class ArtworkDetailScreen extends Component {
       const quantity = (
         <Button transparent textStyle={{color: '#87838B'}}
           onPress= {()=> { 
+
+            if(this.state.artwork.quantitySold >= this.state.artwork.numberAvailable){
+              return
+            }
+
             this.props.buyArtworkAction({id: this.state.artwork._id})
-            this.props.navigation.navigate("Buy", {routeName : "Detail"})} 
-          }
+            this.props.navigation.navigate("Negotiation", { routeName: "Home",
+                artworkId: this.state.artwork._id
+            }) 
+          }}
           >
             <Icon name="barcode" />
             <Text>Quantity: {!this.state.artwork.numberAvailable ? "0" : this.state.artwork.numberAvailable }</Text>
@@ -166,7 +183,7 @@ class ArtworkDetailScreen extends Component {
                   <Text note>{!this.state.artwork.size ? null : this.state.artwork.size + " Inches"}</Text>
                   <TouchableOpacity 
                       onPress={()=> this.props.navigation.navigate("Profile", {id: this.state.artwork.userId})}>
-                    <Text style={{color : "blue"}} note >Sponsor</Text>
+                    <Text  note >See Sponsor</Text>
                   </TouchableOpacity>
                 </Body>
               </Left>
@@ -216,14 +233,72 @@ class ArtworkDetailScreen extends Component {
               }
               </Left>
               <Body>
+              { this.state.artwork.quantitySold > 0 ? (
+                <Button transparent>
+                  <Icon style={{ color : "red" }} name="arrow-up"  />
+                  <Text> { this.state.artwork.quantitySold >= this.state.artwork.numberAvailable  ? 'Sold Out' : ( this.state.artwork.quantitySold > 0 ? `${this.state.artwork.quantitySold} Sold, ${this.state.artwork.numberAvailable - this.state.artwork.quantitySold } Available` : null )  } </Text>
+                </Button>
+                ) : null 
+              }
+              </Body>
+              <Right>
                 { this.state.artwork.forSale ? forSale(this.state.artwork) : 
                   (this.state.artwork.showcase ? showcase : 
                     ( this.state.artwork.progressShot ? progressShot : forSale(this.state.artwork)))
                 }
-              </Body>
+              </Right>
+
             </CardItem>
           </Card>
         </Content>
+
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical 
+              onPress={()=> this.props.navigation.navigate("Activities")} >
+              <Icon name="pulse" />
+              <Text>Activities</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
+
+        
+        <Modal
+          visible={this.state.modalVisible}
+          modalTitle={<ModalTitle title="Message" />}
+          modalAnimation={new SlideAnimation({
+            slideFrom: 'bottom',
+          })}
+          onTouchOutside={() => {
+            this.setState({ modalVisible: false });
+          }}
+          width
+          footer={
+            <ModalFooter>
+              <ModalButton
+                text="Exit"
+                onPress={() => this.setState({ modalVisible: false })}
+              />
+            </ModalFooter>
+          }
+        >
+          <ModalContent >
+            <View style={{ padding: 20, paddingBottom: 40 }}>
+              <Body>
+                <Text>{ this.state.message }</Text>
+              </Body>
+            </View>
+          </ModalContent>
+        </Modal>
+
       </Container>
     )
   }

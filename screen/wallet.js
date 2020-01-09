@@ -105,7 +105,7 @@ class WalletScreen extends Component {
 
     const transaction =  this.state.data.transaction ? (
       this.state.data.transaction.reverse().map((elem, index) =>(
-        <ListItem key={index} noIndent style={{ backgroundColor: !elem.debit ? "#ffffff"  : '#f2f2f2' }}>
+        <ListItem key={elem.date} noIndent style={{ backgroundColor: !elem.debit ? "#ffffff"  : '#f2f2f2' }}>
         <Left>
             {/* <Button style={{ backgroundColor: "red" }}> */}
               <Icon name = {elem.debit ? 'arrow-up' : 'arrow-down'}  />

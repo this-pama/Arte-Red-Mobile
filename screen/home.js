@@ -626,7 +626,9 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
           { artwork.quantitySold > 0 ? (
             <Button transparent>
               <Icon style={{ color : "red" }} name="arrow-up"  />
-              <Text> { artwork.quantitySold >= artwork.numberAvailable  ? 'Sold Out' : ( artwork.quantitySold > 0 ? `${artwork.quantitySold} Sold. ${artwork.quantitySold - artwork.numberAvailable} Available` : null )  } </Text>
+              <Text> { artwork.quantitySold >= artwork.numberAvailable  ? 'Sold Out' :  null   } </Text>
+              <Text> {  artwork.quantitySold < artwork.numberAvailable && artwork.quantitySold > 0 ? `${artwork.quantitySold} Sold, ${ artwork.numberAvailable - artwork.quantitySold } Available` : null   } </Text>
+              {/* <Text> {  artwork.quantitySold < artwork.numberAvailable && artwork.quantitySold > 0 ? `${ artwork.numberAvailable - artwork.quantitySold } Available` : null   } </Text> */}
             </Button>
             ) : null 
           }

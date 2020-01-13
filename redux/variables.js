@@ -14,3 +14,5 @@ export const MORE_ARTWORK_DETAILS = "MORE_ARTWORK_DETAILS"
 export const BUY_ARTWORK = "BUY_ARTWORK"
 
 export const RAVE_ACTION  = "RAVE_ACTION"
+
+export const EXPO_TOKEN = 'EXPO_TOKEN'

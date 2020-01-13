@@ -423,19 +423,34 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,
            </Right>
          </CardItem>
          <CardItem >
-           <Left></Left>
-           <Body>
-           { artwork.quantitySold > 0 ? (
-             <Button transparent>
-               <Icon style={{ color : "red" }} name="arrow-up"  />
-               <Text> { artwork.quantitySold >= artwork.numberAvailable  ? 'Sold Out' :  null   } </Text>
-               <Text> {  artwork.quantitySold < artwork.numberAvailable && artwork.quantitySold > 0 ? `${artwork.quantitySold} Sold, ${ artwork.numberAvailable - artwork.quantitySold } Available` : null   } </Text>
-             </Button>
-             ) : null 
-           }
-           </Body>
-           <Right></Right>
-         </CardItem>
+          <Left>
+          { artwork.quantitySold > 0  && artwork.quantitySold < artwork.numberAvailable ? (
+            <Button transparent>
+              <Icon style={{ color : "red" }} name="arrow-up"  />
+              <Text> { artwork.quantitySold} Sold </Text>
+            </Button>
+            ) : null 
+          }
+          </Left>
+          <Body>
+          { artwork.quantitySold > 0 && artwork.quantitySold >= artwork.numberAvailable ? (
+            <Button transparent>
+              <Icon style={{ color : "red" }} name="arrow-up"  />
+              <Text> Sold Out </Text>
+            </Button>
+            ) : null 
+          }
+          </Body>
+          <Right>
+          { artwork.quantitySold > 0  && artwork.quantitySold < artwork.numberAvailable ? (
+            <Button transparent>
+              <Icon style={{ color : "red" }} name="arrow-down"  />
+              <Text> {  artwork.numberAvailable - artwork.quantitySold }  Available</Text>
+            </Button>
+            ) : null 
+          }
+          </Right>
+        </CardItem>
  
          <Modal
                  visible={this.state.modalVisible}

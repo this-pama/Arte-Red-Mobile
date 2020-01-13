@@ -4,7 +4,8 @@ import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Ic
   Toast, Textarea, Spinner, Segment, ActionSheet, ListItem } from 'native-base';
   import { ScrollView, RefreshControl } from 'react-native';
 import FooterScreen from './service/footer'
-import { Permissions } from 'expo';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -14,6 +15,7 @@ import { getUserIdAction } from "../redux/getUserId"
 import { getUserProfileAction } from "../redux/userProfileAction"
 import { buyArtworkAction } from "../redux/buyAction"
 import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
+import { expoTokenAction } from '../redux/expoToken'
 import {connect} from 'react-redux'
 import { like, unLike, rating, registerForPushNotificationsAsync } from "../controller/api"
 import { Rating, AirbnbRating } from 'react-native-ratings';
@@ -52,7 +54,9 @@ class HomeScreen extends Component {
   
   componentDidMount(){
     this.fetchUserProfile()
+    this.getDeviceToken()
 
+    console.warn('expo token', this.props.expoToken )
     if(this.props.image){
       this.setState({ image : this.props.image })
     }
@@ -66,6 +70,7 @@ class HomeScreen extends Component {
     //send device expo token to server
     if(this.props.userId){
       registerForPushNotificationsAsync(this.props.userId)
+      // await this.props.expoTokenAction({token})
     }
     
   }
@@ -380,11 +385,12 @@ class HomeScreen extends Component {
 const mapStateToProps = state => ({
   jwt: state.login,
   userId: state.getUserId.userId,
-  profile: state.userProfile
+  profile: state.userProfile,
+  expoToken: state.expoToken,
 })
 
 export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtworkAction,
-   moreArtworkDetailsAction, getUserProfileAction })(HomeScreen)
+   moreArtworkDetailsAction, getUserProfileAction, expoTokenAction })(HomeScreen)
 
 
    class MapArtwork extends Component{
@@ -621,19 +627,33 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
           </Right>
         </CardItem>
         <CardItem >
-          <Left></Left>
-          <Body>
-          { artwork.quantitySold > 0 ? (
+          <Left>
+          { artwork.quantitySold > 0  && artwork.quantitySold < artwork.numberAvailable ? (
             <Button transparent>
               <Icon style={{ color : "red" }} name="arrow-up"  />
-              <Text> { artwork.quantitySold >= artwork.numberAvailable  ? 'Sold Out' :  null   } </Text>
-              <Text> {  artwork.quantitySold < artwork.numberAvailable && artwork.quantitySold > 0 ? `${artwork.quantitySold} Sold, ${ artwork.numberAvailable - artwork.quantitySold } Available` : null   } </Text>
-              {/* <Text> {  artwork.quantitySold < artwork.numberAvailable && artwork.quantitySold > 0 ? `${ artwork.numberAvailable - artwork.quantitySold } Available` : null   } </Text> */}
+              <Text> { artwork.quantitySold} Sold </Text>
+            </Button>
+            ) : null 
+          }
+          </Left>
+          <Body>
+          { artwork.quantitySold > 0 && artwork.quantitySold >= artwork.numberAvailable ? (
+            <Button transparent>
+              <Icon style={{ color : "red" }} name="arrow-up"  />
+              <Text> Sold Out </Text>
             </Button>
             ) : null 
           }
           </Body>
-          <Right></Right>
+          <Right>
+          { artwork.quantitySold > 0  && artwork.quantitySold < artwork.numberAvailable ? (
+            <Button transparent>
+              <Icon style={{ color : "red" }} name="arrow-down"  />
+              <Text> {  artwork.numberAvailable - artwork.quantitySold }  Available</Text>
+            </Button>
+            ) : null 
+          }
+          </Right>
         </CardItem>
 
         <Modal

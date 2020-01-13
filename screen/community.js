@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, List, ListItem, Left, Body, Right,
   Card, CardItem, Toast, Text, Button, Icon, Title, Segment, Spinner,
-  Picker, Item, Thumbnail  } from 'native-base';
+  Picker, Item, Thumbnail, Footer, FooterTab  } from 'native-base';
 import FooterTabs from "./service/footer"
 import { Image } from 'react-native'
 import { ScrollView, RefreshControl } from 'react-native';
@@ -82,10 +82,10 @@ class CommunityScreen extends Component {
     else{
       var res = await response.json();
       console.warn(res)
-      if (res[0]._id) {
+      if (res.success) {
         // console.warn(res)
         this.setState({
-          allPartner: res
+          allPartner: res.message
         })
       }
 
@@ -180,7 +180,9 @@ evaluateStateList =()=>{
         <Content>
               <Body>
                   <Text style={{padding: 10 }}>You can process verification or authorization from partners close to you.</Text>
-                  <TouchableOpacity style={{ paddingBottom: 10}}>
+                  <TouchableOpacity style={{ paddingBottom: 10}}
+                    onPress={()=> this.props.navigation.navigate("JoinCommunity")}
+                  >
                     <Text style={{ color: 'blue'}}> Join the Community.</Text>
                   </TouchableOpacity>
                   <Text note>Select your location to see list of partners</Text>
@@ -253,6 +255,23 @@ evaluateStateList =()=>{
           }) : null }
         </ScrollView>
         </Content>
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical 
+              onPress={()=> this.props.navigation.navigate("JoinCommunity")} >
+              <Icon name="people" />
+              <Text>Join Community</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }

@@ -794,7 +794,7 @@ initiatePayment= async () =>{
   )
 
   const showSuccess = (
-    <View style={{ fontSize: 25 }}>
+    <View style={{ paddingRight: 10, paddingLeft: 10,paddingBottom: 30, fontSize: 30 }}>
       <Text>Transaction was successful</Text>
     </View>
   )

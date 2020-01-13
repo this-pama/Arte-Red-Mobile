@@ -50,6 +50,9 @@ import Activities from '../screen/activity'
 import BankDetails from '../screen/wallet/bankDetails'
 import FundWallet  from '../screen/fundWallet'
 import Sales from '../screen/mysale'
+import JoinCommunity from '../screen/joinCommunity'
+import EditPartner from '../screen/editPartnerDetails'
+import Partner from '../screen/isPartner'
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -150,6 +153,9 @@ const switchNavigator = createSwitchNavigator({
   BankDetails,
   FundWallet,
   Sales,
+  JoinCommunity,
+  EditPartner,
+  Partner,
   Withdraw: WithdrawScreen,
   App: StackNavigator,
 },

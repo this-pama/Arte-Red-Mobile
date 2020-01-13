@@ -54,7 +54,7 @@ class HomeScreen extends Component {
   
   componentDidMount(){
     this.fetchUserProfile()
-    this.getDeviceToken()
+    
 
     console.warn('expo token', this.props.expoToken )
     if(this.props.image){

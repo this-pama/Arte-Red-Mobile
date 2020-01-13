@@ -23,6 +23,9 @@ import WithdrawScreen from './screen/withdraw'
 import WalletScreen from './screen/wallet'
 import FundWalletScreen from './screen/fundWallet'
 import PaymentScreen from './screen/pay'
+import JoinCommunity from './screen/joinCommunity'
+import EditPartnerScreen from './screen/editPartnerDetails'
+import Partner from './screen/isPartner'
 
 export default class App extends React.Component {
   constructor(props) {

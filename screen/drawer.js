@@ -154,6 +154,23 @@ class DrawerScreen extends Component {
       </ListItem>
     )
 
+
+    const partner = (
+      <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "red" }}>
+                <Icon active name="people" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={()=> this.props.navigation.navigate('Partner')}>Member</Text>
+            </Body>
+            <Right>
+              <Icon active name="arrow-forward" />
+            </Right>
+      </ListItem>
+    ) 
+
     const network = (
       <ListItem icon>
             <Left>
@@ -267,6 +284,7 @@ class DrawerScreen extends Component {
             </Right>
           </ListItem>
           {community}
+          { this.props.profile.isPartner  && this.props.userId.length > 0 ? partner : null }
           { this.props.userId  && this.props.userId.length > 0 ? logout: login }
           
     </Container>    

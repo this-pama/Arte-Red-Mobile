@@ -26,6 +26,8 @@ import PaymentScreen from './screen/pay'
 import JoinCommunity from './screen/joinCommunity'
 import EditPartnerScreen from './screen/editPartnerDetails'
 import Partner from './screen/isPartner'
+import PartnerProfileScreen from './screen/memberProfile'
+import VerifyAuctionScreen from './screen/verifyAuctionByMember'
 
 export default class App extends React.Component {
   constructor(props) {

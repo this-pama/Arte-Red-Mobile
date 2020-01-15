@@ -53,6 +53,8 @@ import Sales from '../screen/mysale'
 import JoinCommunity from '../screen/joinCommunity'
 import EditPartner from '../screen/editPartnerDetails'
 import Partner from '../screen/isPartner'
+import MemberProfile from '../screen/memberProfile'
+import VerifyAuction from '../screen/verifyAuctionByMember'
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -156,6 +158,8 @@ const switchNavigator = createSwitchNavigator({
   JoinCommunity,
   EditPartner,
   Partner,
+  MemberProfile,
+  VerifyAuction,
   Withdraw: WithdrawScreen,
   App: StackNavigator,
 },

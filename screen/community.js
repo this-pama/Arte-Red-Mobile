@@ -183,7 +183,7 @@ evaluateStateList =()=>{
                   <TouchableOpacity style={{ paddingBottom: 10}}
                     onPress={()=> this.props.navigation.navigate("JoinCommunity")}
                   >
-                    <Text style={{ color: 'blue'}}> Join the Community.</Text>
+                    {/* <Text style={{ color: 'blue'}}> Join the Community.</Text> */}
                   </TouchableOpacity>
                   <Text note>Select your location to see list of partners</Text>
               </Body>
@@ -235,21 +235,26 @@ evaluateStateList =()=>{
           { this.state.search ? filteredPartner.map(name => {
             return (
               <List key={name._id}>
-                <TouchableOpacity >
+                {/* <TouchableOpacity > */}
                   <ListItem avatar>
                     <Left>
                       <Thumbnail source={{uri : name.profileImage }} />
                     </Left>
                     <Body>
                       <Text>{name.companyName}</Text>
-                      <Text note>{name.phone}, {name.email}</Text>
-                      {/* <Text note>{name.phone}</Text> */}
+                      <Text note>{name.phone}</Text>
+                      <Text note>{name.email}</Text>
                       <Text note>{name.address}</Text>
                       <Text note>{name.state}, {name.country}</Text>
                       {/* <Text note>{name.country}</Text> */}
+                      <Right>
+                        <TouchableOpacity onPress={()=> this.props.navigation.navigate('MemberProfile', {id: name._id })}>
+                          <Text note style={{ color:'blue'}}>View</Text>
+                        </TouchableOpacity>
+                      </Right>
                     </Body>
                   </ListItem>
-                </TouchableOpacity>
+                {/* </TouchableOpacity> */}
             </List>
             )
           }) : null }

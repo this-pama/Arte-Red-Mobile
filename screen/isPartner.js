@@ -45,7 +45,7 @@ class PartnerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={()=> this.props.navigation.navigate('')}>My Profile</Text>
+              <Text onPress={()=> this.props.navigation.navigate('MemberProfile', { id: this.props.profile.partnerId })}>My Profile</Text>
             </Body>
       </ListItem>
       <ListItem icon style={{ paddingTop: 20, paddingBottom: 40 }}>
@@ -65,7 +65,7 @@ class PartnerScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <Text onPress={()=> this.props.navigation.navigate('')}>Verify Auction</Text>
+              <Text onPress={()=> this.props.navigation.navigate('VerifyAuction')}>Verify Auction</Text>
             </Body>
       </ListItem>
       <ListItem icon style={{ paddingTop: 20, paddingBottom: 40 }}>

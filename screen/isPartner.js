@@ -76,7 +76,7 @@ class PartnerScreen extends Component {
             </Left>
             <Body>
               <Text onPress={()=>{
-                  this.props.navigation.navigate('')
+                  this.props.navigation.navigate('MemberTrackSales')
               }}>Track Sales</Text>
             </Body>
           </ListItem>

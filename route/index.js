@@ -55,6 +55,7 @@ import EditPartner from '../screen/editPartnerDetails'
 import Partner from '../screen/isPartner'
 import MemberProfile from '../screen/memberProfile'
 import VerifyAuction from '../screen/verifyAuctionByMember'
+import MemberTrackSales from '../screen/trackSales'
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -160,6 +161,7 @@ const switchNavigator = createSwitchNavigator({
   Partner,
   MemberProfile,
   VerifyAuction,
+  MemberTrackSales,
   Withdraw: WithdrawScreen,
   App: StackNavigator,
 },

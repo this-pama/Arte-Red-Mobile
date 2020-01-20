@@ -45,7 +45,7 @@ class SettingScreen extends Component {
         return
       }
     } catch (error) {
-      alert(error.message);
+      return
     }
   };
 

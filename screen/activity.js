@@ -93,6 +93,19 @@ class ActivityScreen extends Component {
               }}>My Sales</Text>
             </Body>
           </ListItem>
+
+          <ListItem icon style={{ paddingTop: 20, paddingBottom: 40 }}>
+            <Left>
+              <Button style={{ backgroundColor: "#990000" }}>
+                <Icon active name="share" />
+              </Button>
+            </Left>
+            <Body>
+              <Text onPress={()=>{
+                  this.props.navigation.navigate('Referral')
+              }}>Referral</Text>
+            </Body>
+          </ListItem>
           
         </Content>
         <Footer >

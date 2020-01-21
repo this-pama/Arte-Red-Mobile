@@ -110,7 +110,7 @@ onShare = async () => {
       const result = await Share.share({
         title: "Arte Red",
         message:
-          'Arte Red | Check out this platform. It is an app that i use to connect with other stakeholders in the Art industry. Get to ' + this.state.link + 'or use my referral code ' + this.state.data.referral,
+          'Arte Red | Check out this platform. It is an app that i use to connect with other stakeholders in the Art industry. Get to ' + this.state.link + '  or use my referral code ' + this.state.data.referral,
       });
 
       if (result.action === Share.sharedAction) {
@@ -169,8 +169,7 @@ onShare = async () => {
                             await Clipboard.setString(this.state.link)
                             Toast.show({
                                 text: "Link is copied to clipboard",
-                                buttonText: "Okay",
-                                type: "danger"
+                                buttonText: "Okay"
                               })
                         }}>
                             <Text>Get your referral link</Text>

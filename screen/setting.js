@@ -128,7 +128,7 @@ class SettingScreen extends Component {
                 <TouchableOpacity 
                     onPress={()=>{
                         if(process.env.NODE_ENV == "development"){
-                            this.props.navigation.navigate("Wallet")
+                            this.props.navigation.navigate("ChangeWalletCurrency")
                         }
                         else if(!this.props.userId){
                             Toast.show({
@@ -139,12 +139,12 @@ class SettingScreen extends Component {
                               })
                         }
                         else{
-                            this.props.navigation.navigate("Wallet")
+                            this.props.navigation.navigate("ChangeWalletCurrencyt")
                         }
                     }}
                 >
                     <Text>Wallet</Text>
-                    <Text note>Add new bank details</Text>
+                    <Text note>Change Wallet Currency</Text>
                 </TouchableOpacity>
             </Body>
           </ListItem>

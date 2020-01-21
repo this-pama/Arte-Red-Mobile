@@ -30,6 +30,7 @@ import PartnerProfileScreen from './screen/memberProfile'
 import VerifyAuctionScreen from './screen/verifyAuctionByMember'
 import TrackPartnerSaleScreen from './screen/trackSales'
 import Referral from './screen/referral'
+import ChangeWalletScreen from './screen/changeWalletCurrency'
 
 export default class App extends React.Component {
   constructor(props) {

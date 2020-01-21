@@ -113,8 +113,8 @@ export default class SubmitAuctionScreen extends Component {
           duration: this.state.duration,
           location: this.state.location,
           price: this.state.price,
-          organizerName: this.state.name,
-          organizerEmail: this.state.organizerEmail,
+          // organizerName: this.state.name,
+          // organizerEmail: this.state.organizerEmail,
           year: this.state.year,
           size: this.state.size,
           currency: this.state.currency,
@@ -486,10 +486,11 @@ export default class SubmitAuctionScreen extends Component {
                 </Right>
                 </Item>
                 <Form>
-                    <Item stackedLabel>
+                    <ListItem stackedLabel>
                         <Label>Auction Verification Code</Label>
+                        <Text note>Input Verification code sent to your email after Auction was verified by a community member</Text>
                         <Input onChangeText= {this.verificationCode} value={this.state.verificationCode}  autoCapitalize='words'/>
-                    </Item>
+                    </ListItem>
                     <Button block danger
                       disabled={this.state.disable}
                       onPress={this.verify}
@@ -626,14 +627,14 @@ export default class SubmitAuctionScreen extends Component {
                         <Label>Auction Starting Price</Label>
                         <Input onChangeText= {this.price } value={this.state.price }  keyboardType="numeric"/>
                     </Item>
-                    <Item stackedLabel>
+                    {/* <Item stackedLabel>
                         <Label>Organizer Name</Label>
                         <Input onChangeText= {this.name } value={this.state.name }  autoCapitalize='words'/>
                     </Item>
                     <Item stackedLabel>
                         <Label>Organizer Email</Label>
                         <Input onChangeText= {this.email } value={this.state.email }  autoCapitalize='words'/>
-                    </Item>
+                    </Item> */}
                     
                 </Form>
                 

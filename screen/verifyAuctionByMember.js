@@ -62,6 +62,10 @@ class VerifyAuctionScreen extends Component {
       image: "",
       base64: "",
       spin: false,
+      artistName: "",
+      year: "",
+      partnerName: '',
+      partnerEmail: "",
     }
   }
 
@@ -223,6 +227,74 @@ validateForm = () => {
     }
   };
 
+  handleArtistName = artistName => {
+    if (artistName.length > 0) {
+      this.setState(
+        {
+            artistName
+        },
+        this.validateForm
+      );
+    } else {
+      this.setState({
+        artistName: '',
+        errMessage: 'Artist Name cannot be empty'
+      });
+    }
+  };
+
+
+  handleYear = year => {
+    if (year.length > 0) {
+      this.setState(
+        {
+            year
+        },
+        this.validateForm
+      );
+    } else {
+      this.setState({
+        year: '',
+        errMessage: 'Year cannot be empty'
+      });
+    }
+  };
+
+
+  handlePartnerEmail = partnerEmail => {
+    if (partnerEmail.length > 0) {
+      this.setState(
+        {
+            partnerEmail
+        },
+        this.validateForm
+      );
+    } else {
+      this.setState({
+        partnerEmail: '',
+        errMessage: 'Email cannot be empty'
+      });
+    }
+  };
+
+
+  handlePartnerName = partnerName => {
+    if (partnerName.length > 0) {
+      this.setState(
+        {
+            partnerName
+        },
+        this.validateForm
+      );
+    } else {
+      this.setState({
+        partnerName: '',
+        errMessage: 'Name cannot be empty'
+      });
+    }
+  };
+
+
   handleCurrency = currency => {
     if(currency.length > 3){
         return this.setState({ message: "Currency must be 3 letters", modalVisible: true })
@@ -313,7 +385,11 @@ join = async () =>{
           address: this.state.address,
           country: this.state.country,
           sellerEmail : this.state.email,
-          imageUrl: this.state.profileImage
+          imageUrl: this.state.profileImage,
+          artistName : this.state.artistName,
+          year: this.state.year,
+          partnerName: this.state.partnerName,
+          partnerEmail : this.state.partnerEmail,
       })
     });
     var response = await result;
@@ -328,7 +404,7 @@ join = async () =>{
       console.warn(res)
       if(res._id ){
         this.setState({ spin : false, message: "Successfully submitted verification", modalVisible: true })
-        this.props.navigation.navigate("Partner")
+        // this.props.navigation.navigate("Partner")
         return
       }
       else{
@@ -405,6 +481,14 @@ postImageToCloud = ()=> {
             <Item stackedLabel>
                 <Label>Seller Email</Label>
                 <Input onChangeText= { this.handleEmail} value={this.state.email }  autoCapitalize='words'/>
+            </Item>
+            <Item stackedLabel>
+                <Label>Verifying Member Email</Label>
+                <Input onChangeText= { this.handlePartnerEmail } value={this.state.partnerEmail }  autoCapitalize='words'/>
+            </Item>
+            <Item stackedLabel>
+                <Label>Verifying Member Name</Label>
+                <Input onChangeText= { this.handlePartnerName } value={this.state.partnerName }  autoCapitalize='words'/>
             </Item>
             <Item>
                 {/* <Left> */}
@@ -539,8 +623,16 @@ postImageToCloud = ()=> {
                   <Input onChangeText= { this.handleCurrency } value={this.state.currency }  autoCapitalize='words'/>
               </Item>
               <Item stackedLabel>
-                  <Label>Auction duration ( in seconds )</Label>
+                  <Label>Auction duration ( in hours )</Label>
                   <Input onChangeText= { this.handleDuaration } value={this.state.duration}  keyboardType='numeric' />
+              </Item>
+              <Item stackedLabel>
+                  <Label>Artist Name</Label>
+                  <Input onChangeText= { this.handleArtistName } value={this.state.artistName}  keyboardType='numeric' />
+              </Item>
+              <Item stackedLabel>
+                  <Label>Artwork Year</Label>
+                  <Input onChangeText= { this.handleYear } value={this.state.year}  keyboardType='numeric' />
               </Item>
   
               <View style={{ paddingBottom : 25, paddingTop: 25 }}>

@@ -210,7 +210,9 @@ class SettingScreen extends Component {
               </Button>
             </Left>
             <Body>
-              <TouchableOpacity>
+              <TouchableOpacity
+              onPress={()=> this.props.navigation.navigate("About")}
+              >
                 <Text>About</Text>
               </TouchableOpacity>
             </Body>

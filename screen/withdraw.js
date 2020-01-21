@@ -299,7 +299,7 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
       }
       else  {
         this.setState({
-          message: 'It seems there is an error',
+          message: 'Transaction failed',
           modalVisible: true,
           isWalletFetch: true,
           processWithdrawal: true
@@ -362,6 +362,9 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
 
     const bankDetails = (
       <View style={{ padding: 20 }}>
+        <Body>
+          <Text style={{ fontWeight: 'bold', padding: 12 }}>Confirm Details</Text>
+        </Body>
         <Text>Amount: {this.state.currency } { this.state.amount }</Text>
         <Text>Bank Name: {this.state.myBank.bankName }</Text>
         <Text>Account Number: {this.state.myBank.accountNumber } </Text>
@@ -387,17 +390,21 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
         <Body>
           <Text style={{ fontWeight: 'bold', padding: 12 }}>Transaction Details</Text>
         </Body>
+        <Text note>The details before will be debitted from your wallet</Text>
         <Text>Amount: {this.state.data.currency } {this.state.data.amount } </Text>
         <Text>Service charge: {this.state.data.currency } {this.state.data.fee}</Text>
-        <Item stackedLabel>
-          <Label>Token</Label>
-          <Input onChangeText= {this.handleToken  } value={this.state.token}  keyboardType='default' />
-        </Item>
+        <View style={{ paddingTop: 10}} >
+          <Item stackedLabel>
+            <Label>Token</Label>
+            <Text note>Input the TOKEN sent to your email and/or your mobile number</Text>
+            <Input onChangeText= {this.handleToken  } value={this.state.token}  keyboardType='default' />
+          </Item>
+        </View>
 
         { this.state.data.amount ? (
             <View style={{ paddingTop: 20 }}>
               <Button  block danger 
-                  disabled={ this.state.data.amount ? false : true }
+                  disabled={ this.state.data.amount && this.state.token.length > 0 ? false : true }
                   onPress={ this.processWithdrawal }
               >
                   { this.state.processWithdrawal ? <Text> Cash Out </Text> : <Spinner color='white' /> }
@@ -425,7 +432,7 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
             </Button>
           </Right>
         </Header>
-        <Content style={{ paddingBottom: 20}}>
+        <Content>
         <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
                 <Body><Text style={{ color : 'red'}}>{ this.state.errMessage }</Text></Body>
                 { this.state.showAmount ? showAmount : null }

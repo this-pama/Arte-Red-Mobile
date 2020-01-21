@@ -58,6 +58,7 @@ import VerifyAuction from '../screen/verifyAuctionByMember'
 import MemberTrackSales from '../screen/trackSales'
 import Referral from '../screen/referral'
 import ChangeWalletCurrency from '../screen/changeWalletCurrency'
+import About from '../screen/about'
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -165,6 +166,7 @@ const switchNavigator = createSwitchNavigator({
   VerifyAuction,
   MemberTrackSales,
   Referral,
+  About,
   ChangeWalletCurrency,
   Withdraw: WithdrawScreen,
   App: StackNavigator,

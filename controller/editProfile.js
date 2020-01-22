@@ -8,6 +8,7 @@ import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import { getUserProfileAction } from "../redux/userProfileAction"
 import {connect} from 'react-redux'
+import {BackHandler} from "react-native"
 
 
 class EditProfileController extends Component{
@@ -31,12 +32,16 @@ class EditProfileController extends Component{
         }
     }
 
+    
     componentDidMount() {
       if("profileImage" in this.props.profile){
         this.setState({ image: this.props.profile.profileImage})
       }
       this.getPermissionAsync();
     }
+
+    
+
   
       getPermissionAsync = async () => {
         if (Constants.platform.ios) {
@@ -239,21 +244,36 @@ class EditProfileController extends Component{
         }
       };
 
-      handleCountry = country => {
-        if (country.length > 0) {
-          this.setState(
-            {
-              country
-            },
-            this.validateForm
-          );
-        } else {
-          this.setState({
-            country: '',
-            errMessage: 'Country cannot be empty'
-          });
+      // handleCountry = country => {
+      //   if (country.length > 0) {
+      //     this.setState(
+      //       {
+      //         country
+      //       },
+      //       this.validateForm
+      //     );
+      //   } else {
+      //     this.setState({
+      //       country: '',
+      //       errMessage: 'Country cannot be empty'
+      //     });
+      //   }
+      // };
+
+      handleCountry = async country => {
+        if (country === "Select Country"){
+            this.setState({
+                errMessage: "Select a country",
+            }, this.validateForm )
         }
-      };
+        else{
+          await this.setState({
+                  errMessage: "",
+                  country,
+              }
+              )
+        }
+      }
 
       handleTelephone = telephone => {
         if (telephone.length > 0) {

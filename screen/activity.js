@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import { getUserProfileAction } from "../redux/userProfileAction"
-import {Share } from 'react-native';
+import {Share, Clipboard } from 'react-native';
 import {BackHandler, View } from "react-native"
 
 class ActivityScreen extends Component {

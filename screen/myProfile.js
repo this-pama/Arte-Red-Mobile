@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, 
-    Toast, Button, Icon, Title, Segment } from 'native-base';
+    Toast, Button, Icon, Title, Segment, Footer, FooterTab } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Permissions } from 'expo';
 import Constants from 'expo-constants'
@@ -10,7 +10,7 @@ import { loginAction } from "../redux/loginAction"
 import { getUserIdAction } from "../redux/getUserId"
 import {getUserProfileAction } from "../redux/userProfileAction"
 import {connect} from 'react-redux'
-import {BackHandler} from "react-native"
+import { KeyboardAvoidingView, BackHandler } from "react-native"
 
 class ProfileScreen extends Component {
 
@@ -25,9 +25,7 @@ class ProfileScreen extends Component {
         }
       }
 
-      componentWillUnmount() {
-        this.backHandler.remove();
-      }
+      
       componentDidMount() {
         this.getPermissionAsync();
 
@@ -49,13 +47,18 @@ class ProfileScreen extends Component {
           else{ return }
         }
 
-        // handle hardware back button press
-        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-          this.props.navigation.navigate("Setting")
-          return true;
-        });
+        // // handle hardware back button press
+        // this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        //   this.props.navigation.navigate("Setting")
+        //   return true;
+        // });
 
       }
+
+      // componentWillUnmount() {
+      //   this.backHandler.remove();
+      // }
+
     
         getPermissionAsync = async () => {
           if (Constants.platform.ios) {
@@ -145,7 +148,7 @@ class ProfileScreen extends Component {
       const imageUri = ( <Thumbnail source={{ uri: this.state.image }} />)
     return (
       <Container>
-        <Header hasSegment style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }}>
+        <Header hasSegment style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40  }}>
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate("Setting")}>
               <Icon name="arrow-back" />
@@ -214,20 +217,7 @@ class ProfileScreen extends Component {
                   <Right>
                     <TouchableOpacity 
                           onPress={()=>{
-                              if(process.env.NODE_ENV === 'development'){
-                                  this.props.navigation.navigate("EditProfile")
-                              }
-                              else if(!this.props.userId){
-                                  Toast.show({
-                                      text: "You need to sign in to edit",
-                                      buttonText: "Okay",
-                                      duration: 3000,
-                                      type: 'danger'
-                                    })
-                              }
-                              else{
-                                  this.props.navigation.navigate("EditProfile")
-                              }
+                              this.props.navigation.navigate("EditProfile")
                           }}
                       >
                           <Text note style={{ color: "blue"}}>
@@ -239,6 +229,23 @@ class ProfileScreen extends Component {
             </List>
 
         </Content>
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical 
+              onPress={()=> this.props.navigation.navigate("Setting")} >
+              <Icon name="cog" />
+              <Text>Setting</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }

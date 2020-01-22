@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Container, Content, Form, Item, Input, Label, Button,
     Header, Left, Body, Title, Right, Text, Picker, Icon,
-Thumbnail, Spinner } from 'native-base';
+Thumbnail, Spinner, Footer, FooterTab } from 'native-base';
 import {View, TouchableHighlight } from 'react-native'
-import {KeyboardAvoidingView} from 'react-native';
+import { KeyboardAvoidingView, BackHandler } from "react-native"
 import PropTypes from 'prop-types'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import {BackHandler} from "react-native"
+import { country, state } from './service/countries'
 
 
 export default class EditProfileScreen extends Component {
@@ -14,15 +14,20 @@ export default class EditProfileScreen extends Component {
         super(props);
         this.state={
           register: "Register",
+          countryList: [],
         }
       }
-  
+
       componentDidMount() {
         // handle hardware back button press
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
           this.props.navigation.navigate("Setting")
           return true;
         });
+
+        this.setState({
+          countryList : country
+        })
     
       }
     
@@ -30,12 +35,21 @@ export default class EditProfileScreen extends Component {
         this.backHandler.remove();
       }
 
+      
+
   render() {
     const spinner = <Spinner color='white' />
     const update = <Text> Upadate </Text>
+    const pickCountry = this.state.countryList.map((name,index) =>(
+      <Picker.Item label={`${name}`} key={index}
+          value={`${name}`}
+      /> 
+    ))
+
+
     return (
       <Container style={{backgroundColor: "#e6e6e6",}}>
-      <Header style={{ backgroundColor: "#990000", paddingTop: 40, paddingBottom: 30 }} >
+      <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40  }} >
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate('Setting') }>
               <Icon name="arrow-back" />
@@ -82,14 +96,29 @@ export default class EditProfileScreen extends Component {
                     <Label>Address</Label>
                     <Input onChangeText= { this.props.handleAddress } value={this.props.address}  autoCapitalize='none'/>
                 </Item>
-                <Item stackedLabel>
-                    <Label>Country</Label>
-                    <Input onChangeText= { this.props.handleCountry } value={this.props.country}  autoCapitalize='none'/>
-                </Item>
+                <View style={{ paddingBottom : 20}} >
+                <Item>
+                  <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name="arrow-down" />}
+                        style={{ width: undefined }}
+                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholderIconColor="#007aff"
+                        selectedValue={this.props.country}
+                        onValueChange={ this.props.handleCountry }
+                    >
+                      <Picker.Item label="Select Country"
+                          value="Select Country"
+                      /> 
+                      { pickCountry }
+                  </Picker>
+              </Item>
+              </View>
                 <Item stackedLabel>
                     <Label>Telephone</Label>
                     <Input onChangeText= { this.props.handleTelephone } value={this.props.telephone}  keyboardType="numeric" />
                 </Item>
+                <View style={{ paddingBottom : 20}} >
                 <Item  last picker>
                     <Picker
                         mode="dropdown"
@@ -111,18 +140,36 @@ export default class EditProfileScreen extends Component {
 
                     </Picker>
                 </Item>
+                </View>
 
-            </Form>         
-        </Content>
-        </KeyboardAvoidingView>
-        <View style={{ paddingTop: 40}}>
+            </Form>  
+            <View style={{ padding: 20, paddingBottom: 40 }}>
             <Button  block danger 
                 disabled={this.props.disable}
                 onPress={this.props.update }
             >
                 { this.props.spin ? spinner : update }
             </Button>
-          </View>
+          </View>       
+        </Content>
+        </KeyboardAvoidingView>
+          <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical 
+              onPress={()=> this.props.navigation.navigate("Setting")} >
+              <Icon name="cog" />
+              <Text>Setting</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
       </Container>
       
     );

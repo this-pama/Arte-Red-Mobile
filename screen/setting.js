@@ -139,7 +139,7 @@ class SettingScreen extends Component {
                               })
                         }
                         else{
-                            this.props.navigation.navigate("ChangeWalletCurrencyt")
+                            this.props.navigation.navigate("ChangeWalletCurrency")
                         }
                     }}
                 >

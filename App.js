@@ -32,6 +32,7 @@ import TrackPartnerSaleScreen from './screen/trackSales'
 import Referral from './screen/referral'
 import ChangeWalletScreen from './screen/changeWalletCurrency'
 import AboutScreen from './screen/about'
+import Edit from './controller/editProfile'
 
 export default class App extends React.Component {
   constructor(props) {
@@ -50,7 +51,7 @@ export default class App extends React.Component {
     this.setState({ isReady: true });
 
   }
-
+   
   render() {
     if (!this.state.isReady){
       return <AppLoading />;

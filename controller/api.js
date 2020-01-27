@@ -2,7 +2,7 @@ import {apiUrl} from "../screen/service/env"
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 
-const PUSH_ENDPOINT = apiUrl + '/user/push-token';
+const PUSH_ENDPOINT = apiUrl + 'user/push-token';
 
 export const getUserProfile = async  user =>{
  

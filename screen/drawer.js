@@ -35,7 +35,7 @@ class DrawerScreen extends Component {
             <Body>
               <Text onPress={async ()=>{
                 await this.props.loginAction({})
-               await  this.props.getUserIdAction({})
+                await  this.props.getUserIdAction({})
                 await this.props.getUserProfileAction({})
                 this.props.navigation.navigate("Landing")
               }}>Logout</Text>
@@ -244,7 +244,7 @@ class DrawerScreen extends Component {
                 <Body>
                   <Text>Welcome</Text>
                   <Text note>{ this.props.profile.firstName && this.props.profile.firstName.length > 0
-                  ? `${this.props.profile.firstName} ${this.props.profile.lastName}` : null }</Text>
+                  ? `${this.props.profile.firstName.charAt(0).toUpperCase() + this.props.profile.firstName.slice(1)} ${this.props.profile.lastName.charAt(0).toUpperCase() + this.props.profile.lastName.slice(1)}` : null }</Text>
                 </Body>
               </Left>
             </CardItem>
@@ -284,7 +284,7 @@ class DrawerScreen extends Component {
             </Right>
           </ListItem>
           {community}
-          { this.props.profile.isPartner  && this.props.userId.length > 0 ? partner : null }
+          { this.props.profile.isPartner  && this.props.profile.isPartner.length > 0 ? partner : null }
           { this.props.userId  && this.props.userId.length > 0 ? logout: login }
           
     </Container>    

@@ -14,7 +14,7 @@ class LandingScreen extends React.Component{
 
     componentDidMount(){
         // console.warn(this.props.jwt)
-        if(this.props.jwt ){
+        if(this.props.jwt){
             this.props.navigation.navigate('Home')
         }
         else{

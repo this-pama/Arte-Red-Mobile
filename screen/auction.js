@@ -425,6 +425,23 @@ auctionTimerIsFinished= async ( auctionId )=>{
               userId = {this.props.userId} /> : ( this.state.activeClosed ? closedAuction : onGoing )}
         </Content>
         </KeyboardAwareScrollView>
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical 
+              onPress={()=> this.props.navigation.navigate("Community")} >
+              <Icon name="people" />
+              <Text>Verify your Auction</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
     </Container>
     );
   }

@@ -59,6 +59,9 @@ class EditPartnerScreen extends Component {
       image: "",
       base64: "",
       spin: false,
+      postalCode: '',
+      annualTurnOver: '',
+      companySize: '',
     }
   }
 
@@ -84,7 +87,7 @@ class EditPartnerScreen extends Component {
   }
 
   getPartnerDetail = async ()=>{
-    var url = apiUrl + "partner/mydetails/" + this.props.userId;
+    var url = apiUrl + "partner/" + this.props.profile.partnerId;
     var result = await fetch(url, {
       method: 'GET',
       headers: { 
@@ -105,6 +108,9 @@ class EditPartnerScreen extends Component {
             state: res.message.city,
             companyName: res.message.companyName,
             nickName: res.message.shortName,
+            postalCode: res.message.postalCode,
+            annualTurnOver: res.message.annualTurnOver,
+            // companySize : res.message.companySize,
             bio: res.message.bio,
             email: res.message.email,
             telephone: res.message.tel,
@@ -184,7 +190,9 @@ validateForm = () => {
       this.state.country.length > 0 &&
       this.state.email.length > 0 &&
       this.state.companyName.length > 0 &&
-      this.state.nickName.length > 0 &&
+      this.state.companySize.length > 0 &&
+      this.state.annualTurnOver.length > 0 &&
+      this.state.postalCode.length > 0 &&
       this.state.bio.length > 0 &&
       this.state.address.length > 0 &&
       this.state.telephone.length > 0 &&
@@ -427,6 +435,56 @@ handleCompanyName = companyName => {
     }
   };
 
+  handlePostalCode = postalCode => {
+    if (postalCode.length > 0) {
+      this.setState(
+        {
+            postalCode,
+            errMessage: ''
+        },
+        this.validateForm
+      );
+    } else {
+      this.setState({
+        postalCode  : '',
+        errMessage: ''
+      });
+    }
+  };
+
+  handleAnnualTurnOver = annualTurnOver => {
+    if (annualTurnOver.length > 0) {
+      this.setState(
+        {
+            annualTurnOver,
+            errMessage: '' 
+        },
+        this.validateForm
+      );
+    } else {
+      this.setState({
+        annualTurnOver  : '',
+        errMessage: ''
+      });
+    }
+  };
+
+  selectCompanySize = async companySize => {
+    if (companySize === "Comapny Size"){
+        this.setState({
+            errMessage: "Select Comapny Size",
+        })
+    }
+    else{
+      await this.setState({
+              errMessage: "",
+              companySize,
+          },
+          this.validateForm
+          )
+    }
+  }
+
   showOthers = () =>{
       this.setState({
           show: false,
@@ -461,6 +519,9 @@ join = async () =>{
           country: this.state.country,
           city: this.state.state,
           tel: this.state.telephone,
+          postalCode: this.state.postalCode,
+          annualTurnOver: this.state.annualTurnOver,
+          companySize : this.state.companySize,
           bio: this.state.bio,
           industry: this.state.industry,
           profileImage: this.state.profileImage,
@@ -475,7 +536,7 @@ join = async () =>{
     var response = await result;
 
     if(response.status !== 200){
-      this.setState({ spin : false, message: "Error occured", modalVisible: true })
+      this.setState({ spin : false, message: "Oopps, error occured!", modalVisible: true })
       
     }
     else{
@@ -484,7 +545,7 @@ join = async () =>{
         return this.setState({ spin : false, message: "Profile submitted successfully for approval", modalVisible: true })
       }
       else{
-        this.setState({ spin : false, message: "Error occured", modalVisible: true })
+        this.setState({ spin : false, message: "Oopps, update failed!", modalVisible: true })
       }
     }
     
@@ -675,6 +736,41 @@ postImageToCloud = ()=> {
               <Item stackedLabel>
                   <Label>Address</Label>
                   <Input onChangeText= { this.handleAddress } value={this.state.address}  autoCapitalize='words'/>
+              </Item>
+              <Item stackedLabel>
+                <Label>Postal Code</Label>
+                <Input onChangeText= { this.handlePostalCode } value={this.state.postalCode}  autoCapitalize='words'/>
+            </Item>
+              <Item stackedLabel>
+                <Label>Annual Turn Over</Label>
+                <Input onChangeText= { this.handleAnnualTurnOver  } value={this.state.annualTurnOver }  autoCapitalize='words'/>
+            </Item>
+            <Item>
+                  <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name="arrow-down" />}
+                        style={{ width: undefined }}
+                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholderIconColor="#007aff"
+                        selectedValue={this.state.companySize}
+                        onValueChange={ this.selectCompanySize }
+                    >
+                      <Picker.Item label="Comapny Size"
+                          value="Comapny Size"
+                      /> 
+                      <Picker.Item label="1 - 10"
+                          value="1 - 10"
+                      /> 
+                      <Picker.Item label="11 - 20"
+                          value="11 - 20"
+                      /> 
+                      <Picker.Item label="21 - 50"
+                          value="21 - 50"
+                      /> 
+                      <Picker.Item label="50+"
+                          value="50+"
+                      /> 
+                  </Picker>
               </Item>
               <Item>
                 {/* <Left> */}

@@ -165,6 +165,13 @@ evaluateStateList =()=>{
   // console.warn(stateList)
 }
 
+evaluateDirectorStateList =()=>{
+  let countryIndex = this.state.countryList.indexOf(this.state.directorCountry)
+  let stateList = state(countryIndex)
+  this.setState( { stateList, showState: true })
+  // console.warn(stateList)
+}
+
 validateForm = () => {
     let testEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     if (
@@ -568,15 +575,16 @@ handleCompanyName = companyName => {
 
 
 
-  selectDirectorCountry = directorCountry => {
+  selectDirectorCountry = async directorCountry => {
     if (directorCountry.length > 0) {
-      this.setState(
+      await this.setState(
         {
           directorCountry,
             errMessage: '' 
         },
         this.validateForm
       );
+      this.evaluateDirectorStateList()
     } else {
       this.setState({
         directorCountry  : '',
@@ -585,15 +593,16 @@ handleCompanyName = companyName => {
     }
   };
 
-  selectDirectorState = directorState => {
+  selectDirectorState = async directorState => {
     if (directorState.length > 0) {
-      this.setState(
+      await this.setState(
         {
           directorState,
             errMessage: '' 
         },
         this.validateForm
       );
+      this.evaluateDirectorStateList()
     } else {
       this.setState({
         directorState  : '',
@@ -780,7 +789,7 @@ join = async () =>{
         return this.setState({ spin : false, message: "Profile submitted successfully for approval", modalVisible: true })
       }
       else{
-        this.setState({ spin : false, message: "Error occured", modalVisible: true })
+        this.setState({ spin : false, message: "Oopps, could not submit profile!", modalVisible: true })
       }
     }
     

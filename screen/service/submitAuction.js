@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Left, Body, Right, Form, Item, Label,
  Text, Button, Icon, Title, Segment, Input, Textarea, Spinner, DatePicker, Picker,
-Card, CardItem, } from 'native-base';
+Card, CardItem, ListItem } from 'native-base';
 import { Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import PropTypes from 'prop-types'
@@ -475,22 +475,19 @@ export default class SubmitAuctionScreen extends Component {
       )
 
       const verification = (
-            <Content style={{ paddingTop: 25 }}>
-              <Item>
-                <Right>
-                  <TouchableOpacity
-                    onPress={()=> this.props.navigation.navigate('Community') }
-                  >
-                    <Text style={{ color:'blue', paddingRight: 10, paddingBottom: 10 }}>Get a Verification Code</Text>
-                  </TouchableOpacity>
-                </Right>
-                </Item>
+            <Content style={{ paddingTop: 10 }}>
+              {/* <Item> */}
+                <Body>
+                <Text style={{ padding: 10}} note>To submit an Auction, you need to verify the Auction from a community member close to you.</Text>
+                <Text style={{ padding: 10}} note>Input below the Verification code sent to your email after your Auction was verified by a community member</Text>
+                </Body>
+                {/* </Item> */}
                 <Form>
-                    <ListItem stackedLabel>
+                    <Item floatingLabel>
                         <Label>Auction Verification Code</Label>
-                        <Text note>Input Verification code sent to your email after Auction was verified by a community member</Text>
                         <Input onChangeText= {this.verificationCode} value={this.state.verificationCode}  autoCapitalize='words'/>
-                    </ListItem>
+                    </Item>
+                    <View style={{ padding: 20}} >
                     <Button block danger
                       disabled={this.state.disable}
                       onPress={this.verify}
@@ -500,6 +497,7 @@ export default class SubmitAuctionScreen extends Component {
                             : <Text> Next </Text>
                             }
                     </Button>
+                    </View>
                 </Form>
             </Content>
       )

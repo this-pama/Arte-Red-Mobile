@@ -158,8 +158,22 @@ class PartnerProfileScreen extends Component {
                           </Text>
                   </Right>
               </ListItem>
+              <ListItem>
+                  <Left>
+                    {/* <TouchableOpacity> */}
+                    <Text note>Size: {this.state.profile.companySize}</Text>  
+                    {/* </TouchableOpacity> */}
+                  </Left>
+                  <Right>
+                      <Text note >
+                        Postal Code: {this.state.profile.postalCode}
+                      </Text>
+                  </Right>
+              </ListItem>
             </List>
-
+            
+            
+        
         </Content>
         <Footer >
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>

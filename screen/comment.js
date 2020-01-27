@@ -19,16 +19,18 @@ class CommentScreen extends Component {
         allComment: [],
         fetch: false,
         artworkId: "",
+        artworkUserId : '',
         userComment: "",
         disable: true,
         count: 0
       };
 
   async componentDidMount(){
-    const comment = this.props.navigation.getParam("comment", [])
-    const routeName = this.props.navigation.getParam("routeName", "Home")
-    const artworkId = this.props.navigation.getParam("id", null)
-    await this.setState({ comment, routeName, artworkId })
+    const comment = this.props.navigation.getParam("comment", []);
+    const routeName = this.props.navigation.getParam("routeName", "Home");
+    const artworkId = this.props.navigation.getParam("id", null);
+    const artworkUserId = this.props.navigation.getParam("artworkUserId", null);
+    await this.setState({ comment, routeName, artworkId, artworkUserId })
     this.mapAllComment()
 
     // handle hardware back button press
@@ -104,6 +106,8 @@ class CommentScreen extends Component {
         var res = await response.json();
         if (res._id) {
           this.props.navigation.navigate(this.state.routeName)
+
+          this.sendPushNotification(this.state.artworkUserId, "", `${this.props.profile.firstName} ${this.props.profile.lastName} just commented on your artwork`)
         }
 
         else  {
@@ -111,6 +115,26 @@ class CommentScreen extends Component {
           this.setModalVisible(!this.state.modalVisible)
         }
       }
+  }
+
+  sendPushNotification = async (userId, title, message) =>{
+    var url = apiUrl + "user/send-notification/direct-message"
+    var result = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        userId,
+        title,
+        message
+      })
+    });
+    var response = await result;
+    if(response.status !== 200 ){
+      return
+    }
+    else{
+      return
+    }
   }
     
 setModalVisible = (visible) => {

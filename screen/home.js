@@ -186,6 +186,7 @@ class HomeScreen extends Component {
         buyArtworkAction= {this.props.buyArtworkAction}
         like= {like}
         unLike= { unLike }
+        // sendPushNotification = { this.sendPushNotification }
       />
     )
     this.setState({ allArtwork : allArtwork, fetch: true })
@@ -203,6 +204,8 @@ class HomeScreen extends Component {
     await this.setState({ category, showAll: false, showCategory: true, visible: false })
     this.mapAllFeed()
   }
+
+  
   
   render() {
 
@@ -416,6 +419,28 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
       // console.warn(artwork._id)
       // console.warn(rating)
     }
+
+    sendPushNotification = async (userId, title, message) =>{
+      var url = apiUrl + "user/send-notification/direct-message"
+      var result = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          title,
+          message
+        })
+      });
+      var response = await result;
+      if(response.status !== 200 ){
+        return
+      }
+      else{
+        console.warn("sent notification")
+        return
+      }
+    }
+
      
      render(){
       let artwork = this.props.artwork
@@ -554,7 +579,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
                   return this.setState({ unlikeColor: "red"})
                 }
 
-                unLike({
+                this.props.unLike({
                 jwt: this.props.jwt.jwt,
                 userId: this.props.userId,
                 artworkId: artwork._id
@@ -587,11 +612,13 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
                   return this.setState({ color: "red"})
                 }
 
-                like({
+                this.props.like({
                 jwt: this.props.jwt.jwt,
                 userId: this.props.userId,
                 artworkId: artwork._id
               })
+
+              this.sendPushNotification(artwork.userId, "", `${this.props.profile.firstName} just like your artwork`)
               
               this.setState({ color: "red", likeCount: artwork.like.length + 1})
               
@@ -610,7 +637,8 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
                 this.props.navigation.navigate("Comment", {
                   id: artwork._id,
                   comment: artwork.comment,
-                  routeName: "Home"
+                  routeName: "Home",
+                  artworkUserId: artwork.userId,
                 })
               }}
             >

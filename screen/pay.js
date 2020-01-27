@@ -52,12 +52,14 @@ class PaymentScreen extends Component{
         otpReference: '',
         fetched: true,
         showSuccess: false,
+        artwork: {}
     }
 }
 
   componentDidMount() {
     //get bank details
     this.getWalletDetails()
+    this.getArtworkDetails()
 
     // handle hardware back button press
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -68,6 +70,42 @@ class PaymentScreen extends Component{
 
   componentWillUnmount() {
     this.backHandler.remove();
+  }
+
+  getArtworkDetails = async () =>{
+    var url = apiUrl + "artwork/" + this.props.cost.artworkId;
+    var result = await fetch(url, {
+      method: 'GET',
+      headers: { 
+        'content-type': 'application/json',
+        "Authorization": `Bearer ${this.props.jwt}`
+       }
+    });
+    var response = await result;
+    if(response.status !== 200 ){
+      console.warn("fetching artworks failed response")
+      this.setState({
+        artwork: {},
+      })
+      
+      return
+    }
+    else{
+      var res = await response.json();
+      if (res._id) {
+        this.setState({
+          artwork: res
+        })
+      }
+
+      else  {
+        console.warn("Can't get artwork")
+        this.setState({
+          artwork: {}
+        })
+        
+      }
+    }
   }
 
   getWalletDetails= async ()=>{
@@ -198,6 +236,10 @@ class PaymentScreen extends Component{
             fetched : true,
             errMessage: '',
           })
+
+          //send push notification to seller
+        this.sendPushNotification( this.state.artwork.userId, "Artwork Sales", `${this.props.profile.firstName} ${this.props.profile.lastName} just bought your artwork titled ${this.state.artwork.title}`)
+
         }
         else{
           this.setState({
@@ -372,6 +414,9 @@ payWithWallet = async () =>{
           nextCard: false,
           fetched : true
         })
+
+        //send push notification to seller
+        this.sendPushNotification( this.state.artwork.userId, "Artwork Sales", `${this.props.profile.firstName} ${this.props.profile.lastName} just bought your artwork titled ${this.state.artwork.title}`)
       }
       else if( res.message.includes('above available quantity')){
         this.setState({
@@ -722,6 +767,26 @@ initiatePayment= async () =>{
     // }
 
   };
+
+  sendPushNotification = async (userId, title, message) =>{
+    var url = apiUrl + "user/send-notification/direct-message"
+    var result = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        userId,
+        title,
+        message
+      })
+    });
+    var response = await result;
+    if(response.status !== 200 ){
+      return
+    }
+    else{
+      return
+    }
+  }
 
     render(){
       const showOtp = (

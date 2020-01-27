@@ -20,6 +20,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import SubmitAuctionScreen from './service/submitAuction'
 import CountDown from 'react-native-countdown-component';
+import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTitle, } from 'react-native-modals';
 
 class AuctionScreen extends Component {
 
@@ -42,6 +43,8 @@ class AuctionScreen extends Component {
       bidValue: '',
       fetchSubmitBid: false,
       walletCurrentBalance: 0,
+      message: '',
+      modalVisible: false,
     }
   }
 
@@ -118,11 +121,20 @@ handleBidValue = bidValue => {
 
 submitBid= async (id)=>{
   if(this.state.bidValue > this.state.walletCurrentBalance){
-    return alert('You do not have enough fund in your wallet. Please fund your wallet.')
+    this.setState({
+      modalVisible: true,
+      message: 'You do not have enough fund in your wallet. Please fund your wallet.',
+    })
+    return
+    
   }
 
   if(!(+this.state.bidValue)){
-    return alert("Select a bidding value")
+    this.setState({
+      modalVisible: true,
+      message: "Select a bidding value",
+    })
+    return 
   }
 
   this.setState({ fetchSubmitBid : true })
@@ -157,7 +169,11 @@ submitBid= async (id)=>{
     }
     else  {
       console.warn("Can not bid") 
-      this.setState({ fetchSubmitBid : false }) 
+      this.setState({ 
+        fetchSubmitBid : false,
+        modalVisible: true,
+        message: "An error occurred while you were bidding",
+       }) 
       return    
     }
 }
@@ -182,6 +198,26 @@ auctionTimerIsFinished= async ( auctionId )=>{
     else  { 
       return    
     }
+}
+
+sendPushNotification = async (userId, title, message) =>{
+  var url = apiUrl + "user/send-notification/direct-message"
+  var result = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      userId,
+      title,
+      message
+    })
+  });
+  var response = await result;
+  if(response.status !== 200 ){
+    return
+  }
+  else{
+    return
+  }
 }
 
 
@@ -284,7 +320,11 @@ auctionTimerIsFinished= async ( auctionId )=>{
                 <Button transparent
                   onPress={()=>{
                     if(this.state.bidValue <= data.askingPrice){
-                      alert('You have to bid higher than the current bidder')
+                      this.setState({
+                        modalVisible: true,
+                        message: 'You have to bid higher than the current bidder',
+                      })
+                      
                       return
                     }
                     else{
@@ -442,6 +482,37 @@ auctionTimerIsFinished= async ( auctionId )=>{
           
           </FooterTab>
         </Footer>
+
+         {/* modalVisisble */}
+         <Modal
+          visible={this.state.modalVisible}
+          modalTitle={<ModalTitle title="Message" />}
+          modalAnimation={new SlideAnimation({
+            slideFrom: 'bottom',
+          })}
+          onTouchOutside= { () => {
+            this.setState({ modalVisible: false });
+          }}
+          width
+          footer={
+            <ModalFooter>
+              <ModalButton
+                text="Exit"
+                onPress={() => this.setState({ modalVisible: false })}
+              />
+
+            </ModalFooter>
+          }
+        >
+          <ModalContent >
+            <View style= {{ padding : 12, paddingBottom: 20 }}>
+              <Body>
+                <Text >{ this.state.message }</Text>
+              </Body>
+            </View>
+          </ModalContent>
+        </Modal>
+
     </Container>
     );
   }

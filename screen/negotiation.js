@@ -16,7 +16,7 @@ import {BackHandler} from "react-native"
 import {
   Notifications,
 } from 'expo';
-
+import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTitle, } from 'react-native-modals';
 
 class NegotiationScreen extends Component {
 
@@ -30,8 +30,6 @@ class NegotiationScreen extends Component {
       negotiationValue: 0,
       negotiating: false,
       currency: '',
-      ngn_euro: "0",
-      ngn_usd: "0",
       exchangeRate: "0",
       exchangeRateIsFetech: false,
       disable: true,
@@ -43,6 +41,8 @@ class NegotiationScreen extends Component {
       },
       comment: "",
       spin: false,
+      message: '',
+      modalVisible: false,
     }
   }
 
@@ -157,36 +157,6 @@ class NegotiationScreen extends Component {
   }
 }
 
-  // ngn_usdConvertion= async() =>{
-  //   let url = `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=NGN&to_currency=USD&apikey=8E5NV5DT9IXIY1JG`
-  //   await fetch(url, {
-  //     method: 'GET'
-  //   })
-  //   .then( res=>{
-  //     return res.json()
-  //   }).then(net=> {
-  //     this.setState({
-  //       ngn_usd: net["Realtime Currency Exchange Rate"]["5. Exchange Rate"],
-  //       exchangeRateIsFetech: true
-  //     })
-  //   })
-  // }
-
-  // ngn_euroConvertion= async() =>{
-  //   let url = `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=NGN&to_currency=EUR&apikey=8E5NV5DT9IXIY1JG`
-  //   await fetch(url, {
-  //     method: 'GET'
-  //   })
-  //   .then( res=>{
-  //     return res.json()
-  //   }).then(net=> {
-  //     this.setState({
-  //       ngn_euro: net["Realtime Currency Exchange Rate"]["5. Exchange Rate"],
-  //       exchangeRateIsFetech: true
-  //     })
-  //   })
-  // }
-
   handleNegotiationValue = negotiationValue => {
     if (+negotiationValue){
         this.setState({
@@ -216,27 +186,6 @@ class NegotiationScreen extends Component {
     }
   };
 
-  sendNotification = async (userMessage, sponsorMessage, sponsorId, email ) => {
-    let MESSAGE_ENPOINT = apiUrl + "user/send-notification"
-   
-    fetch(MESSAGE_ENPOINT, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userMessage,
-        sponsorMessage,
-        subject: 'New Negotiation Request',
-        user:{
-          username: sponsorId
-        },
-        userEmail: email,
-      }),
-    });
-  }
-
   sendNegotiation =async ()=>{
     let ENPOINT = apiUrl + "negotiation/update/" + this.state.artwork._id
     let result = fetch(ENPOINT, {
@@ -255,7 +204,7 @@ class NegotiationScreen extends Component {
 
     var response = await result;
     if(response.status !== 200 ){
-      console.warn("failed response")
+      console.warn("failed response", response )
       this.setState({
         spin: false
       })
@@ -266,16 +215,20 @@ class NegotiationScreen extends Component {
       if (res._id) {
         console.warn(res)
         this.setState({
-          errMessage: "Negotiation Request sent successfully",
-          spin: false
+          errMessage: "",
+          spin: false,
+          modalVisible: true,
+          message: "Negotiation Request sent successfully",
         })
       }
 
       else  {
         console.warn("Negotiation Request failed")
         this.setState({
-          errMessage: "Negotiation Request failed",
-          spin: false
+          errMessage: "",
+          spin: false,
+          modalVisible: true,
+          message: "Negotiation Request failed",
         })
         
       }
@@ -305,22 +258,23 @@ class NegotiationScreen extends Component {
         console.warn(res)
         this.setState({
           negotiationData: res,
-          errMessage: "Notification sent!",
-          spin: false
+          errMessage: "",
+          spin: false,
+          modalVisible: true,
+          message: "Negotiation Response sent!",
         })
-        let userMessage= `Your response to the negotiation request has been sent.`
-        let sponsorMessage= `You have a new response to a negotiation request.`
-        this.sendNotification(userMessage, sponsorMessage, 
-          userId, this.props.profile.email
-          )
-          console.warn(this.state.negotiationData.history)
+
+        let message= `A seller has responded to one of your negotiation request`
+        this.sendPushNotification(userId, "Negotiation Response", message, this.state.artwork)
       }
 
       else  {
         console.warn("Notification failed")
         this.setState({
           errMessage: "Notification failed",
-          spin: false
+          spin: false,
+          modalVisible: true,
+          message: "Negotiation Response failed",
         })
         
       }
@@ -349,25 +303,49 @@ class NegotiationScreen extends Component {
         console.warn("accept",res)
         this.setState({
           negotiationData: res,
-          errMessage: "Notification sent!",
-          spin: false
+          errMessage: "",
+          spin: false,
+          modalVisible: true,
+          message: "Negotiation Request sent!",
         })
-        let userMessage= `Your response to the negotiation request has been sent.`
-        let sponsorMessage= `You have a new response to a negotiation request.`
-        this.sendNotification(userMessage, sponsorMessage, 
-          userId, this.props.profile.email
-          )
+
+          let message= `A seller has responded to one of your negotiation request`
+          this.sendPushNotification(userId, "Negotiation Response", message, this.state.artwork)
       }
 
       else  {
         console.warn("Notification failed")
         this.setState({
-          errMessage: "Notification failed",
-          spin: false
+          errMessage: "",
+          spin: false,
+          modalVisible: true,
+          message: "Negotiation Request failed",
         })
         
       }
   }
+
+  sendPushNotification = async (userId, title, message, data) =>{
+    var url = apiUrl + "user/send-notification/direct-message"
+    var result = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        userId,
+        title,
+        message,
+        data
+      })
+    });
+    var response = await result;
+    if(response.status !== 200 ){
+      return
+    }
+    else{
+      return
+    }
+  }
+
 
   render() {
     
@@ -418,11 +396,9 @@ class NegotiationScreen extends Component {
                 this.setState({
                   spin: true
                 })
-                let userMessage= `Your negotiation request has been sent to the sponsor of the artwork.`
-                let sponsorMessage= `You have a new negotiation request for your artwork.`
-                this.sendNotification(userMessage, sponsorMessage, 
-                  this.state.artwork.userId, this.props.profile.email
-                  )
+               
+                let message= `You have a new negotiation request for your artwork.`
+                this.sendPushNotification(this.state.artwork.userId, "Negotiation Request", message, this.state.artwork)
                 this.sendNegotiation()
               }}
             >
@@ -555,6 +531,36 @@ class NegotiationScreen extends Component {
               ) }
              
           </Content>
+
+           {/* modalVisisble */}
+        <Modal
+        visible={this.state.modalVisible}
+        modalTitle={<ModalTitle title="Message" />}
+        modalAnimation={new SlideAnimation({
+          slideFrom: 'bottom',
+        })}
+        onTouchOutside= { () => {
+          this.setState({ modalVisible: false });
+        }}
+        width
+        footer={
+          <ModalFooter>
+            <ModalButton
+              text="Exit"
+              onPress={() => this.setState({ modalVisible: false })}
+            />
+
+          </ModalFooter>
+        }
+      >
+        <ModalContent >
+          <View style= {{ padding : 12, paddingBottom: 20 }}>
+            <Body>
+              <Text >{ this.state.message }</Text>
+            </Body>
+          </View>
+        </ModalContent>
+      </Modal>
         
         
         <Footer >

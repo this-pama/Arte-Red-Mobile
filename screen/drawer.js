@@ -284,7 +284,7 @@ class DrawerScreen extends Component {
             </Right>
           </ListItem>
           {community}
-          { this.props.profile.isPartner  && this.props.profile.isPartner.length > 0 ? partner : null }
+          { this.props.profile.isPartner  && this.props.profile.partnerId.length > 0 ? partner : null }
           { this.props.userId  && this.props.userId.length > 0 ? logout: login }
           
     </Container>    

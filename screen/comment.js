@@ -105,9 +105,11 @@ class CommentScreen extends Component {
       else{
         var res = await response.json();
         if (res._id) {
-          this.props.navigation.navigate(this.state.routeName)
+          if( this.props.userId != this.state.artworkUserId){
+            this.sendPushNotification(this.state.artworkUserId, "Notification", `${this.props.profile.firstName} ${this.props.profile.lastName} just commented on your artwork`)
+          }
 
-          this.sendPushNotification(this.state.artworkUserId, "", `${this.props.profile.firstName} ${this.props.profile.lastName} just commented on your artwork`)
+          this.props.navigation.navigate(this.state.routeName)
         }
 
         else  {

@@ -436,7 +436,9 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
         return
       }
       else{
-        console.warn("sent notification")
+        var res = await response.json();
+        // console.warn("sent notification")
+        console.warn("notification response", res )
         return
       }
     }
@@ -576,7 +578,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
                 if(artwork.unlike.findIndex(id => { 
                   return id = this.props.userId
                 }) >= 0 ){
-                  return this.setState({ unlikeColor: "red"})
+                  return 
                 }
 
                 this.props.unLike({
@@ -609,16 +611,16 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,buyArtwork
                 if(artwork.like.findIndex(id => { 
                   return id = this.props.userId
                 }) >= 0 ){
-                  return this.setState({ color: "red"})
+                  return 
                 }
-
+                
                 this.props.like({
                 jwt: this.props.jwt.jwt,
                 userId: this.props.userId,
                 artworkId: artwork._id
               })
 
-              this.sendPushNotification(artwork.userId, "", `${this.props.profile.firstName} just like your artwork`)
+              this.sendPushNotification(artwork.userId, "Notification", `${this.props.profile.firstName} just like your artwork`)
               
               this.setState({ color: "red", likeCount: artwork.like.length + 1})
               

@@ -36,6 +36,7 @@ export const getUserProfile = async  user =>{
 
 // api call for liking an artwork
 export const like = async  user =>{
+  console.warn("Liking an artwork")
  
   var url = apiUrl + "artwork/like/" + user.userId + "/" + user.artworkId ;
   var result = await fetch(url, {

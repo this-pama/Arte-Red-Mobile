@@ -219,6 +219,29 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,
        // console.warn(artwork._id)
        // console.warn(rating)
      }
+
+     sendPushNotification = async (userId, title, message) =>{
+      var url = apiUrl + "user/send-notification/direct-message"
+      var result = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          title,
+          message
+        })
+      });
+      var response = await result;
+      if(response.status !== 200 ){
+        return
+      }
+      else{
+        var res = await response.json();
+        // console.warn("sent notification")
+        console.warn("notification response", res )
+        return
+      }
+    }
       
       render(){
        let artwork = this.props.artwork
@@ -354,7 +377,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,
                  if(artwork.unlike.findIndex(id => { 
                    return id = this.props.userId
                  }) >= 0 ){
-                   return this.setState({ unlikeColor: "red"})
+                   return 
                  }
  
                  unLike({
@@ -387,7 +410,7 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,
                  if(artwork.like.findIndex(id => { 
                    return id = this.props.userId
                  }) >= 0 ){
-                   return this.setState({ color: "red"})
+                   return 
                  }
  
                  like({
@@ -395,6 +418,8 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,
                  userId: this.props.userId,
                  artworkId: artwork._id
                })
+
+               this.sendPushNotification(artwork.userId, "Notification", `${this.props.profile.firstName} just like your artwork`)
                
                this.setState({ color: "red", likeCount: artwork.like.length + 1})
                
@@ -413,7 +438,8 @@ export default connect(mapStateToProps, {loginAction, getUserIdAction,
                  this.props.navigation.navigate("Comment", {
                    id: artwork._id,
                    comment: artwork.comment,
-                   routeName: "Home"
+                   routeName: "Home",
+                   artworkUserId: artwork.userId,
                  })
                }}
              >

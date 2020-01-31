@@ -4,7 +4,7 @@ Left, Icon, Body, Right, Title, Spinner, Footer, FooterTab  } from 'native-base'
 import {View, TouchableHighlight, BackHandler } from 'react-native'
 import PropType from "prop-types"
 import {NavigationActions} from 'react-navigation';
-
+import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTitle, } from 'react-native-modals';
 import HeaderTheme from './service/header'
 
 export default class LoginScreen extends Component {
@@ -105,6 +105,32 @@ export default class LoginScreen extends Component {
           </FooterTab>
         </Footer>
 
+        <Modal
+                visible={this.props.modalVisible}
+                modalTitle={<ModalTitle title="Message" />}
+                modalAnimation={new SlideAnimation({
+                  slideFrom: 'bottom',
+                })}
+                onTouchOutside={ this.props.closeModal }
+                width
+                footer={
+                  <ModalFooter>
+                    <ModalButton
+                      text="Exit"
+                      onPress={ this.props.closeModal }
+                    />
+                  </ModalFooter>
+                }
+              >
+                <ModalContent >
+                  <View style={{ padding: 20, paddingBottom: 40 }}>
+                    <Body>
+                      <Text>{ this.props.message }</Text>
+                    </Body>
+                  </View>
+                </ModalContent>
+              </Modal>
+
       </Container>
     );
   }
@@ -117,5 +143,8 @@ LoginScreen.propTypes ={
   handleEmail: PropType.func.isRequired,
   handlePassword: PropType.func.isRequired,
   disable: PropType.bool.isRequired,
-  spin: PropType.bool.isRequired
+  spin: PropType.bool.isRequired,
+  modalVisible: PropType.bool.isRequired,
+  closeModal: PropType.func.isRequired,
+  message: PropType.string.isRequired,
 }

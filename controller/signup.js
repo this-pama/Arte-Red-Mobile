@@ -12,27 +12,36 @@ export default class SignUpController extends Component{
             phone: "",
             confirm: "",
             spin: false,
-            disable: true
+            disable: true,
+            message:'',
+            modalVisible: false,
         }
     }
 
     signUp = async () => {
+      let data = {
+        email: this.state.email,
+        password: this.state.password
+      };
+      console.warn(data)
+      
       this.setState({ spin : true })
         var url = apiUrl + "account/register";
         var result = await fetch(url, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({
-            email: this.state.email,
-            password: this.state.password
-          })
+          body: JSON.stringify(data)
         });
         var response = await result;
-        
-        if(response.status !== 200 ){
+        console.warn(response)
+        if(response.status != 200 ){
           this.setState({
             email: '',
             password: "",
+            phone: '',
+            confirm: "",
+            message: "Registration failed!",
+            modalVisible: true,
             spin: false
           });
         }
@@ -42,6 +51,8 @@ export default class SignUpController extends Component{
             this.setState({
               email: '',
               password: "",
+              phone: '',
+              confirm: "",
               spin: false
             });
             this.props.navigation.navigate("Login")
@@ -50,18 +61,24 @@ export default class SignUpController extends Component{
             this.setState({
               email: '',
               password: "",
+              phone: '',
+              confirm: "",
+              message: "Registration failed!. Email seems to be used by another user",
+              modalVisible: true,
               spin: false
             });
           }
         }
         
     };
+
+    closeModal = () => this.setState({ modalVisible: false })
     
     handleEmail = email => {
         if (email.length > 0) {
           this.setState(
             {
-              email
+              email : email.trim()
             },
             this.validateForm
           );
@@ -157,8 +174,11 @@ export default class SignUpController extends Component{
                 signUp= { this.signUp }
                 disable= { this.state.disable }
                 spin = { this.state.spin }
+                modalVisible = { this.state.modalVisible }
+                message= { this.state.message }
                 navigation= {this.props.navigation}
                 errMessage= {this.state.errMessage}
+                closeModal= { this.closeModal }
             />
         )
     }

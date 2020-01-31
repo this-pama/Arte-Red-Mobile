@@ -48,7 +48,7 @@ export default class EditProfileScreen extends Component {
 
 
     return (
-      <Container style={{backgroundColor: "#e6e6e6",}}>
+      <Container >
       <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40  }} >
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate('Setting') }>
@@ -71,7 +71,7 @@ export default class EditProfileScreen extends Component {
                       <TouchableOpacity
                         onPress={ this.props.pickImage }
                       >
-                        <Thumbnail large source={{ uri : this.props.image }} />
+                        <Thumbnail source={{ uri : this.props.image }} />
                       </TouchableOpacity>
                   </Body>
                 </Item>

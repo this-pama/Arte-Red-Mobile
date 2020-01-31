@@ -90,7 +90,8 @@ class MySaleScreen extends Component {
        }
     })
     var response = await result
-    if(response.status !== 200 ){
+    console.warn(response)
+    if(response.status != 200 ){
       this.setState({
         message: "Error occurred while getting data",
         visible: true,
@@ -117,8 +118,8 @@ class MySaleScreen extends Component {
       }
       else  { 
         this.setState({
-          message: "Error occurred while getting data",
-          visible: true,
+          // message: "It see",
+          // visible: true,
           fetch: true,
           soldArtworks: {
             message: [],
@@ -143,7 +144,8 @@ getBoughtArtwork= async ()=>{
      }
   })
   var response = await result
-  if(response.status !== 200 ){
+  console.warn(response)
+  if(response.status != 200 ){
     this.setState({
       message: "Error occurred while getting data",
       visible: true,
@@ -172,8 +174,8 @@ getBoughtArtwork= async ()=>{
     }
     else  { 
       this.setState({
-        message: "Error occurred while getting data",
-        visible: true,
+        // message: "Error occurred while getting data",
+        // visible: true,
         fetch: true,
         boughtArtworks: {
           message: [],

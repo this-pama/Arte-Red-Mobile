@@ -6,6 +6,8 @@ import PropType from "prop-types"
 import {NavigationActions} from 'react-navigation';
 import {BackHandler} from "react-native"
 import HeaderTheme from './service/header'
+import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTitle, } from 'react-native-modals';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default class SignUpScreen extends Component {
 
@@ -14,6 +16,13 @@ export default class SignUpScreen extends Component {
       routeName: route
     });
   }
+  constructor(props){
+    super(props);
+    this.state={
+        message:'',
+        modalVisible: false,
+    }
+}
 
   componentDidMount() {
     // handle hardware back button press
@@ -49,25 +58,30 @@ export default class SignUpScreen extends Component {
             </Button>
           </Right>
         </Header>
+        <KeyboardAwareScrollView
+          extraScrollHeight={100}
+          enableOnAndroid={true} 
+          keyboardShouldPersistTaps='handled'
+        >
         <Content style={{  padding: 20 }}>
           <Body>
           <Text note style={{ color: "red"}}>{this.props.errMessage}</Text>
           </Body>
 
           <Form>
-            <Item floatingLabel>
+            <Item stackedLabel>
               <Label>Email</Label>
               <Input onChangeText= { this.props.handleEmail } value={this.props.email}  autoCapitalize='none'/>
             </Item>
-            <Item floatingLabel>
+            <Item stackedLabel>
               <Label>Phone Number</Label>
               <Input onChangeText= { this.props.handlePhone } value={this.props.phone}  keyboardType= "numbers-and-punctuation" />
             </Item>
-            <Item floatingLabel>
+            <Item stackedLabel>
               <Label>Password</Label>
               <Input onChangeText= { this.props.handlePassword } value={this.props.password}  autoCapitalize='none'/>
             </Item>
-            <Item floatingLabel last>
+            <Item stackedLabel last>
               <Label>Confirm Password</Label>
               <Input onChangeText= { this.props.handleConfirm } value={this.props.confirm } autoCapitalize='none' />
             </Item>
@@ -87,6 +101,7 @@ export default class SignUpScreen extends Component {
             </TouchableOpacity> */}
           </View>         
         </Content>
+        </KeyboardAwareScrollView>
         <Footer >
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
             <Button vertical 
@@ -104,6 +119,33 @@ export default class SignUpScreen extends Component {
           
           </FooterTab>
         </Footer>
+
+            <Modal
+                visible={this.props.modalVisible}
+                modalTitle={<ModalTitle title="Message" />}
+                modalAnimation={new SlideAnimation({
+                  slideFrom: 'bottom',
+                })}
+                onTouchOutside={ this.props.closeModal }
+                width
+                footer={
+                  <ModalFooter>
+                    <ModalButton
+                      text="Exit"
+                      onPress={ this.props.closeModal }
+                    />
+                  </ModalFooter>
+                }
+              >
+                <ModalContent >
+                  <View style={{ padding: 20, paddingBottom: 40 }}>
+                    <Body>
+                      <Text>{ this.props.message }</Text>
+                    </Body>
+                  </View>
+                </ModalContent>
+              </Modal>
+
       </Container>
     );
   }
@@ -120,5 +162,12 @@ SignUpScreen.propTypes ={
   handlePassword: PropType.func.isRequired,
   handleConfirm: PropType.func.isRequired,
   disable: PropType.bool.isRequired,
-  spin: PropType.bool.isRequired
+  spin: PropType.bool.isRequired,
+  handlePhone: PropType.func.isRequired,
+  handleConfirm: PropType.func.isRequired,
+  phone: PropType.string.isRequired,
+  message: PropType.string.isRequired,
+  confirm: PropType.string.isRequired,
+  modalVisible: PropType.bool.isRequired,
+  closeModal: PropType.func.isRequired,
 }

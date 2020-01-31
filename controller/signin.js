@@ -16,7 +16,9 @@ import {connect} from 'react-redux'
             accountId: "",
             userId: "",
             jwt: "",
-            disable: true
+            disable: true,
+            message: '',
+            modalVisible: false,
         }
     }
 
@@ -37,9 +39,11 @@ import {connect} from 'react-redux'
             this.setState({ 
               email: '',
               password: "",
-              spin: false
+              spin: false,
+              message: "Login failed",
+              modalVisible: true,
              })
-            alert("Login failed")
+            // alert("Login failed")
           }
           else{
             var res = await response.json();
@@ -61,7 +65,9 @@ import {connect} from 'react-redux'
               this.setState({
                 email: '',
                 password: "",
-                spin: false
+                spin: false,
+                message: "Login failed",
+                modalVisible: true,
               });
             }
           }
@@ -81,12 +87,14 @@ import {connect} from 'react-redux'
         });
         var response = await result;
         
-        if(response.status !== 200 ){
+        if(response.status != 200 ){
           this.setState({
             email: '',
             password: "",
             spin: false,
-            errMessage: "Login failed"
+            errMessage: "",
+            message: "Login failed!",
+            modalVisible: true,
           });
         }
         else{
@@ -110,7 +118,9 @@ import {connect} from 'react-redux'
               email: '',
               password: "",
               spin: false,
-              errMessage: "Incorrect Email & Password"
+              errMessage: "",
+              message: "Incorrect Email & Password",
+              modalVisible: true,
             });
           }
         }
@@ -121,7 +131,7 @@ import {connect} from 'react-redux'
         if (email.length > 0) {
           this.setState(
             {
-              email
+              email : email.trim()
             },
             this.validateForm
           );
@@ -167,6 +177,8 @@ import {connect} from 'react-redux'
         }
       };
 
+      closeModal = () => this.setState({ modalVisible: false })
+
 
     render(){
         return(
@@ -180,6 +192,9 @@ import {connect} from 'react-redux'
                 spin = { this.state.spin }
                 navigation= {this.props.navigation}
                 errMessage= { this.state.errMessage }
+                message= { this.state.message }
+                modalVisible= { this.state.modalVisible }
+                closeModal= { this.closeModal }
             />
         )
     }

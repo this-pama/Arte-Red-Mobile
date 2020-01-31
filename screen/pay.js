@@ -412,7 +412,9 @@ payWithWallet = async () =>{
           showSuccess: true,
           errMessage: "",
           nextCard: false,
-          fetched : true
+          fetched : true,
+          modalVisible: true,
+          message: "Transction successful"
         })
 
         //send push notification to seller
@@ -860,7 +862,7 @@ initiatePayment= async () =>{
 
   const showSuccess = (
     <View style={{ paddingRight: 10, paddingLeft: 10,paddingBottom: 30, fontSize: 30 }}>
-      <Text>Transaction was successful</Text>
+      <Body><Text style={{ fontWeight: 'bold'}}>Transaction was successful</Text></Body>
     </View>
   )
 

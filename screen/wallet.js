@@ -104,11 +104,11 @@ class WalletScreen extends Component {
   render() {
 
     const transaction =  this.state.data.transaction ? (
-      this.state.data.transaction.reverse().map((elem, index) =>(
+      this.state.data.transaction.reverse().slice(0,10).map((elem, index) =>(
         <ListItem key={elem.date} noIndent style={{ backgroundColor: !elem.debit ? "#ffffff"  : '#f2f2f2' }}>
         <Left>
             {/* <Button style={{ backgroundColor: "red" }}> */}
-              <Icon name = {elem.debit ? 'arrow-up' : 'arrow-down'}  />
+              <Icon name = {elem.debit ? 'arrow-up' : 'arrow-down'}  style={{ color: elem.debit  ? 'red' : 'blue' }} />
             {/* </Button> */}
             <Text>{elem.currency} {elem.amount}</Text>
           
@@ -141,14 +141,7 @@ class WalletScreen extends Component {
               </Button>
             </Right>
           </Header>
-          <Content style={{color: "#000000"}}
-          refreshControl={
-            <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh}
-            />
-        }
-        >
+          <Content style={{color: "#000000"}} >
           <Grid>
             <Col style={{ backgroundColor: "#e60000", height: 150}}>
               <Body style={{ color: "#ffffff", justifyContent: "center", alignItems: "center",  alignContent: "center" }}>

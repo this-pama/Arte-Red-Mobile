@@ -483,7 +483,7 @@ export default class SubmitAuctionScreen extends Component {
                 </Body>
                 {/* </Item> */}
                 <Form>
-                    <Item floatingLabel>
+                    <Item stackedLabel>
                         <Label>Auction Verification Code</Label>
                         <Input onChangeText= {this.verificationCode} value={this.state.verificationCode}  autoCapitalize='words'/>
                     </Item>

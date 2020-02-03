@@ -46,7 +46,7 @@ class FolloweringScreen extends Component {
       return
     }
 
-      var url = apiUrl + "artwork/myfollowing/" + this.props.userId;
+      var url = apiUrl + "user/myfollowing/" + this.props.userId;
       var result = await fetch(url, {
         method: 'GET',
         headers: { 
@@ -87,19 +87,19 @@ class FolloweringScreen extends Component {
     var allFollow = await this.state.following.map(following => 
       (
         <List key={following._id}>
-              <TouchableOpacity 
-                onPress={()=> this.props.navigation.navigate("Profile", { profileId : following._id})}
-              >
                 <ListItem avatar>
                   <Left>
-                    <Thumbnail source={{uri : following.profileImage ? following.profileImage : this.state.image }} />
+                    <TouchableOpacity 
+                      onPress={()=> this.props.navigation.navigate("Profile", { profileId : following._id})}
+                    >
+                      <Thumbnail small source={{uri : following.profileImage ? following.profileImage : this.state.image }} />
+                    </TouchableOpacity>
                   </Left>
                   <Body>
                     <Text>{following.firstName} {following.lastName}</Text>
-                    <Text note>{following.description}</Text>
+                    <Text note>{following.userType}</Text>
                   </Body>
                 </ListItem>
-              </TouchableOpacity>
             </List>
       )
     )
@@ -136,7 +136,7 @@ class FolloweringScreen extends Component {
           </Button>
         </Segment>
         <Content padder>
-        {this.state.follow && this.state.follow.length > 0 ? this.state.follow: <Body><Text>You are not following anyone.</Text></Body> }
+        {this.state.follow && this.state.follow.length > 0 ? this.state.follow: null }
         </Content>
 
         <Footer >

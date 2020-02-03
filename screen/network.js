@@ -160,7 +160,7 @@ class NetworkScreen extends Component {
             />
           }
         >
-          {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : (<Body><Text>You currently have no posts.</Text></Body>) }
+          {this.state.allArtwork && this.state.allArtwork.length > 0  ? this.state.allArtwork : null }
         </Content>
 
         <Footer >

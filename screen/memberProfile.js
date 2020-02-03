@@ -105,7 +105,7 @@ class PartnerProfileScreen extends Component {
         <List>
               <ListItem avatar>
                 <Left>
-                <Thumbnail source={{ uri: this.state.profile.profileImage }} />
+                <Thumbnail small source={{ uri: this.state.profile.profileImage }} />
                 </Left>
                 <Body>
                   <Text>{this.state.profile.companyName}</Text>
@@ -161,7 +161,7 @@ class PartnerProfileScreen extends Component {
               <ListItem>
                   <Left>
                     {/* <TouchableOpacity> */}
-                    <Text note>Size: {this.state.profile.companySize}</Text>  
+                    { this.state.profile.companySize ? <Text note>Size: {this.state.profile.companySize}</Text> : null } 
                     {/* </TouchableOpacity> */}
                   </Left>
                   <Right>

@@ -153,8 +153,9 @@ class HomeScreen extends Component {
       else{
         var res = await response.json();
         if (res[0]._id) {
-          // console.warn(res[0])
-          let reverseResp = res.reverse()
+          // console.warn("res", res)
+          let reverseResp = await res.reverse()
+          // console.warn("reverseResp", reverseResp)
           this.setState({
             feed: reverseResp
           })

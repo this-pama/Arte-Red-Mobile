@@ -66,7 +66,6 @@ const DrawerNavigator = createDrawerNavigator(
         screen: DrawerScreen
       },
       Home: HomeScreen,
-      Post: PostScreen,
       Rave: RaveScreen,
     },
     {
@@ -168,6 +167,7 @@ const switchNavigator = createSwitchNavigator({
   Referral,
   About,
   ChangeWalletCurrency,
+  Post: PostScreen,
   Withdraw: WithdrawScreen,
   App: StackNavigator,
 },

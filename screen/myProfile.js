@@ -144,8 +144,8 @@ class ProfileScreen extends Component {
 
 
   render() {
-      const image = ( <Thumbnail source={{ uri: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png"}} /> )
-      const imageUri = ( <Thumbnail source={{ uri: this.state.image }} />)
+      const image = ( <Thumbnail small source={{ uri: "https://res.cloudinary.com/artered/image/upload/v1565698257/person/person_jgh15w.png"}} /> )
+      const imageUri = ( <Thumbnail small source={{ uri: this.state.image }} />)
     return (
       <Container>
         <Header hasSegment style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40  }}>
@@ -179,7 +179,7 @@ class ProfileScreen extends Component {
                 <Body>
                   <Text>{this.props.profile.firstName ? this.props.profile.firstName : "First Name"}</Text>
                   <Text note> {this.props.profile.lastName ? this.props.profile.lastName : "Last Name"}</Text>
-                  <Text note>{this.props.profile.telephone ? this.props.profile.telephone : "Telephone"}</Text>
+                  <Text note>{this.props.profile.tel.phone ? this.props.profile.tel.phone : "Telephone"}</Text>
                 </Body>
                 <Right>
                     <Text note>{this.props.profile.userType ? this.props.profile.userType : "Type of User"}</Text>

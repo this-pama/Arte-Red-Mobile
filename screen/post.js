@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image, KeyboardAvoidingView, View } from 'react-native';
 import { Container, Header, Content, Card, CardItem,Title, Thumbnail, Text, 
-  Button, Icon, Left, Body, Right, CheckBox, ActionSheet,
+  Button, Icon, Left, Body, Right, CheckBox, ActionSheet, Footer, FooterTab,
 Form, Label, Input, Picker, Item, Textarea, Spinner } from 'native-base';
 import PropTypes from "prop-types"
 import { Permissions } from 'expo';
@@ -65,6 +65,8 @@ export default class PostScreen extends Component {
   render() {
       const image = this.props.navigation.getParam("image")
       const spinner = <Spinner color="white" />
+      const currency = ["NGN", "GHS", "KES", "UGX", "TZS", "USD", "GBP", "EUR", "AUD"]
+    const currencyList = currency.map((currency, index) => (<Picker.Item key={index} label={`${currency}`} value={`${currency}`} /> ))
 
       const showcase=(
         <View>
@@ -129,26 +131,65 @@ export default class PostScreen extends Component {
               <Input onChangeText= {this.props.handleLocation } value={this.props.location }  autoCapitalize='words'/>
           </Item>
           <Item picker>
-            <Picker
+              <Picker
                   mode="dropdown"
                   iosIcon={<Icon name="arrow-down" />}
                   style={{ width: undefined }}
-                  placeholder="Currency"
+                  placeholder="Category"
                   placeholderStyle={{ color: "#bfc6ea" }}
                   placeholderIconColor="#007aff"
-                  selectedValue={this.props.currency}
-                  onValueChange={ this.props.handleCurrency }
+                  selectedValue={this.props.category}
+                  onValueChange={ this.props.handleCategory }
               >
-                  <Picker.Item label="NGN" value="NGN" />
-                  <Picker.Item label="USD" value="USD" />
-                  <Picker.Item label="EURO" value="USD" />
+                  <Picker.Item label="Pick a Category" value="Category" />
+                  <Picker.Item label="Painting" value="Paint" />
+                  <Picker.Item label="Scupture" value="Scupture" />
+                  <Picker.Item label="Drawing" value="Drawing" />
+                  <Picker.Item label="Textile" value="Textile" />
+                  <Picker.Item label="Collage" value="Collage" />
+                  <Picker.Item label="Prints" value="Prints" />
+                  <Picker.Item label="Photography" value="Photography" />
+                  <Picker.Item label="Art Installation" value="Art Installation" />
+                  <Picker.Item label="Others" value="Others" />
               </Picker>
           </Item>
+          <View style={{ padding: 10}}>
+          <Item picker>
+            {
+               this.props.otherCurrency ? (
+                <View>
+                    <Label>Currency</Label>
+                    <Input onChangeText= {this.props.handleCurrency  } value={this.props.currency}  keyboardType= 'default' />
+                </View>
+              ) : (
+                this.props.selectCurrency ? (
+                  <Item picker>
+                <Picker
+                    mode="dropdown"
+                    iosIcon={<Icon name="arrow-down" />}
+                    style={{ width: 50 }}
+                    placeholder="Select Currency"
+                    placeholderStyle={{ color: "#bfc6ea" }}
+                    placeholderIconColor="#007aff"
+                    selectedValue={this.props.currency}
+                    onValueChange={ this.props.selectCurrencyFunc }
+                >
+                    <Picker.Item label="Select Currency" value="Select Currency" />
+                      { currencyList }
+                    <Picker.Item label="Others" value="Others" />
+                </Picker>
+              </Item>
+                ) : null 
+              )
+            }
+            
+          </Item>
+          </View>
           <Item stackedLabel>
               <Label>Price</Label>
               <Input onChangeText= { this.props.handlePrice } value={this.props.price} keyboardType='numeric'  />
           </Item>
-          <Item style={{ paddingTop: 15, paddingBottom: 10 }}>
+          <Item style={{ padding: 15 }}>
             <Left>
                 <Text>Is this price negotiable?</Text>
             </Left>
@@ -161,7 +202,8 @@ export default class PostScreen extends Component {
                 <Text>No</Text>
             </Right>
           </Item>
-          {this.state.isNegotiable ?(
+          {this.state.isNegotiable ? (
+            <View style={{ padding: 15}}>
             <Item picker>
               {/* <Label>Select maximum allowable negotiable percentage</Label> */}
                 <Picker
@@ -182,6 +224,7 @@ export default class PostScreen extends Component {
                     <Picker.Item label="50%" value="50" />
                 </Picker>
             </Item>
+            </View>
           ) : null }
           <Item stackedLabel>
               <Label>Year</Label>
@@ -191,6 +234,7 @@ export default class PostScreen extends Component {
               <Label>Number Available</Label>
               <Input onChangeText= { this.props.handleNumber } value={this.props.number}  keyboardType='numeric'/>
           </Item>
+          <View style={{ padding: 10}}>
           <Item picker>
               <Picker
                   mode="dropdown"
@@ -203,12 +247,19 @@ export default class PostScreen extends Component {
                   onValueChange={ this.props.handleCategory }
               >
                   <Picker.Item label="Pick a Category" value="Category" />
-                  <Picker.Item label="Paint" value="Paint" />
-                  <Picker.Item label="Scupture" value="Scupture" />
+                  <Picker.Item label="Painting" value="Painting" />
+                  <Picker.Item label="Sculpture" value="Sculpture" />
+                  <Picker.Item label="Drawing" value="Drawing" />
+                  <Picker.Item label="Textile" value="Textile" />
+                  <Picker.Item label="Collage" value="Collage" />
+                  <Picker.Item label="Prints" value="Prints" />
                   <Picker.Item label="Photography" value="Photography" />
+                  <Picker.Item label="Art Installation" value="Art Installation" />
                   <Picker.Item label="Others" value="Others" />
               </Picker>
           </Item>
+          </View>
+          <View style={{ padding: 10}} >
           <Item picker>
               <Picker
                   mode="dropdown"
@@ -226,10 +277,11 @@ export default class PostScreen extends Component {
               </Picker>
           </Item>
           </View>
+          </View>
       )
     return (
       <Container>
-        <Header style={{ backgroundColor: "#990000"}}>
+        <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
           <Left>
             <Button transparent onPress={()=> this.props.navigation.navigate("Home")}>
               <Icon name="arrow-back" />
@@ -254,19 +306,10 @@ export default class PostScreen extends Component {
             <CardItem cardBody>
             <SliderBox
                 images={this.props.imagesToUpload}
-                sliderBoxHeight={200}
-                onCurrentImagePressed={index =>
-                    console.warn(`image ${index} pressed`)
-                }
+                sliderBoxHeight={300}
                 dotColor="red"
                 inactiveDotColor="#90A4AE"
             />
-              {/* <Gallery
-                style={{ flex: 1, backgroundColor: 'black', height: 200, width: null,  }}
-                images={this.props.imagesToUpload}
-              /> */}
-              {/* <ImageGallery items={this.props.imagesToUpload} /> */}
-              {/* <Image source={{uri: `${image.uri}`}} style={{height: 300, width: null, flex: 1}}/> */}
             </CardItem>
             <CardItem>
               <Right>
@@ -295,7 +338,7 @@ export default class PostScreen extends Component {
                         value={this.props.story}
                         onChangeText={this.props.handleStory}
                       />
-                    <Item style={{ paddingTop: 15, paddingBottom: 10 }}>
+                    <Item style={{ padding: 15 }}>
                       <Left>
                         <CheckBox checked={this.props.forSale} onPress={this.props.handleForSale} />
                         <Body>
@@ -319,7 +362,7 @@ export default class PostScreen extends Component {
                   {this.props.checkShowcase ? showcase : null }
                 </Form>
             </KeyboardAvoidingView>
-          <View style={{ paddingTop: 20}}>
+          <View style={{ padding: 20}}>
             <Button  block danger 
                 disabled={this.props.disable}
                 onPress={ this.props.post }
@@ -329,6 +372,24 @@ export default class PostScreen extends Component {
           </View>         
         </Content>
         </KeyboardAwareScrollView>
+
+        <Footer >
+          <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>
+            <Button vertical 
+            onPress={()=> this.props.navigation.navigate("Home")}
+            >
+              <Icon name="home" />
+              <Text>Home</Text>
+            </Button>
+        
+            <Button vertical 
+              onPress={()=> this.props.navigation.navigate("Network")} >
+              <Icon name="camera" />
+              <Text>My Posts</Text>
+            </Button>
+          
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }
@@ -383,4 +444,7 @@ PostScreen.propTypes= {
     handleNegotiationPercentage : PropTypes.func,
     currency: PropTypes.string.isRequired,
     handleCurrency: PropTypes.func.isRequired,
+    selectCurrencyFunc : PropTypes.func.isRequired,
+    selectCurrency: PropTypes.bool.isRequired,
+    otherCurrency: PropTypes.bool.isRequired,
 }

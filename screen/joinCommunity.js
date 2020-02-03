@@ -179,7 +179,7 @@ validateForm = () => {
       this.state.email.length > 0 &&
       this.state.companyName.length > 0 &&
       // this.state.nickName.length > 0 &&
-      this.state.bio.length > 0 &&
+      // this.state.bio.length > 0 &&
       this.state.address.length > 0 &&
       this.state.telephone.length > 0 &&
       this.state.state.length > 0 &&
@@ -869,11 +869,11 @@ postImageToCloud = ()=> {
       const others = (
         <Form style={{ padding: 20 }}>
             <Item stackedLabel>
-                <Label>Industry</Label>
+                <Label>Industry <Text style={{ color: 'red'}}>*</Text></Label>
                 <Input onChangeText= { this.handleIndustry  } value={this.state.industry }  autoCapitalize='words'/>
             </Item>
             <Item stackedLabel>
-                <Label>Website</Label>
+                <Label>Website <Text style={{ color: 'red'}}>*</Text></Label>
                 <Input onChangeText= { this.handleWebsite  } value={this.state.website }  autoCapitalize='words'/>
             </Item>
             <Item stackedLabel>
@@ -924,11 +924,11 @@ postImageToCloud = ()=> {
       const companyFurtherDetails = (
         <Form style={{ padding: 20 }}>
             <Item stackedLabel>
-                <Label>Registration Number</Label>
+                <Label>Registration Number <Text style={{ color: 'red'}}>*</Text></Label>
                 <Input onChangeText= { this.handleRegistrationNumber  } value={this.state.registrationNumber }  autoCapitalize='words'/>
             </Item>
             <Item stackedLabel>
-                <Label>Annual Turn Over</Label>
+                <Label>Annual Turn Over <Text style={{ color: 'red'}}>*</Text></Label>
                 <Input onChangeText= { this.handleAnnualTurnOver  } value={this.state.annualTurnOver }  autoCapitalize='words'/>
             </Item>
             <Item>
@@ -970,8 +970,7 @@ postImageToCloud = ()=> {
                   </Left>
                   <Right>
                   <Button  danger
-                    disabled={ this.state.registrationNumber.length > 0 && this.state.annualTurnOver.length > 0 &&
-                      this.state.companySize  ? false : true }
+                    disabled={ this.state.registrationNumber.length > 0 && this.state.annualTurnOver.length > 0  ? false : true }
                     onPress={this.showOthers }
                   >
                      <Body><Text> Next </Text></Body> 
@@ -1012,19 +1011,19 @@ postImageToCloud = ()=> {
         <View style={{ padding: 20 }}>
           <Body><Text style={{ fontWeight: 'bold'}}>Company Director</Text></Body>
             <Item stackedLabel>
-                <Label>Name</Label>
+                <Label>Name <Text style={{ color: 'red'}}>*</Text></Label>
                 <Input onChangeText= { this.handleDirectorName  } value={this.state.directorName }  autoCapitalize='words'/>
             </Item>
             <Item stackedLabel>
-                <Label>Email</Label>
+                <Label>Email <Text style={{ color: 'red'}}>*</Text></Label>
                 <Input onChangeText= { this.handleDirectorEmail  } value={this.state.directorEmail }  autoCapitalize='words'/>
             </Item>
             <Item stackedLabel>
-                <Label>Phone Number</Label>
+                <Label>Phone Number <Text style={{ color: 'red'}}>*</Text></Label>
                 <Input onChangeText= { this.handleDirectorNumber  } value={this.state.directorNumber }  autoCapitalize='words'/>
             </Item>
             <Item stackedLabel>
-                  <Label>Address</Label>
+                  <Label>Address <Text style={{ color: 'red'}}>*</Text></Label>
                   <Input onChangeText= { this.handleDirectorAddress } value={this.state.directorAddress}  autoCapitalize='words'/>
               </Item>
               <Item stackedLabel>
@@ -1082,7 +1081,7 @@ postImageToCloud = ()=> {
                       disabled={ 
                         this.state.directorName.length > 0 && this.state.directorEmail.length > 0 &&
                         this.state.directorCountry.length > 0 && this.state.directorAddress.length  > 0  &&
-                        this.state.directorPostalCode.length > 0 && this.state.directorState.length > 0  &&
+                        this.state.directorState.length > 0  &&
                         (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i).test(this.state.directorEmail) ? false : true 
                       }
                       onPress={this.showProfileImage }
@@ -1137,7 +1136,7 @@ postImageToCloud = ()=> {
       const showPersonalMembershipForm = (
         <Form style={{ padding: 20 }}>
         <Item stackedLabel>
-            <Label>Full Name</Label>
+            <Label>Full Name <Text style={{ color: 'red'}}>*</Text></Label>
             <Input onChangeText= { this.handleCompanyName  } value={this.state.companyName}  autoCapitalize='words'/>
         </Item>
         <Item stackedLabel>
@@ -1145,19 +1144,19 @@ postImageToCloud = ()=> {
             <Input onChangeText= { this.handleBio } value={this.state.bio }  autoCapitalize='words'/>
         </Item>
         <Item stackedLabel>
-            <Label>Email</Label>
+            <Label>Email <Text style={{ color: 'red'}}>*</Text></Label>
             <Input onChangeText= { this.handleEmail } value={this.state.email }  autoCapitalize='words'/>
         </Item>
         <Item stackedLabel>
-            <Label>Telephone (include country extension)</Label>
+            <Label>Telephone <Text style={{ color: 'red'}}>*</Text> (include country extension)</Label>
             <Input onChangeText= { this.handleTelephone } value={this.state.telephone}  autoCapitalize='words'/>
         </Item>
         <Item stackedLabel>
-            <Label>Address</Label>
+            <Label>Address <Text style={{ color: 'red'}}>*</Text></Label>
             <Input onChangeText= { this.handleAddress } value={this.state.address}  autoCapitalize='words'/>
         </Item>
         <Item stackedLabel>
-            <Label>Postal Code</Label>
+            <Label>Postal Code <Text style={{ color: 'red'}}>*</Text></Label>
             <Input onChangeText= { this.handlePostalCode } value={this.state.postalCode}  autoCapitalize='words'/>
         </Item>
         <Item>
@@ -1230,15 +1229,15 @@ postImageToCloud = ()=> {
     const showPersonalMembershipFurtherForm = (
       <Form style={{ padding: 20 }}>
           <Item stackedLabel>
-              <Label>Occupation</Label>
+              <Label>Occupation <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.handleIndustry  } value={this.state.industry }  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-                <Label>Annual Income</Label>
+                <Label>Annual Income <Text style={{ color: 'red'}}>*</Text></Label>
                 <Input onChangeText= { this.handleAnnualTurnOver  } value={this.state.annualTurnOver }  autoCapitalize='words'/>
             </Item>
           <Item stackedLabel>
-              <Label>Website</Label>
+              <Label>Website <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.handleWebsite  } value={this.state.website }  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
@@ -1294,19 +1293,19 @@ postImageToCloud = ()=> {
           <Text note>We may contact your referee to confirm your credibility</Text>
         </Body>
           <Item stackedLabel>
-              <Label>Name</Label>
+              <Label>Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.handleDirectorName  } value={this.state.directorName }  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-              <Label>Email</Label>
+              <Label>Email <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.handleDirectorEmail  } value={this.state.directorEmail }  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-              <Label>Phone Number (include country extension)</Label>
+              <Label>Phone Number <Text style={{ color: 'red'}}>*</Text> (include country extension)</Label>
               <Input onChangeText= { this.handleDirectorNumber  } value={this.state.directorNumber }  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-                <Label>Address</Label>
+                <Label>Address <Text style={{ color: 'red'}}>*</Text></Label>
                 <Input onChangeText= { this.handleDirectorAddress } value={this.state.directorAddress}  autoCapitalize='words'/>
             </Item>
             <Item stackedLabel>
@@ -1363,8 +1362,8 @@ postImageToCloud = ()=> {
                   <Button  danger
                     disabled={ 
                       this.state.directorName.length > 0 && this.state.directorEmail.length > 0 &&
-                      this.state.directorCountry.length > 0 && this.state.directorAddress.length > 0  &&
-                      this.state.directorPostalCode.length > 0 && this.state.directorState.length > 0  &&
+                      this.state.directorCountry.length > 0 && this.state.directorAddress.length > 0  
+                       && this.state.directorState.length > 0  &&
                       (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i).test(this.state.directorEmail) ? false : true 
                     }
                     onPress={this.showProfileImage }
@@ -1413,7 +1412,7 @@ postImageToCloud = ()=> {
           { this.state.show ? (
               <Form style={{ padding: 20 }}>
               <Item stackedLabel>
-                  <Label>Company Name</Label>
+                  <Label>Company Name <Text style={{ color: 'red'}}>*</Text></Label>
                   <Input onChangeText= { this.handleCompanyName  } value={this.state.companyName}  autoCapitalize='words'/>
               </Item>
               <Item stackedLabel>
@@ -1425,19 +1424,19 @@ postImageToCloud = ()=> {
                   <Input onChangeText= { this.handleBio } value={this.state.bio }  autoCapitalize='words'/>
               </Item>
               <Item stackedLabel>
-                  <Label>Email</Label>
+                  <Label>Email <Text style={{ color: 'red'}}>*</Text></Label>
                   <Input onChangeText= { this.handleEmail } value={this.state.email }  autoCapitalize='words'/>
               </Item>
               <Item stackedLabel>
-                  <Label>Telephone (include country extension)</Label>
+                  <Label>Telephone <Text style={{ color: 'red'}}>*</Text> (include country extension)</Label>
                   <Input onChangeText= { this.handleTelephone } value={this.state.telephone}  autoCapitalize='words'/>
               </Item>
               <Item stackedLabel>
-                  <Label>Address</Label>
+                  <Label>Address <Text style={{ color: 'red'}}>*</Text></Label>
                   <Input onChangeText= { this.handleAddress } value={this.state.address}  autoCapitalize='words'/>
               </Item>
               <Item stackedLabel>
-                  <Label>Postal Code</Label>
+                  <Label>Postal Code <Text style={{ color: 'red'}}>*</Text></Label>
                   <Input onChangeText= { this.handlePostalCode } value={this.state.postalCode}  autoCapitalize='words'/>
               </Item>
               <Item>

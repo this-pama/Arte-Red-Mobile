@@ -40,7 +40,9 @@ class PostController extends Component{
             isDoneUploading: false,
             negotiationPercentage: 0,
             isNegotiable: false,
-            currency: "NGN"
+            currency: "NGN",
+            otherCurrency : false,
+            selectCurrency: true,
         }
     }
 
@@ -385,14 +387,47 @@ class PostController extends Component{
       
       }
 
-      handleCurrency = currency => {
-        if (currency){
-            this.setState({
-              currency,
-                errMessage: ""
-            })
+      selectCurrencyFunc = currency => {
+        if (currency == "Others") {
+          this.setState(
+            {
+              otherCurrency : true,
+              selectCurrency: false, 
+              errMessage: ''
+            }
+          );
         }
-      }
+        else if (currency.length > 0 && currency != "Select Currency") {
+          this.setState(
+            {
+              currency,
+              errMessage: ''
+            }
+          );
+        } 
+        else {
+          this.setState({
+            currency: '',
+            errMessage: 'Select Currency'
+          });
+        }
+      };
+
+      handleCurrency = currency => {
+        if (currency.length > 0 && currency.length < 4) {
+          this.setState(
+            {
+              currency: currency.toUpperCase(),
+              errMessage: ''
+            }
+          );
+        } else {
+          this.setState({
+            currency: '',
+            errMessage: 'Specify Currency'
+          });
+        }
+      };
 
       handleNegotiationPercentage = negotiationPercentage => {
         if (+negotiationPercentage){
@@ -510,6 +545,9 @@ class PostController extends Component{
                 handleNegotiationPercentage= {this.handleNegotiationPercentage }
                 currency= {this.state.currency}
                 handleCurrency= {this.handleCurrency}
+                selectCurrencyFunc  = { this.selectCurrencyFunc  }
+                selectCurrency = { this.state.selectCurrency }
+                otherCurrency= { this.state.otherCurrency }
             />
         )
     }

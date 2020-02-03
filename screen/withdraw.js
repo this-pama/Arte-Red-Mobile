@@ -104,7 +104,7 @@ import Modal, { ModalContent, ModalFooter, ModalButton, SlideAnimation, ModalTit
     if (currency.length > 0 && currency.length < 4) {
       this.setState(
         {
-          currency,
+          currency: currency.toUpperCase(),
           errMessage: ''
         },
         this.validateFormAmount

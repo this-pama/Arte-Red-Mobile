@@ -10,7 +10,7 @@ import { buyArtworkAction } from "../../redux/buyAction"
 import { moreArtworkDetailsAction } from "../../redux/artworkDetailsAction"
 import {apiUrl} from "./env"
 import {BackHandler} from "react-native"
-import { like, unLike, rating } from "../../controller/api"
+import { like, unLike, rating, follow } from "../../controller/api"
 import { Rating, AirbnbRating } from 'react-native-ratings';
 
 
@@ -162,7 +162,7 @@ class ProfileScreen extends Component {
         <List>
               <ListItem avatar>
                 <Left>
-                  <Thumbnail source={{ uri :  this.state.image }} />
+                  <Thumbnail small source={{ uri :  this.state.image }} />
                 </Left>
                 <Body>
                   <Text>{this.state.profile.firstName ? this.state.profile.firstName : "First Name"}</Text>
@@ -221,22 +221,15 @@ class ProfileScreen extends Component {
                     <Text style={{ color: "blue" }} note>{this.props.userId === this.props.navigation.getParam("id", null) ? null : this.state.follow}</Text>
                   </TouchableOpacity>
                 </Left>
-                  <Right>
+                  {/* <Right>
                     { this.props.userId === this.props.navigation.getParam("id", null) ? null :
-                    (<TouchableOpacity 
-                      onPress={()=>{
-                        this.props.navigation.navigate("Chat", {
-                          routeName: "Profile",
-                          id: this.props.navigation.getParam("id", null)
-                        })
-                      }}
-                    >
+                    (<TouchableOpacity >
                           <Text note style={{ color: "blue"}}>
                               Send Message
                           </Text>
                       </TouchableOpacity>) 
                     }
-                  </Right>
+                  </Right> */}
               </ListItem>) }
               { this.props.userId === this.props.navigation.getParam("id", null) ? null :
               (<ListItem>

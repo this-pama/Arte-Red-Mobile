@@ -43,12 +43,12 @@ class FollowerScreen extends Component {
 
 
   getPost= async ()=>{
-    if(!this.props.userId || this.props.userId.length <= 0  || !this.props.jwt 
-      || this.props.jwt.length <=0 ){
-      return
-    }
+    // if(!this.props.userId || this.props.userId.length <= 0  || !this.props.jwt 
+    //   || this.props.jwt.length <=0 ){
+    //   return
+    // }
 
-      var url = apiUrl + "artwork/myfollower/" + this.props.userId;
+      var url = apiUrl + "user/myfollower/" + this.props.userId;
       var result = await fetch(url, {
         method: 'GET',
         headers: { 
@@ -57,6 +57,7 @@ class FollowerScreen extends Component {
          }
       });
       var response = await result;
+      console.warn(response)
       if(response.status !== 200 ){
         // console.warn("fetching artworks failed response")
         this.setState({
@@ -66,6 +67,7 @@ class FollowerScreen extends Component {
       }
       else{
         var res = await response.json();
+       
         if (res.success) {
           this.setState({
             follower: [ ... res.message]
@@ -89,19 +91,19 @@ class FollowerScreen extends Component {
     var allFollower = await this.state.follower.map(follower => 
       (
         <List key={follower._id}>
-              <TouchableOpacity 
-                onPress={()=> this.props.navigation.navigate("Profile", { profileId : follower._id})}
-              >
                 <ListItem avatar>
                   <Left>
-                    <Thumbnail source={{uri : follower.profileImage ? follower.profileImage : this.state.image }} />
+                    <TouchableOpacity 
+                      onPress={()=> this.props.navigation.navigate("Profile", { profileId : follower._id})}
+                    >
+                      <Thumbnail small source={{uri : follower.profileImage ? follower.profileImage : this.state.image }} />
+                    </TouchableOpacity>
                   </Left>
                   <Body>
                     <Text>{follower.firstName} {follower.lastName}</Text>
-                    <Text note>{follower.description}</Text>
+                    <Text note>{follower.userType}</Text>
                   </Body>
                 </ListItem>
-              </TouchableOpacity>
             </List>
       )
     )
@@ -138,7 +140,7 @@ class FollowerScreen extends Component {
           </Button>
         </Segment>
         <Content padder>
-        {this.state.follow && this.state.follow.length > 0 ? this.state.follow: (<Body><Text>You currently have no follower.</Text></Body>) }
+        {this.state.follow && this.state.follow.length > 0 ? this.state.follow: null }
         </Content>
         <Footer >
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>

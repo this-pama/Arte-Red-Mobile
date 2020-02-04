@@ -13,11 +13,9 @@ import { buyArtworkAction } from "../redux/buyAction"
 import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
 import {connect} from 'react-redux'
 import { like } from "../controller/api"
-import {BackHandler, RefreshControl } from "react-native"
-import {
-  Notifications,
-} from 'expo';
-
+import {BackHandler, RefreshControl, Image } from "react-native"
+import { Notifications } from 'expo';
+import Lightbox from "react-native-lightbox"
 
 class MyNegotiationScreen extends Component {
 
@@ -27,7 +25,7 @@ class MyNegotiationScreen extends Component {
       errMessage:"",
       fetch: false,
       notification: {},
-      negotiationData: [],
+      negotiationData : [],
       requestedData: [],
       receivedData: [],
       receivedActive: false,
@@ -68,14 +66,15 @@ class MyNegotiationScreen extends Component {
     var response = await result
 
       var res = await response.json();
-      if (res._id) {
-        console.warn(res)
-        this.setState({
+      // console.warn(res.requested)
+      if (res.success) {
+        await this.setState({
           negotiationData : res.requested,
           requestedData: res.requested,
           receivedData: res.received,
           fetch: true
         })
+        // console.warn('negotiationData', this.state.negotiationData)
       }
       else  {
         console.warn("Can't get negotiation data")  
@@ -94,34 +93,48 @@ _onRefresh = () => {
 }
 
   render() {
-    const negotiationHistory = this.state.negotiationData.map( (data, index) =>{
+    const negotiationHistory = this.state.negotiationData.map( (data) =>
       (
-        <Card key={index} >
+        <Card  >
         <CardItem>
           <Left>
             <Body>
-              <Text>{data.title}</Text>
+              <Text>{data.artworkTitle}</Text>
             </Body>
           </Left>
           <Right>
-            <Text>{data.currency}</Text>   
+            <Text>{data.artworkCurrency} {data.sellingPrice}</Text>   
           </Right>
         </CardItem>
+        {typeof(data.imageUrl) == 'object' ?
+        (
           <SliderBox
                 images={data.imageUrl}
                 sliderBoxHeight={200}
-                onCurrentImagePressed={async index =>
+                onCurrentImagePressed={async () =>
                     {
                       this.props.navigation.navigate("Negotiation", { artworkId: data.artworkId, negotiationId: data.negotiationId})
                     } 
                 }
                 dotColor="red"
                 inactiveDotColor="#90A4AE"
-          />      
-        <CardItem >
-        </CardItem>
+        /> ):
+        (
+          <SliderBox
+                images={[data.imageUrl]}
+                sliderBoxHeight={200}
+                onCurrentImagePressed={async () =>
+                    {
+                      this.props.navigation.navigate("Negotiation", { artworkId: data.artworkId, negotiationId: data.negotiationId})
+                    } 
+                }
+                dotColor="red"
+                inactiveDotColor="#90A4AE"
+        />
+        )}     
+        
       </Card>
-        )})
+        ))
 
     return (
       <Container>
@@ -172,7 +185,8 @@ _onRefresh = () => {
                     <Spinner color='red' />
                 </Body>
             ) : null }
-            {negotiationHistory}
+
+            { negotiationHistory }
         </Content>
         <Footer >
           <FooterTab style={{ color: "#ffcccc", backgroundColor: "#990000"}}>

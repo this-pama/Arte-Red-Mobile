@@ -32,6 +32,29 @@ class ProfileScreen extends Component {
         this.backHandler.remove();
       }
 
+      sendPushNotification = async (userId, title, message) =>{
+        var url = apiUrl + "user/send-notification/direct-message"
+        var result = await fetch(url, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            title,
+            message
+          })
+        });
+        var response = await result;
+        if(response.status !== 200 ){
+          return
+        }
+        else{
+          var res = await response.json();
+          // console.warn("sent notification")
+          console.warn("notification response", res )
+          return
+        }
+      }
+
     async componentDidMount(){
       const userId = this.props.navigation.getParam("id", null)
         this.setState({ id : userId })
@@ -209,11 +232,14 @@ class ProfileScreen extends Component {
                         }
                         else{
                             this.setState({ follow : "Following"})
+
                             follow({
                               userId: this.props.userId,
                               jwt: this.props.jwt,
                               IdOfPersonToFollow: this.props.navigation.getParam("id", null)
                             })
+
+                            this.sendPushNotification(this.props.navigation.getParam("id", null), "Notification", `${this.props.profile.firstName} ${this.props.profile.lastName} just started following you`)
                         }
           
                     }}

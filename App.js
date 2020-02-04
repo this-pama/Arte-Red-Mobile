@@ -34,6 +34,7 @@ import ChangeWalletScreen from './screen/changeWalletCurrency'
 import AboutScreen from './screen/about'
 import Edit from './controller/editProfile'
 import Post from './controller/post'
+import MyNegotiation from './screen/myNegotiations'
 
 export default class App extends React.Component {
   constructor(props) {

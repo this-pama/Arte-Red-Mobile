@@ -12,7 +12,7 @@ import { buyArtworkAction } from "../redux/buyAction"
 import { moreArtworkDetailsAction } from "../redux/artworkDetailsAction"
 import {connect} from 'react-redux'
 import { like } from "../controller/api"
-import {BackHandler} from "react-native"
+import {BackHandler, RefreshControl } from "react-native"
 import {
   Notifications,
 } from 'expo';
@@ -43,6 +43,8 @@ class NegotiationScreen extends Component {
       spin: false,
       message: '',
       modalVisible: false,
+      initiateNegotiation: false,
+      refreshing: false,
     }
   }
 
@@ -53,44 +55,7 @@ class NegotiationScreen extends Component {
       }
     })
 
-    var url = apiUrl + "artwork/" + this.props.navigation.getParam("artworkId", null );
-    var result = await fetch(url, {
-      method: 'GET',
-      headers: { 
-        'content-type': 'application/json',
-        "Authorization": `Bearer ${this.props.jwt}`
-       }
-    });
-    var response = await result;
-    if(response.status !== 200 ){
-      console.warn("fetching artworks failed response")
-      this.setState({
-        artwork: {}
-      })
-      
-      return
-    }
-    else{
-      var res = await response.json();
-      if (res._id) {
-        console.warn(res)
-        this.setState({
-          artwork: res,
-          currency: res.currency,
-          
-        })
-
-        this.getNegotiationDetails(res.negotiationId)
-      }
-
-      else  {
-        console.warn("Can't get artwork")
-        this.setState({
-          artwork: {}
-        })
-        
-      }
-    }
+    this.getArtworkDetails()
 
     // handle hardware back button press
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -110,6 +75,47 @@ class NegotiationScreen extends Component {
   _handleNotification = (notification) => {
     this.setState({notification: notification});
   };
+
+  getArtworkDetails = async ()=>{
+    var url = apiUrl + "artwork/" + this.props.navigation.getParam("artworkId", null );
+  var result = await fetch(url, {
+    method: 'GET',
+    headers: { 
+      'content-type': 'application/json',
+      "Authorization": `Bearer ${this.props.jwt}`
+     }
+  });
+  var response = await result;
+  if(response.status !== 200 ){
+    console.warn("fetching artworks failed response")
+    this.setState({
+      artwork: {}
+    })
+    
+    return
+  }
+  else{
+    var res = await response.json();
+    if (res._id) {
+      console.warn(res)
+      this.setState({
+        artwork: res,
+        currency: res.currency,
+        
+      })
+
+      this.getNegotiationDetails(res.negotiationId)
+    }
+
+    else  {
+      console.warn("Can't get artwork")
+      this.setState({
+        artwork: {}
+      })
+      
+    }
+  }
+  }
 
   getNegotiationDetails= async negotiationId =>{
     console.warn(negotiationId)
@@ -198,7 +204,7 @@ class NegotiationScreen extends Component {
         userId: this.props.userId,
         askingPrice: this.state.negotiationValue,
         comment: this.state.comment,
-        name: this.props.profile.firstName,
+        name: `${this.props.profile.firstName} ${this.props.profile.lastName}`,
       }),
     });
 
@@ -264,8 +270,8 @@ class NegotiationScreen extends Component {
           message: "Negotiation Response sent!",
         })
 
-        let message= `A seller has responded to one of your negotiation request`
-        this.sendPushNotification(userId, "Negotiation Response", message, this.state.artwork)
+        // let message= `A seller has responded to one of your negotiation request`
+        // this.sendPushNotification(userId, "Negotiation Response", message, this.state.artwork)
       }
 
       else  {
@@ -309,8 +315,8 @@ class NegotiationScreen extends Component {
           message: "Negotiation Request sent!",
         })
 
-          let message= `A seller has responded to one of your negotiation request`
-          this.sendPushNotification(userId, "Negotiation Response", message, this.state.artwork)
+          // let message= `A seller has responded to one of your negotiation request`
+          // this.sendPushNotification(userId, "Negotiation Response", message, this.state.artwork)
       }
 
       else  {
@@ -345,6 +351,14 @@ class NegotiationScreen extends Component {
       return
     }
   }
+
+
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getArtworkDetails().then(() => {
+      this.setState({refreshing: false});
+    })
+}
 
 
   render() {
@@ -390,7 +404,7 @@ class NegotiationScreen extends Component {
             <Input onChangeText= { this.handleComment } value={this.state.comment } autoCapitalize='none' />
           </Item>
 
-          <View style={{ paddingTop : 15, paddingBottom: 25 }}>
+          <View style={{ padding: 25 }}>
               <Button danger block
                onPress={()=>{
                 this.setState({
@@ -431,7 +445,7 @@ class NegotiationScreen extends Component {
                 <Left>
                   <Body >
                     <Text note>Asking Price</Text>
-                    <Text note>{this.props.currency} {data.askingPrice}</Text>
+                    <Text note>{this.state.artwork.currency} {data.askingPrice}</Text>
                   </Body>
                 </Left>
                 <Right>
@@ -459,7 +473,7 @@ class NegotiationScreen extends Component {
                         data.reject ? (
                           <Text>Rejected</Text>
                         ) : 
-                        <Text>Awaiting Response</Text>
+                        <Text>Awaiting Sponsor's Response</Text>
                       ) }
                     </Button>
                   </Right>
@@ -483,7 +497,14 @@ class NegotiationScreen extends Component {
           </Body>
         </Header>
         {/* load a spinner when all data are not fetchfrom server */}
-            <Content style={{padding: 10 }}>
+            <Content style={{padding: 10 }} 
+                refreshControl={
+                  <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this._onRefresh}
+                  />
+              }
+            >
             {!this.state.fetch ? (
               <Body>
                 <Spinner color="red"  small />
@@ -492,40 +513,50 @@ class NegotiationScreen extends Component {
           <Body>
             <Text note style={{color: "red"}}> {this.state.errMessage} </Text>
           </Body>
-              <Text style={{paddingLeft: 20, paddingTop: 15 }}>Selling Price</Text>
-              <Text note style={{paddingLeft: 20 }}>
-                {`${this.state.artwork.currency}  ${this.state.artwork.price}`}
-              </Text>
+              {   this.state.artwork.isNegotiable ? (this.state.initiateNegotiation ? (
+                <View>
+                  <Text style={{paddingLeft: 20, paddingTop: 15 }}>Selling Price</Text>
+                  <Text note style={{paddingLeft: 20 }}>
+                    {`${this.state.artwork.currency}  ${this.state.artwork.price}`}
+                  </Text>
+                  { negotiate }
+                </View>
+              ) : (
+                <View style={{ padding : 25 }}>
+                  <Button danger block
+                    onPress={()=>{
+                      this.setState({
+                        initiateNegotiation: true
+                      })
+                    }}
+                  >
+                   <Text>Start Negotiation</Text>
+                </Button>
+              </View> 
+              )) : null }
+              
 
               {/* check if artwork is negotiable and render appropriately */}
               { this.state.artwork.isNegotiable ? (
                 <View>
-                   
-                   <View>
-                   {this.state.negotiating ? (
-                      <View>
-                        <Text style={{paddingLeft: 20, paddingTop: 25 }}>Asking Price</Text>
-                        <Text note style={{paddingLeft: 20 }}>{this.state.artwork.currency}  {this.state.negotiationValue}</Text>
-                      </View>
-                    ): null }
-                    </View>
+
                     {/* show history of negotiation to seller */}
                     <View>
-                    { this.state.artwork.userId === this.props.userId ? history : negotiate }
+                    { this.state.artwork.userId === this.props.userId ? history : null }
                     {/* show history of negotiated values and reply to buyer    */}
                     </View>
                     <View>
-                    {buyerHistory}
+                    { this.state.initiateNegotiation ? null : buyerHistory }
                     </View>
                 </View>
               ) : (
                  this.state.artwork.userId === this.props.userId ? 
                   (<Body>
-                    <Text style={{ paddingTop: 20 }}>You don't have any negotiation request because the artwork is not negotiable.</Text>
+                    <Text style={{ padding: 20 }}>You don't have any negotiation request because this artwork is not negotiable.</Text>
                   </Body>)
                     :
                 (<Body>
-                  <Text style={{ paddingTop: 20 }}>Artwork is not negotiable. Kindly proceed to payment.</Text>
+                  <Text style={{ padding: 20 }}>This Artwork is not negotiable. Kindly proceed to payment.</Text>
                 </Body>)
                 
               ) }

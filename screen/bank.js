@@ -76,19 +76,19 @@ export default class BankScreen extends Component {
     const details= (
       <Form>
           <Item stackedLabel>
-              <Label>First Name</Label>
+              <Label>First Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= {this.props.handleFirstName  } value={this.props.firstName}  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-              <Label>Last Name</Label>
+              <Label>Last Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleLastName } value={this.props.lastName}  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-              <Label>Account Number</Label>
+              <Label>Account Number <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleAccountNumber } value={this.props.accountNumber}  keyboardType='numeric' />
           </Item>
           <Item stackedLabel>
-              <Label>Email</Label>
+              <Label>Email <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleEmail} value={this.props.email}   />
           </Item>
       </Form>
@@ -97,35 +97,35 @@ export default class BankScreen extends Component {
       <View>
       <Form>
           <Item stackedLabel>
-              <Label>First Name</Label>
+              <Label>First Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= {this.props.handleFirstName  } value={this.props.firstName}  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-              <Label>Last Name</Label>
+              <Label>Last Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleLastName } value={this.props.lastName}  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-              <Label>Account Number</Label>
+              <Label>Account Number <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleAccountNumber } value={this.props.accountNumber}  keyboardType='words' />
           </Item>
           <Item stackedLabel>
-              <Label>Bank Name</Label>
+              <Label>Bank Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleInternationalBankName } value={this.props.internationalBankName}  keyboardType='words' />
           </Item>
           <Item stackedLabel>
-              <Label>Email</Label>
+              <Label>Email <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleEmail} value={this.props.email}   />
           </Item>
           <Item stackedLabel>
-              <Label>Routing Number</Label>
+              <Label>Routing Number <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleRoutingNumber} value={this.props.routingNumber}   />
           </Item>
           <Item stackedLabel>
-              <Label>Swift Code</Label>
+              <Label>Swift Code <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleSwiftCode} value={this.props.swiftCode}   />
           </Item>
           <Item stackedLabel>
-              <Label>Beneficiary Address</Label>
+              <Label>Beneficiary Address <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleBeneficiaryAddress} value={this.props.beneficiaryAddress}   />
           </Item>
       </Form>
@@ -147,35 +147,35 @@ export default class BankScreen extends Component {
       <View>
       <Form>
           <Item stackedLabel>
-              <Label>First Name</Label>
+              <Label>First Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= {this.props.handleFirstName  } value={this.props.firstName}  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-              <Label>Last Name</Label>
+              <Label>Last Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleLastName } value={this.props.lastName}  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-              <Label>Account Number</Label>
+              <Label>Account Number <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleAccountNumber } value={this.props.accountNumber}  keyboardType='words' />
           </Item>
           <Item stackedLabel>
-              <Label>Bank Name</Label>
+              <Label>Bank Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleInternationalBankName } value={this.props.internationalBankName}  keyboardType='words' />
           </Item>
           <Item stackedLabel>
-              <Label>Email</Label>
+              <Label>Email <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleEmail} value={this.props.email}   />
           </Item>
           <Item stackedLabel>
-              <Label>Routing Number</Label>
+              <Label>Routing Number <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleRoutingNumber} value={this.props.routingNumber}   />
           </Item>
           <Item stackedLabel>
-              <Label>Swift Code</Label>
+              <Label>Swift Code <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleSwiftCode} value={this.props.swiftCode}   />
           </Item>
           <Item stackedLabel>
-              <Label>Beneficiary Address</Label>
+              <Label>Beneficiary Address <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleBeneficiaryAddress} value={this.props.beneficiaryAddress}   />
           </Item>
           {/* <Item stackedLabel>
@@ -202,55 +202,55 @@ export default class BankScreen extends Component {
       <View>
       <Form>
           <Item stackedLabel>
-              <Label>First Name</Label>
+              <Label>First Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= {this.props.handleFirstName  } value={this.props.firstName}  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-              <Label>Last Name</Label>
+              <Label>Last Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleLastName } value={this.props.lastName}  autoCapitalize='words'/>
           </Item>
           <Item stackedLabel>
-              <Label>Account Number</Label>
+              <Label>Account Number <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleAccountNumber } value={this.props.accountNumber}  keyboardType='words' />
           </Item>
           <Item stackedLabel>
-              <Label>Bank Name</Label>
+              <Label>Bank Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleInternationalBankName } value={this.props.internationalBankName}  keyboardType='words' />
           </Item>
           <Item stackedLabel>
-              <Label>Email</Label>
+              <Label>Email <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleEmail} value={this.props.email}   />
           </Item>
           <Item stackedLabel>
-              <Label>Routing Number</Label>
+              <Label>Routing Number <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleRoutingNumber} value={this.props.routingNumber}   />
           </Item>
           <Item stackedLabel>
-              <Label>Swift Code</Label>
+              <Label>Swift Code <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleSwiftCode} value={this.props.swiftCode}   />
           </Item>
           <Item stackedLabel>
-              <Label>Beneficiary Address</Label>
+              <Label>Beneficiary Address <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleBeneficiaryAddress } value={this.props.beneficiaryAddress}   />
           </Item>
           <Item stackedLabel>
-              <Label>Beneficiary Country Code</Label>
+              <Label>Beneficiary Country Code <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleBeneficiaryCountry} value={this.props.beneficiaryCountry}   />
           </Item>
           <Item stackedLabel>
-              <Label>Postal Code</Label>
+              <Label>Postal Code <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handlePostalCode} value={this.props.postalCode}   />
           </Item>
           <Item stackedLabel>
-              <Label>Street Number</Label>
+              <Label>Street Number <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleStreetNumber} value={this.props.streetNumber}   />
           </Item>
           <Item stackedLabel>
-              <Label>Street Name</Label>
+              <Label>Street Name <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleStreetName} value={this.props.streetName}   />
           </Item>
           <Item stackedLabel>
-              <Label>City</Label>
+              <Label>City <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleCity} value={this.props.city}   />
           </Item>
       </Form>
@@ -283,64 +283,188 @@ export default class BankScreen extends Component {
     )
 
     const otSummary = (
-      <View>
-          <Text >Full Name: {this.props.firstName} {this.props.lastName} </Text>
-          <Text> Bank Name: {this.props.bankName} </Text>
-          <Text> Account Number: {this.props.accountNumber}</Text>
-          <Text> Country: {this.props.country} </Text>
-          <Text> Routing Number: {this.props.routingNumber} </Text>
-          <Text> Swift Code: {this.props.swiftCode} </Text>
-          <Text> Beneficiary Address: {this.props.beneficiaryAddress} </Text>
+      <View style={{ padding: 10 }}>
+        <Item>
+          <Left>
+            <Text>Full Name:</Text>
+          </Left>
+          <Body><Text > {this.props.firstName} {this.props.lastName} </Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Bank Name:</Text>
+          </Left>
+          <Body><Text > {this.props.bankName} </Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Account Number:</Text>
+          </Left>
+          <Body><Text >{this.props.accountNumber}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Country:</Text>
+          </Left>
+          <Body><Text >{this.props.country}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Routing Number:</Text>
+          </Left>
+          <Body><Text >{this.props.routingNumber} </Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Swift Code:</Text>
+          </Left>
+          <Body><Text >{this.props.swiftCode}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Beneficiary Address:</Text>
+          </Left>
+          <Body><Text >{this.props.beneficiaryAddress}</Text></Body>
+        </Item>
       </View>
     )
 
     const eurSummary = (
-      <View>
-          <Text >Full Name: {this.props.firstName} {this.props.lastName} </Text>
-          <Text> Bank Name: {this.props.bankName} </Text>
-          <Text> Account Number: {this.props.accountNumber}</Text>
-          <Text> Country: {this.props.country} </Text>
-          <Text> Routing Number: {this.props.routingNumber} </Text>
-          <Text> Swift Code: {this.props.swiftCode} </Text>
-          <Text> Beneficiary Address: { this.props.beneficiaryAddress } </Text>
-          <Text> Beneficiary Country: {this.props.beneficiaryCountry} </Text>
-          <Text> Postal Code: {this.props.postalCode} </Text>
-          <Text> Street Number: {this.props.streetNumber} </Text>
-          <Text> Street Name: {this.props.streetName} </Text>
-          <Text> City: {this.props.city} </Text>
+      <View style={{ padding: 10 }}>
+        <Item>
+          <Left>
+            <Text>Full Name:</Text>
+          </Left>
+          <Body><Text >{this.props.firstName} {this.props.lastName}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Bank Name:</Text>
+          </Left>
+          <Body><Text >{this.props.bankName}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Account Number:</Text>
+          </Left>
+          <Body><Text >{this.props.accountNumber}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Country:</Text>
+          </Left>
+          <Body><Text >{this.props.country}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Routing Number:</Text>
+          </Left>
+          <Body><Text >{this.props.routingNumber}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Swift Code:</Text>
+          </Left>
+          <Body><Text >{this.props.swiftCode}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Beneficiary Address:</Text>
+          </Left>
+          <Body><Text >{ this.props.beneficiaryAddress }</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Beneficiary Country:</Text>
+          </Left>
+          <Body><Text >{this.props.beneficiaryCountry}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Postal Code:</Text>
+          </Left>
+          <Body><Text >{this.props.postalCode}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Street Number:</Text>
+          </Left>
+          <Body><Text >{this.props.streetNumber}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>Street Name:</Text>
+          </Left>
+          <Body><Text >{this.props.streetName}</Text></Body>
+        </Item>
+        <Item>
+          <Left>
+            <Text>City:</Text>
+          </Left>
+          <Body><Text >{this.props.city}</Text></Body>
+        </Item>
       </View>
     )
 
     const summary = (<View>{ this.props.showUsSummary ? otSummary : ( this.props.showEurSummary ? eurSummary : 
       (
-        <View>
-          <Text >Full Name: {this.props.firstName} {this.props.lastName} </Text>
-          <Text> Bank Name: {this.props.bankName} </Text>
-          <Text> Account Number: {this.props.accountNumber}</Text>
-          <Text> Country: {this.props.country} </Text>
-          <Text> Email: {this.props.email} </Text>
+        <View style={{ padding: 10 }}>
+          <Item>
+            <Left>
+              <Text>Full Name:</Text>
+            </Left>
+            <Body><Text >{this.props.firstName} {this.props.lastName}</Text></Body>
+          </Item>
+          <Item>
+            <Left>
+              <Text>Bank Name:</Text>
+            </Left>
+            <Body><Text >{this.props.bankName}</Text></Body>
+          </Item>
+          <Item>
+            <Left>
+              <Text>Account Number:</Text>
+            </Left>
+            <Body><Text >{this.props.accountNumber}</Text></Body>
+          </Item>
+          <Item>
+            <Left>
+              <Text>Country:</Text>
+            </Left>
+            <Body><Text >{this.props.country}</Text></Body>
+          </Item>
+          <Item>
+            <Left>
+              <Text>Email:</Text>
+            </Left>
+            <Body><Text >{this.props.email}</Text></Body>
+          </Item>
         </View>
       )
       )}</View>)
 
     const otherCountriesOption = (
-    <List>
+    <View>
       <ListItem>
-        <Button transparent onPress= { this.props.us}>
-          <Text>United State of Amenrica</Text>
-        </Button>
+        <Body>
+          <View style={{ paddingBottom: 30, paddingTop: 30}}>
+            <Button style={{ backgroundColor: "red", }} onPress= { this.props.us}>
+              <Text>United State of Amenrica</Text>
+            </Button>
+          </View>
+          <View style={{ paddingBottom: 30 }}>
+            <Button style={{ backgroundColor: "#990000" }} onPress={ this.props.eur }>
+              <Text>European Countries</Text>
+            </Button>
+          </View>
+          <View style={{ paddingBottom: 30 }}>
+            <Button style={{ backgroundColor: "red", }} onPress={this.props.ot }>
+              <Text>Other Countries</Text>
+            </Button>
+          </View>
+        </Body>
       </ListItem>
-      <ListItem>
-        <Button transparent onPress={ this.props.eur }>
-          <Text>European Countries</Text>
-        </Button>
-      </ListItem>
-      <ListItem>
-        <Button transparent onPress={this.props.ot }>
-          <Text>Other Countries</Text>
-        </Button>
-      </ListItem>
-    </List>
+    </View>
     )
 
     return (

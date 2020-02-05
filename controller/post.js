@@ -8,6 +8,7 @@ import {connect} from 'react-redux'
 import { Permissions } from 'expo';
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker';
+import { country, state } from '../screen/service/countries'
 
 var BUTTONS = ["Camera", "Gallery", "Close"];
 var DESTRUCTIVE_INDEX = 2;
@@ -43,6 +44,13 @@ class PostController extends Component{
             currency: "NGN",
             otherCurrency : false,
             selectCurrency: true,
+            initiateForm: true,
+            unit: '',
+            size: '',
+            country: '',
+            state: '',
+            showState: false,
+            stateList: []
         }
     }
 
@@ -125,7 +133,8 @@ class PostController extends Component{
          },
         body: JSON.stringify({
           title: this.state.title,
-          size: `${this.state.length} x ${this.state.breadth}`,
+          size: this.state.size,
+          unit: this.state.unit,
           story: this.state.story,
           location: this.state.location,
           price: this.state.price,
@@ -141,6 +150,8 @@ class PostController extends Component{
           isNegotiable: this.state.isNegotiable,
           negotiationPercent: this.state.negotiationPercentage,
           currency: this.state.currency,
+          state: this.state.state,
+          country: this.state.country,
         })
       });
       var response = await result;
@@ -189,6 +200,7 @@ class PostController extends Component{
             "file": base64Img,
             "upload_preset": "artered",
           }
+          
   
           fetch(cloudinaryUrl, {
             body: JSON.stringify(data),
@@ -339,6 +351,23 @@ class PostController extends Component{
         }
       };
 
+      handleSize = size => {
+        if (size.length > 0 && +size) {
+          this.setState(
+            {
+              size: +size,
+              errMessage: ""
+            }
+          );
+        } else {
+          this.setState({
+            size: '',
+            errMessage: 'Size cannot be empty'
+          });
+        }
+      };
+
+
       handleYear = year => {
         if (year.length > 0) {
           this.setState(
@@ -413,6 +442,31 @@ class PostController extends Component{
         }
       };
 
+      selectUnit = unit => {
+        if (unit == "Select Unit") {
+          this.setState(
+            {
+              errMessage: 'Specify Artwork size'
+            }
+          );
+        }
+        else if (unit.length > 0 && unit != "Select Unit") {
+          this.setState(
+            {
+              unit,
+              errMessage: ''
+            }
+          );
+        } 
+        else {
+          this.setState({
+            unit: '',
+            errMessage: 'Select Unit'
+          });
+        }
+      };
+
+
       handleCurrency = currency => {
         if (currency.length > 0 && currency.length < 4) {
           this.setState(
@@ -425,6 +479,22 @@ class PostController extends Component{
           this.setState({
             currency: '',
             errMessage: 'Specify Currency'
+          });
+        }
+      };
+
+      handleSize = size => {
+        if (size.length > 0 && +size) {
+          this.setState(
+            {
+              size,
+              errMessage: ''
+            }
+          );
+        } else {
+          this.setState({
+            size: '',
+            errMessage: 'Specify size'
           });
         }
       };
@@ -463,7 +533,8 @@ class PostController extends Component{
           this.setState({
             forSale: true,
             progressShot: false,
-            checkShowcase: false
+            checkShowcase: false,
+            initiateForm: false,
           })
         }
 
@@ -471,7 +542,8 @@ class PostController extends Component{
           this.setState({
             forSale: false,
             progressShot: true,
-            checkShowcase: false
+            checkShowcase: false,
+            initiateForm: true,
           })
         }
 
@@ -479,7 +551,8 @@ class PostController extends Component{
           this.setState({
             forSale: false,
             progressShot: false,
-            checkShowcase: true
+            checkShowcase: true,
+            initiateForm: false,
           })
         }
 
@@ -499,6 +572,50 @@ class PostController extends Component{
           });
         }
       };
+
+      selectCountry = async country => {
+        if (country === "Select Country"){
+            this.setState({
+                errMessage: "Select a country",
+                showState: false,
+            })
+        }
+        else{
+          await this.setState({
+                  errMessage: "",
+                  country,
+                  showState: false,
+                  // showSearchBtn: true
+              }
+              )
+      
+        this.evaluateStateList()
+        }
+      }
+
+      selectState = async state => {
+        if (country === "Select State" ){
+            this.setState({
+                errMessage: "Select a State",
+                // showState: false,
+            })
+        }
+        else{
+          await this.setState({
+                  errMessage: "",
+                  state,
+                  // showState: false,
+              }
+              )
+        }
+      }
+      
+      evaluateStateList =()=>{
+        let countryIndex = this.state.country.indexOf(this.state.country)
+        let stateList = state(countryIndex)
+        this.setState( { stateList, showState: true })
+        // console.warn(stateList)
+      }
 
 
     render(){
@@ -548,6 +665,17 @@ class PostController extends Component{
                 selectCurrencyFunc  = { this.selectCurrencyFunc  }
                 selectCurrency = { this.state.selectCurrency }
                 otherCurrency= { this.state.otherCurrency }
+                initiateForm={ this.state.initiateForm }
+                unit= { this.state.unit }
+                size= { this.state.size }
+                selectUnit= { this.selectUnit }
+                handleSize = { this.handleSize }
+                showState = { this.state.showState }
+                stateList= { this.state.stateList}
+                state= { this.state.state}
+                country= { this.state.country }
+                selectCountry= { this.selectCountry }
+                selectState = { this.selectState }
             />
         )
     }

@@ -439,7 +439,7 @@ class NegotiationScreen extends Component {
     const buyerHistory = this.state.negotiationData.history.map( (data, index) =>
       data.userId === this.props.userId
         ? (
-          <View style={{ paddingBottom: 25, paddingTop: 15}}>
+          <View style={{ padding: 25}}>
           <Card key={index} >
               <CardItem>
                 <Left>
@@ -513,7 +513,7 @@ class NegotiationScreen extends Component {
           <Body>
             <Text note style={{color: "red"}}> {this.state.errMessage} </Text>
           </Body>
-              {   this.state.artwork.isNegotiable ? (this.state.initiateNegotiation ? (
+              {   this.state.artwork.isNegotiable && this.state.artwork.userId != this.props.userId ? (this.state.initiateNegotiation ? (
                 <View>
                   <Text style={{paddingLeft: 20, paddingTop: 15 }}>Selling Price</Text>
                   <Text note style={{paddingLeft: 20 }}>

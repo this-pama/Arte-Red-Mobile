@@ -832,27 +832,29 @@ initiatePayment= async () =>{
   showAddress= (
     <View>
       <Item stackedLabel>
-          <Label>Billing Address</Label>
+          <Label>Billing Address <Text style={{ color: 'red'}}>*</Text></Label>
           <Input onChangeText= { this.handleBillingAddress} value={this.state.billingaddress }   />
       </Item>
       <Item stackedLabel>
-          <Label>Billing City</Label>
+          <Label>Billing City <Text style={{ color: 'red'}}>*</Text></Label>
           <Input onChangeText= { this.handleBillingCity} value={this.state.billingcity}   />
       </Item>
       <Item stackedLabel>
-          <Label>Billing Zip</Label>
+          <Label>Billing Zip <Text style={{ color: 'red'}}>*</Text></Label>
           <Input onChangeText= { this.handleBillingZip } value={this.state.billingzip }   />
       </Item>
       <Item stackedLabel>
-          <Label>Billing State</Label>
+          <Label>Billing State <Text style={{ color: 'red'}}>*</Text></Label>
           <Input onChangeText= { this.handleBillingState} value={this.state.billingstate }   />
       </Item>
       <Item stackedLabel>
-          <Label>Billing Country</Label>
+          <Label>Billing Country <Text style={{ color: 'red'}}>*</Text></Label>
           <Input onChangeText= { this.handleBillingCountry} value={this.state.billingcountry}   />
       </Item>
       <Button  block danger 
-            disabled={this.state.disable}
+            disabled={this.state.billingaddress.length > 0 && this.state.billingcity.length > 0 && 
+              this.state.billingzip.length > 0 && this.state.billingstate.length > 0 &&
+              this.state.billingcountry.length > 0  ? false : true }
             onPress={ this.initiatePayment }
         >
             { this.state.fetched ? <Text> Next </Text> : <Spinner color='white' /> }

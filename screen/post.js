@@ -11,7 +11,7 @@ import Gallery from 'react-native-image-gallery';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SliderBox } from 'react-native-image-slider-box';
 import {BackHandler} from "react-native"
-
+import { country, state } from './service/countries'
 
 export default class PostScreen extends Component {
     constructor(props){
@@ -19,6 +19,7 @@ export default class PostScreen extends Component {
         this.state={
           isNegotiable: false,
           isNotNegotiable: false,
+          initiateForm: false,
         }
     }
 
@@ -66,31 +67,66 @@ export default class PostScreen extends Component {
       const image = this.props.navigation.getParam("image")
       const spinner = <Spinner color="white" />
       const currency = ["NGN", "GHS", "KES", "UGX", "TZS", "USD", "GBP", "EUR", "AUD"]
-    const currencyList = currency.map((currency, index) => (<Picker.Item key={index} label={`${currency}`} value={`${currency}`} /> ))
+      const currencyList = currency.map((currency, index) => (<Picker.Item key={index} label={`${currency}`} value={`${currency}`} /> ))
+      const unit = ['Meter Square', "Litres"]
+      const unitList = unit.map((unit, index) => (<Picker.Item key={index} label={`${unit}`} value={`${unit}`} /> ))
+      const pickCountry = country.map((name,index) =>(
+        <Picker.Item label={`${name}`} key={index}
+            value={`${name}`}
+        /> 
+      ))
+  
+      const pickState = this.props.stateList.map((name,index) =>(
+        <Picker.Item label={`${name}`} key={index}
+            value={`${name}`}
+        /> 
+      ))
 
       const showcase=(
         <View>
-        <Item stackedLabel>
-              <Label>Length (inches)</Label>
-              <Input onChangeText= { this.props.handleLength } value={this.props.length}  keyboardType='numeric' />
-          </Item>
+          <View>
+            <Left>
+              <Item stackedLabel>
+                  <Label>Size <Text style={{ color: 'red'}}>*</Text></Label>
+                  <Input onChangeText= { this.props.handleSize } value={this.props.size}  keyboardType='numeric' />
+              </Item>
+            </Left>
+            <Body>
+            <Item >
+                <Picker
+                    mode="dropdown"
+                    iosIcon={<Icon name="arrow-down" />}
+                    style={{ width: undefined }}
+                    placeholder="Category"
+                    placeholderStyle={{ color: "#bfc6ea" }}
+                    placeholderIconColor="#007aff"
+                    selectedValue={this.props.unit}
+                    onValueChange={ this.props.selectUnit }
+                >
+                    <Picker.Item label="Select Unit" value="Select Unit" />
+                    { unitList }
+                </Picker>
+            </Item>
+            </Body>
+          </View>
+{/*           
           <Item stackedLabel>
               <Label>Breadth (inches)</Label>
               <Input onChangeText= { this.props.handleBreadth } value={this.props.breadth}  keyboardType='numeric' />
-          </Item>
-          <Item stackedLabel>
+          </Item> */}
+          {/* <Item stackedLabel>
               <Label>Location</Label>
               <Input onChangeText= {this.props.handleLocation } value={this.props.location }  autoCapitalize='words'/>
-          </Item>
+          </Item> */}
           <Item stackedLabel>
               <Label>Year</Label>
               <Input onChangeText= { this.props.handleYear } value={this.props.year} keyboardType='numeric' />
           </Item>
           <Item stackedLabel>
-              <Label>Number Available</Label>
+              <Label>Number Available <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handleNumber } value={this.props.number}  keyboardType='numeric'/>
           </Item>
-          <Item picker>
+          <Item >
               <Picker
                   mode="dropdown"
                   iosIcon={<Icon name="arrow-down" />}
@@ -113,52 +149,53 @@ export default class PostScreen extends Component {
                   <Picker.Item label="Others" value="Others" />
               </Picker>
           </Item>
+            <Item>
+              <Picker
+                    mode="dropdown"
+                    iosIcon={<Icon name="arrow-down" />}
+                    style={{ width: undefined }}
+                    placeholderStyle={{ color: "#bfc6ea" }}
+                    placeholderIconColor="#007aff"
+                    selectedValue={this.props.country}
+                    onValueChange={ this.props.selectCountry }
+                >
+                  <Picker.Item label="Select Country"
+                      value="Select Country"
+                  /> 
+                  { pickCountry }
+                </Picker>
+              </Item>
+              { this.props.showState ? (
+                <Item>
+                  <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name="arrow-down" />}
+                        style={{ width: undefined }}
+                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholderIconColor="#007aff"
+                        selectedValue={this.props.state}
+                        onValueChange={ this.props.selectState }
+                    >
+                      <Picker.Item label="Select State"
+                          value="Select State"
+                      /> 
+                      { pickState }
+                  </Picker>
+              </Item>
+              ) : null }
+              
           </View>
       )
 
       const showPriceView=(
         <View>
-        <Item stackedLabel>
-              <Label>Length (inches)</Label>
-              <Input onChangeText= { this.props.handleLength } value={this.props.length}  keyboardType='numeric' />
-          </Item>
-          <Item stackedLabel>
-              <Label>Breadth (inches)</Label>
-              <Input onChangeText= { this.props.handleBreadth } value={this.props.breadth}  keyboardType='numeric' />
-          </Item>
-          <Item stackedLabel>
-              <Label>Location</Label>
-              <Input onChangeText= {this.props.handleLocation } value={this.props.location }  autoCapitalize='words'/>
-          </Item>
-          <Item picker>
-              <Picker
-                  mode="dropdown"
-                  iosIcon={<Icon name="arrow-down" />}
-                  style={{ width: undefined }}
-                  placeholder="Category"
-                  placeholderStyle={{ color: "#bfc6ea" }}
-                  placeholderIconColor="#007aff"
-                  selectedValue={this.props.category}
-                  onValueChange={ this.props.handleCategory }
-              >
-                  <Picker.Item label="Pick a Category" value="Category" />
-                  <Picker.Item label="Painting" value="Paint" />
-                  <Picker.Item label="Scupture" value="Scupture" />
-                  <Picker.Item label="Drawing" value="Drawing" />
-                  <Picker.Item label="Textile" value="Textile" />
-                  <Picker.Item label="Collage" value="Collage" />
-                  <Picker.Item label="Prints" value="Prints" />
-                  <Picker.Item label="Photography" value="Photography" />
-                  <Picker.Item label="Art Installation" value="Art Installation" />
-                  <Picker.Item label="Others" value="Others" />
-              </Picker>
-          </Item>
-          <View style={{ padding: 10}}>
-          <Item picker>
+          { showcase }
+          
+          <Item >
             {
                this.props.otherCurrency ? (
                 <View>
-                    <Label>Currency</Label>
+                    <Label>Currency <Text style={{ color: 'red'}}>*</Text></Label>
                     <Input onChangeText= {this.props.handleCurrency  } value={this.props.currency}  keyboardType= 'default' />
                 </View>
               ) : (
@@ -184,9 +221,9 @@ export default class PostScreen extends Component {
             }
             
           </Item>
-          </View>
+          
           <Item stackedLabel>
-              <Label>Price</Label>
+              <Label>Price <Text style={{ color: 'red'}}>*</Text></Label>
               <Input onChangeText= { this.props.handlePrice } value={this.props.price} keyboardType='numeric'  />
           </Item>
           <Item style={{ padding: 15 }}>
@@ -203,8 +240,7 @@ export default class PostScreen extends Component {
             </Right>
           </Item>
           {this.state.isNegotiable ? (
-            <View style={{ padding: 15}}>
-            <Item picker>
+            <Item >
               {/* <Label>Select maximum allowable negotiable percentage</Label> */}
                 <Picker
                     mode="dropdown"
@@ -224,43 +260,10 @@ export default class PostScreen extends Component {
                     <Picker.Item label="50%" value="50" />
                 </Picker>
             </Item>
-            </View>
+            
           ) : null }
-          <Item stackedLabel>
-              <Label>Year</Label>
-              <Input onChangeText= { this.props.handleYear } value={this.props.year} keyboardType='numeric' />
-          </Item>
-          <Item stackedLabel>
-              <Label>Number Available</Label>
-              <Input onChangeText= { this.props.handleNumber } value={this.props.number}  keyboardType='numeric'/>
-          </Item>
-          <View style={{ padding: 10}}>
-          <Item picker>
-              <Picker
-                  mode="dropdown"
-                  iosIcon={<Icon name="arrow-down" />}
-                  style={{ width: undefined }}
-                  placeholder="Category"
-                  placeholderStyle={{ color: "#bfc6ea" }}
-                  placeholderIconColor="#007aff"
-                  selectedValue={this.props.category}
-                  onValueChange={ this.props.handleCategory }
-              >
-                  <Picker.Item label="Pick a Category" value="Category" />
-                  <Picker.Item label="Painting" value="Painting" />
-                  <Picker.Item label="Sculpture" value="Sculpture" />
-                  <Picker.Item label="Drawing" value="Drawing" />
-                  <Picker.Item label="Textile" value="Textile" />
-                  <Picker.Item label="Collage" value="Collage" />
-                  <Picker.Item label="Prints" value="Prints" />
-                  <Picker.Item label="Photography" value="Photography" />
-                  <Picker.Item label="Art Installation" value="Art Installation" />
-                  <Picker.Item label="Others" value="Others" />
-              </Picker>
-          </Item>
-          </View>
-          <View style={{ padding: 10}} >
-          <Item picker>
+
+          <Item >
               <Picker
                   mode="dropdown"
                   iosIcon={<Icon name="arrow-down" />}
@@ -276,9 +279,72 @@ export default class PostScreen extends Component {
                   <Picker.Item label="No" value="No" />
               </Picker>
           </Item>
-          </View>
+          
           </View>
       )
+
+      const standardForm = (
+        <View>
+          <Card>
+            <CardItem cardBody>
+            <SliderBox
+                images={this.props.imagesToUpload}
+                sliderBoxHeight={300}
+                dotColor="red"
+                inactiveDotColor="#90A4AE"
+            />
+            </CardItem>
+            <CardItem>
+              <Right>
+                <Button transparent active 
+                  onPress= {this.props.addMoreImage }
+                >
+                  <Icon name="add" />
+                  <Text>Add More Image </Text>
+                </Button>
+              </Right>
+            </CardItem>
+          </Card>
+          <Item stackedLabel>
+              <Label>Title <Text style={{ color: 'red'}}>*</Text></Label>
+              <Input onChangeText= {this.props.handleTitle  } value={this.props.title}  autoCapitalize='words'/>
+          </Item>
+          <Item stackedLabel>
+              <Label>Artist Name</Label>
+              <Input onChangeText= { this.props.handleArtistName } value={this.props.artistName}  autoCapitalize='words'/>
+          </Item>
+          <Textarea rowSpan={5} bordered 
+              placeholder="Write a story about the artwork."
+              value={this.props.story}
+              onChangeText={this.props.handleStory}
+          />
+          <View style={{ padding : 20 }}>
+            <Item >
+              <Left>
+                <CheckBox checked={this.props.forSale} onPress={this.props.handleForSale} />
+                <Body>
+                  <Text>For Sale</Text>
+                </Body>
+              </Left>
+              <Body>
+                <CheckBox checked={this.props.checkShowcase} onPress={this.props.handleShowcase} />
+                <Body>
+                  <Text>Showcase</Text>
+                </Body>
+              </Body>
+              <Right>
+                <CheckBox checked={this.props.progressShot} onPress={this.props.handleProgressShot} />
+                <Body>
+                  <Text>Progress Shot</Text>
+                </Body>
+              </Right>
+            </Item>
+          </View>
+          
+        </View>
+        
+      )
+
     return (
       <Container>
         <Header style={{ backgroundColor: "#990000", paddingTop: 50, paddingBottom: 40 }}>
@@ -302,69 +368,24 @@ export default class PostScreen extends Component {
           keyboardShouldPersistTaps='handled'
         >
         <Content>
-          <Card>
-            <CardItem cardBody>
-            <SliderBox
-                images={this.props.imagesToUpload}
-                sliderBoxHeight={300}
-                dotColor="red"
-                inactiveDotColor="#90A4AE"
-            />
-            </CardItem>
-            <CardItem>
-              <Right>
-                <Button transparent active 
-                  onPress= {this.props.addMoreImage }
-                >
-                  <Icon name="add" />
-                  <Text>Add More Image </Text>
-                </Button>
-              </Right>
-            </CardItem>
-          </Card>
-          <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-                <Form>
-                  <Text note style={{ color: "red"}}>{this.props.errMessage}</Text>
-                    <Item stackedLabel>
-                        <Label>Title</Label>
-                        <Input onChangeText= {this.props.handleTitle  } value={this.props.title}  autoCapitalize='words'/>
-                    </Item>
-                    <Item stackedLabel>
-                        <Label>Artist Name</Label>
-                        <Input onChangeText= { this.props.handleArtistName } value={this.props.artistName}  autoCapitalize='words'/>
-                    </Item>
-                    <Textarea rowSpan={5} bordered 
-                        placeholder="Write a story about the artwork."
-                        value={this.props.story}
-                        onChangeText={this.props.handleStory}
-                      />
-                    <Item style={{ padding: 15 }}>
-                      <Left>
-                        <CheckBox checked={this.props.forSale} onPress={this.props.handleForSale} />
-                        <Body>
-                          <Text>For Sale</Text>
-                        </Body>
-                      </Left>
-                      <Body>
-                        <CheckBox checked={this.props.checkShowcase} onPress={this.props.handleShowcase} />
-                        <Body>
-                          <Text>Showcase</Text>
-                        </Body>
-                      </Body>
-                      <Right>
-                        <CheckBox checked={this.props.progressShot} onPress={this.props.handleProgressShot} />
-                        <Body>
-                          <Text>Progress Shot</Text>
-                        </Body>
-                      </Right>
-                    </Item>
-                  {this.props.forSale ? showPriceView : null }
-                  {this.props.checkShowcase ? showcase : null }
-                </Form>
-            </KeyboardAvoidingView>
+          
+          <Form>
+            <Body><Text note style={{ color: "red", padding: 10 }}>{this.props.errMessage}</Text></Body>
+              { this.props.initiateForm ? standardForm : null }
+            {this.props.forSale ? showPriceView : null }
+            {this.props.checkShowcase ? showcase : null }
+          </Form>
+
           <View style={{ padding: 20}}>
             <Button  block danger 
-                disabled={this.props.disable}
+                disabled={ this.props.progressShot ? ( this.props.title.length > 0 && this.props.story.length > 0 ? false : true) : 
+                  this.props.checkShowcase ? ( this.props.title.length > 0 && this.props.story.length > 0 && this.props.size.length > 0 &&
+                    this.props.category.length > 0 && this.props.country.length > 0   ? false : true) : 
+                      this.props.forSale ? ( this.props.title.length > 0 && this.props.story.length > 0 && this.props.size.length > 0 &&
+                        this.props.category.length > 0 && this.props.country.length > 0
+                        ? false : true) : false
+                    
+                 }
                 onPress={ this.props.post }
             >
                 {this.props.spin ? spinner : <Text> Post </Text>}
@@ -447,4 +468,15 @@ PostScreen.propTypes= {
     selectCurrencyFunc : PropTypes.func.isRequired,
     selectCurrency: PropTypes.bool.isRequired,
     otherCurrency: PropTypes.bool.isRequired,
+    initiateForm: PropTypes.bool.isRequired,
+    size: PropTypes.string.isRequired,
+    unit: PropTypes.string.isRequired,
+    handleSize: PropTypes.func.isRequired,
+    selectUnit: PropTypes.func.isRequired,
+    country: PropTypes.string.isRequired,
+    selectCountry: PropTypes.func.isRequired,
+    selectState: PropTypes.func.isRequired,
+    state : PropTypes.string.isRequired,
+    showState: PropTypes.bool.isRequired,
+    stateList: PropTypes.array.isRequired,
 }

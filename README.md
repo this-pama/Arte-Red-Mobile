@@ -45,11 +45,11 @@ npm start
 
 ## Folder Structure
 
-/assets: Contains static assets such as images, fonts, etc.
-/controller: Contains reusable React components.
-/screens: Contains the main screens of your application.
-/route: Contains the navigation configuration for your app.
-/redux: Contains utility functions used for redux state management.
+- /assets: Contains static assets such as images, fonts, etc.
+- /controller: Contains reusable React components.
+- /screens: Contains the main screens of your application.
+- /route: Contains the navigation configuration for your app.
+- /redux: Contains utility functions used for redux state management.
 Feel free to organize your project structure according to your preferences.
 
 ## Contributing
